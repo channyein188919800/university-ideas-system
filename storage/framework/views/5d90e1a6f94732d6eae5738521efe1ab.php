@@ -1,77 +1,308 @@
 <?php $__env->startSection('title', 'Home - University Ideas System'); ?>
 
 <?php $__env->startSection('content'); ?>
-<!-- Hero Section -->
-<section class="hero">
-    <div class="container text-center">
-        <h1><i class="fas fa-lightbulb"></i> Share Your Ideas</h1>
-        <p>Help improve our university by submitting your innovative ideas and feedback.</p>
-        <?php if(auth()->guard()->check()): ?>
-            <?php if(auth()->user()->canSubmitIdea()): ?>
-                <a href="<?php echo e(route('ideas.create')); ?>" class="btn btn-accent btn-lg">
-                    <i class="fas fa-plus-circle"></i> Submit an Idea
-                </a>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: "Merriweather", serif;
+    }
+
+    .hero-glass {
+        position: relative;
+        min-height: 75vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 1rem;
+        color: #fff;
+        background-image:
+            linear-gradient(135deg, rgba(15,23,42,0.80), rgba(15,23,42,0.5)),
+            url('https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+
+    .hero-overlay-card {
+        max-width: 720px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 2.5rem 2rem;
+        border-radius: 1.5rem;
+        background: rgba(15,23,42,0.55);
+        border: 1px solid rgba(255,255,255,0.08);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 18px 45px rgba(0,0,0,0.45);
+    }
+
+    .hero-title-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .hero-subtitle {
+        opacity: 0.9;
+        max-width: 520px;
+        margin: 0 auto 1.5rem auto;
+    }
+
+    .hero-cta-group {
+        gap: 0.75rem;
+    }
+
+    .blur-surface {
+        background: rgba(15,23,42,0.70);
+        border-radius: 1.25rem;
+        border: 1px solid rgba(148,163,184,0.35);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 14px 40px rgba(15,23,42,0.55);
+    }
+
+    .stats-grid .stats-card {
+        border-radius: 1.25rem;
+        padding: 1.4rem 1.1rem;
+        background: rgba(15,23,42,0.80);
+        border: 1px solid rgba(148,163,184,0.4);
+        backdrop-filter: blur(16px);
+        color: #fff;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+
+    .stats-grid .stats-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(15,23,42,0.7);
+        background: rgba(15,23,42,0.92);
+    }
+
+    .stats-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.75rem;
+        background: rgba(15,23,42,0.9);
+    }
+
+    .stats-number {
+        font-size: 1.6rem;
+        font-weight: 700;
+    }
+
+    .stats-label {
+        opacity: 0.85;
+        font-size: 0.85rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .glass-section-card {
+        border-radius: 1.5rem;
+        background: rgba(15,23,42,0.78);
+        border: 1px solid rgba(148,163,184,0.4);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 18px 45px rgba(15,23,42,0.65);
+        overflow: hidden;
+    }
+
+    .glass-section-card .card-header {
+        border-bottom: 1px solid rgba(148,163,184,0.4);
+        background: linear-gradient(to right, rgba(15,23,42,0.9), rgba(30,64,175,0.7));
+        color: #fff;
+    }
+
+    .glass-section-card .card-body {
+        background: transparent;
+    }
+
+    .idea-card {
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(148,163,184,0.25);
+    }
+
+    .idea-card:last-child {
+        border-bottom: none;
+    }
+
+    .idea-title a {
+        color: inherit;
+    }
+
+    .badge-anonymous {
+        font-size: 0.7rem;
+        border-radius: 999px;
+        padding: 0.15rem 0.6rem;
+    }
+
+    .badge-category {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 0.45rem 0.9rem;
+        background: rgba(15,23,42,0.9);
+        border: 1px solid rgba(148,163,184,0.5);
+        color: #fff;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .badge-category:hover {
+        transform: translateY(-2px);
+        background: rgba(15,23,42,1);
+        box-shadow: 0 10px 26px rgba(15,23,42,0.7);
+    }
+
+    .fade-in-up {
+        opacity: 0;
+        transform: translateY(18px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in-up.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .fade-in-delay-1 {
+        transition-delay: 0.1s;
+    }
+
+    .fade-in-delay-2 {
+        transition-delay: 0.2s;
+    }
+
+    .fade-in-delay-3 {
+        transition-delay: 0.3s;
+    }
+
+    .fade-in-delay-4 {
+        transition-delay: 0.4s;
+    }
+
+    .loading-shimmer {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .loading-shimmer::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg,
+            transparent,
+            rgba(255,255,255,0.18),
+            transparent);
+        transform: translateX(-100%);
+        animation: shimmer 1.4s infinite;
+        pointer-events: none;
+    }
+
+    @keyframes shimmer {
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .hero-overlay-card {
+            padding: 2rem 1.4rem;
+        }
+
+        .hero-title-icon {
+            font-size: 2.4rem;
+        }
+    }
+</style>
+
+<section class="hero-glass">
+    <div class="hero-overlay-card text-center fade-in-up">
+        <div class="mb-3">
+            <i class="bi bi-lightbulb-fill hero-title-icon"></i>
+        </div>
+        <h1 class="mb-2">Share Your Ideas</h1>
+        <p class="hero-subtitle">
+            Help improve our university by submitting your innovative ideas and feedback.
+        </p>
+        <div class="d-flex flex-column flex-sm-row justify-content-center hero-cta-group mt-3">
+            <?php if(auth()->guard()->check()): ?>
+                <?php if(auth()->user()->canSubmitIdea()): ?>
+                    <a href="<?php echo e(route('ideas.create')); ?>" class="btn btn-accent btn-lg px-4 mb-2 mb-sm-0">
+                        <i class="bi bi-plus-circle-fill me-1"></i>
+                        Submit an Idea
+                    </a>
+                <?php else: ?>
+                    <div class="alert alert-warning d-inline-flex align-items-center mb-0">
+                        <i class="bi bi-clock-history me-2"></i>
+                        <span>Idea submission is currently closed.</span>
+                    </div>
+                <?php endif; ?>
             <?php else: ?>
-                <div class="alert alert-warning d-inline-block">
-                    <i class="fas fa-clock"></i> Idea submission is currently closed.
-                </div>
+                <a href="<?php echo e(route('login')); ?>" class="btn btn-accent btn-lg px-4">
+                    <i class="bi bi-box-arrow-in-right me-1"></i>
+                    Login to Submit Ideas
+                </a>
             <?php endif; ?>
-        <?php else: ?>
-            <a href="<?php echo e(route('login')); ?>" class="btn btn-accent btn-lg">
-                <i class="fas fa-sign-in-alt"></i> Login to Submit Ideas
-            </a>
-        <?php endif; ?>
+        </div>
     </div>
 </section>
 
-<div class="container mb-5">
-    <!-- Closure Dates Alert -->
+<div class="container mb-5" id="home-content-root">
     <?php if($ideaClosureDate || $finalClosureDate): ?>
-        <div class="alert alert-info mb-4">
-            <i class="fas fa-calendar-alt"></i>
-            <strong>Important Dates:</strong>
-            <?php if($ideaClosureDate): ?>
-                Idea submission closes on <strong><?php echo e($ideaClosureDate->format('F d, Y')); ?></strong>
-            <?php endif; ?>
-            <?php if($finalClosureDate): ?>
-                | Final closure (comments) on <strong><?php echo e($finalClosureDate->format('F d, Y')); ?></strong>
-            <?php endif; ?>
+        <div class="blur-surface mt-n4 mb-4 p-3 p-md-4 fade-in-up fade-in-delay-1">
+            <div class="d-flex align-items-start">
+                <div class="me-3">
+                    <span class="badge rounded-pill bg-light text-dark">
+                        <i class="bi bi-calendar-event-fill me-1"></i>
+                        Key Dates
+                    </span>
+                </div>
+                <div>
+                    <?php if($ideaClosureDate): ?>
+                        <div>Idea submission closes on <strong><?php echo e($ideaClosureDate->format('F d, Y')); ?></strong></div>
+                    <?php endif; ?>
+                    <?php if($finalClosureDate): ?>
+                        <div>Final closure (comments) on <strong><?php echo e($finalClosureDate->format('F d, Y')); ?></strong></div>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
     <?php endif; ?>
 
-    <!-- Statistics Row -->
-    <div class="row mb-5">
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stats-card">
-                <div class="stats-icon primary">
-                    <i class="fas fa-fire"></i>
+    <div class="row stats-grid mb-5">
+        <div class="col-md-3 col-sm-6 mb-3 fade-in-up fade-in-delay-1">
+            <div class="stats-card text-center">
+                <div class="stats-icon text-primary">
+                    <i class="bi bi-fire"></i>
                 </div>
                 <div class="stats-number"><?php echo e($popularIdeas->count()); ?></div>
                 <div class="stats-label">Popular Ideas</div>
             </div>
         </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stats-card">
-                <div class="stats-icon success">
-                    <i class="fas fa-eye"></i>
+        <div class="col-md-3 col-sm-6 mb-3 fade-in-up fade-in-delay-2">
+            <div class="stats-card text-center">
+                <div class="stats-icon text-success">
+                    <i class="bi bi-eye-fill"></i>
                 </div>
                 <div class="stats-number"><?php echo e($mostViewedIdeas->count()); ?></div>
                 <div class="stats-label">Most Viewed</div>
             </div>
         </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stats-card">
-                <div class="stats-icon warning">
-                    <i class="fas fa-clock"></i>
+        <div class="col-md-3 col-sm-6 mb-3 fade-in-up fade-in-delay-3">
+            <div class="stats-card text-center">
+                <div class="stats-icon text-warning">
+                    <i class="bi bi-clock-history"></i>
                 </div>
                 <div class="stats-number"><?php echo e($latestIdeas->count()); ?></div>
                 <div class="stats-label">Latest Ideas</div>
             </div>
         </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stats-card">
-                <div class="stats-icon info">
-                    <i class="fas fa-comments"></i>
+        <div class="col-md-3 col-sm-6 mb-3 fade-in-up fade-in-delay-4">
+            <div class="stats-card text-center">
+                <div class="stats-icon text-info">
+                    <i class="bi bi-chat-dots-fill"></i>
                 </div>
                 <div class="stats-number"><?php echo e($latestComments->count()); ?></div>
                 <div class="stats-label">Recent Comments</div>
@@ -79,49 +310,54 @@
         </div>
     </div>
 
-    <div class="row">
-        <!-- Popular Ideas -->
-        <div class="col-lg-6 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-fire"></i> Most Popular Ideas
+    <div class="row g-4">
+        <div class="col-lg-6 fade-in-up">
+            <div class="card glass-section-card h-100">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <div>
+                        <i class="bi bi-fire me-2"></i>
+                        Most Popular Ideas
+                    </div>
+                    <span class="badge bg-light text-dark">Top <?php echo e($popularIdeas->count()); ?></span>
                 </div>
                 <div class="card-body">
                     <?php $__empty_1 = true; $__currentLoopData = $popularIdeas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                        <div class="idea-card mb-3">
-                            <h5 class="idea-title">
+                        <div class="idea-card">
+                            <h5 class="idea-title d-flex align-items-center justify-content-between">
                                 <a href="<?php echo e(route('ideas.show', $idea)); ?>" class="text-decoration-none">
                                     <?php echo e($idea->title); ?>
 
                                 </a>
                                 <?php if($idea->is_anonymous): ?>
-                                    <span class="badge badge-anonymous"><i class="fas fa-user-secret"></i> Anonymous</span>
+                                    <span class="badge badge-anonymous bg-secondary-subtle text-light">
+                                        <i class="bi bi-incognito me-1"></i> Anonymous
+                                    </span>
                                 <?php endif; ?>
                             </h5>
-                            <div class="idea-meta">
-                                <i class="fas fa-building"></i> <?php echo e($idea->department->name); ?>
+                            <div class="idea-meta small mb-2">
+                                <i class="bi bi-building"></i> <?php echo e($idea->department->name); ?>
 
-                                <span class="mx-2">|</span>
-                                <i class="fas fa-calendar"></i> <?php echo e($idea->created_at->diffForHumans()); ?>
+                                <span class="mx-2">•</span>
+                                <i class="bi bi-calendar3"></i> <?php echo e($idea->created_at->diffForHumans()); ?>
 
                             </div>
-                            <p class="idea-description"><?php echo e(Str::limit($idea->description, 150)); ?></p>
+                            <p class="idea-description mb-3"><?php echo e(Str::limit($idea->description, 150)); ?></p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="idea-stats">
-                                    <span class="idea-stat text-success">
-                                        <i class="fas fa-thumbs-up"></i> <?php echo e($idea->thumbs_up_count); ?>
+                                <div class="idea-stats d-flex flex-wrap gap-3 small">
+                                    <span class="text-success">
+                                        <i class="bi bi-hand-thumbs-up-fill me-1"></i> <?php echo e($idea->thumbs_up_count); ?>
 
                                     </span>
-                                    <span class="idea-stat text-danger">
-                                        <i class="fas fa-thumbs-down"></i> <?php echo e($idea->thumbs_down_count); ?>
+                                    <span class="text-danger">
+                                        <i class="bi bi-hand-thumbs-down-fill me-1"></i> <?php echo e($idea->thumbs_down_count); ?>
 
                                     </span>
-                                    <span class="idea-stat">
-                                        <i class="fas fa-eye"></i> <?php echo e($idea->views_count); ?>
+                                    <span>
+                                        <i class="bi bi-eye me-1"></i> <?php echo e($idea->views_count); ?>
 
                                     </span>
-                                    <span class="idea-stat">
-                                        <i class="fas fa-comment"></i> <?php echo e($idea->comments_count); ?>
+                                    <span>
+                                        <i class="bi bi-chat-text me-1"></i> <?php echo e($idea->comments_count); ?>
 
                                     </span>
                                 </div>
@@ -133,52 +369,57 @@
                         </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <div class="text-center text-muted py-4">
-                            <i class="fas fa-inbox fa-3x mb-3"></i>
-                            <p>No popular ideas yet.</p>
+                            <i class="bi bi-inbox fs-1 mb-2"></i>
+                            <p class="mb-0">No popular ideas yet.</p>
                         </div>
                     <?php endif; ?>
                     <div class="text-center mt-3">
                         <a href="<?php echo e(route('ideas.index', ['sort' => 'popular'])); ?>" class="btn btn-outline-primary btn-sm">
-                            View All Popular <i class="fas fa-arrow-right"></i>
+                            View All Popular <i class="bi bi-arrow-right-short ms-1"></i>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Most Viewed Ideas -->
-        <div class="col-lg-6 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-eye"></i> Most Viewed Ideas
+        <div class="col-lg-6 fade-in-up fade-in-delay-2">
+            <div class="card glass-section-card h-100">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <div>
+                        <i class="bi bi-eye-fill me-2"></i>
+                        Most Viewed Ideas
+                    </div>
+                    <span class="badge bg-light text-dark">Top <?php echo e($mostViewedIdeas->count()); ?></span>
                 </div>
                 <div class="card-body">
                     <?php $__empty_1 = true; $__currentLoopData = $mostViewedIdeas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                        <div class="idea-card mb-3">
-                            <h5 class="idea-title">
+                        <div class="idea-card">
+                            <h5 class="idea-title d-flex align-items-center justify-content-between">
                                 <a href="<?php echo e(route('ideas.show', $idea)); ?>" class="text-decoration-none">
                                     <?php echo e($idea->title); ?>
 
                                 </a>
                                 <?php if($idea->is_anonymous): ?>
-                                    <span class="badge badge-anonymous"><i class="fas fa-user-secret"></i> Anonymous</span>
+                                    <span class="badge badge-anonymous bg-secondary-subtle text-light">
+                                        <i class="bi bi-incognito me-1"></i> Anonymous
+                                    </span>
                                 <?php endif; ?>
                             </h5>
-                            <div class="idea-meta">
-                                <i class="fas fa-building"></i> <?php echo e($idea->department->name); ?>
+                            <div class="idea-meta small mb-2">
+                                <i class="bi bi-building"></i> <?php echo e($idea->department->name); ?>
 
-                                <span class="mx-2">|</span>
-                                <i class="fas fa-calendar"></i> <?php echo e($idea->created_at->diffForHumans()); ?>
+                                <span class="mx-2">•</span>
+                                <i class="bi bi-calendar3"></i> <?php echo e($idea->created_at->diffForHumans()); ?>
 
                             </div>
-                            <p class="idea-description"><?php echo e(Str::limit($idea->description, 150)); ?></p>
+                            <p class="idea-description mb-3"><?php echo e(Str::limit($idea->description, 150)); ?></p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="idea-stats">
-                                    <span class="idea-stat">
-                                        <i class="fas fa-eye"></i> <?php echo e($idea->views_count); ?> views
+                                <div class="idea-stats d-flex flex-wrap gap-3 small">
+                                    <span>
+                                        <i class="bi bi-eye me-1"></i> <?php echo e($idea->views_count); ?> views
                                     </span>
-                                    <span class="idea-stat">
-                                        <i class="fas fa-comment"></i> <?php echo e($idea->comments_count); ?>
+                                    <span>
+                                        <i class="bi bi-chat-text me-1"></i> <?php echo e($idea->comments_count); ?>
 
                                     </span>
                                 </div>
@@ -186,13 +427,13 @@
                         </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <div class="text-center text-muted py-4">
-                            <i class="fas fa-inbox fa-3x mb-3"></i>
-                            <p>No viewed ideas yet.</p>
+                            <i class="bi bi-inbox fs-1 mb-2"></i>
+                            <p class="mb-0">No viewed ideas yet.</p>
                         </div>
                     <?php endif; ?>
                     <div class="text-center mt-3">
                         <a href="<?php echo e(route('ideas.index', ['sort' => 'views'])); ?>" class="btn btn-outline-primary btn-sm">
-                            View All <i class="fas fa-arrow-right"></i>
+                            View All <i class="bi bi-arrow-right-short ms-1"></i>
                         </a>
                     </div>
                 </div>
@@ -200,91 +441,100 @@
         </div>
     </div>
 
-    <div class="row">
-        <!-- Latest Ideas -->
-        <div class="col-lg-6 mb-4">
-            <div class="card">
+    <div class="row g-4 mt-4">
+        <div class="col-lg-6 fade-in-up">
+            <div class="card glass-section-card h-100">
                 <div class="card-header">
-                    <i class="fas fa-clock"></i> Latest Ideas
+                    <i class="bi bi-clock-history me-2"></i>
+                    Latest Ideas
                 </div>
                 <div class="card-body">
                     <?php $__empty_1 = true; $__currentLoopData = $latestIdeas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                        <div class="idea-card mb-3">
-                            <h5 class="idea-title">
+                        <div class="idea-card">
+                            <h5 class="idea-title d-flex align-items-center justify-content-between">
                                 <a href="<?php echo e(route('ideas.show', $idea)); ?>" class="text-decoration-none">
                                     <?php echo e($idea->title); ?>
 
                                 </a>
                                 <?php if($idea->is_anonymous): ?>
-                                    <span class="badge badge-anonymous"><i class="fas fa-user-secret"></i> Anonymous</span>
+                                    <span class="badge badge-anonymous bg-secondary-subtle text-light">
+                                        <i class="bi bi-incognito me-1"></i> Anonymous
+                                    </span>
                                 <?php endif; ?>
                             </h5>
-                            <div class="idea-meta">
-                                <i class="fas fa-building"></i> <?php echo e($idea->department->name); ?>
+                            <div class="idea-meta small mb-2">
+                                <i class="bi bi-building"></i> <?php echo e($idea->department->name); ?>
 
-                                <span class="mx-2">|</span>
-                                <i class="fas fa-calendar"></i> <?php echo e($idea->created_at->diffForHumans()); ?>
+                                <span class="mx-2">•</span>
+                                <i class="bi bi-calendar3"></i> <?php echo e($idea->created_at->diffForHumans()); ?>
 
                             </div>
-                            <p class="idea-description"><?php echo e(Str::limit($idea->description, 150)); ?></p>
-                            <div class="idea-stats">
-                                <span class="idea-stat text-success">
-                                    <i class="fas fa-thumbs-up"></i> <?php echo e($idea->thumbs_up_count); ?>
+                            <p class="idea-description mb-3"><?php echo e(Str::limit($idea->description, 150)); ?></p>
+                            <div class="idea-stats d-flex flex-wrap gap-3 small">
+                                <span class="text-success">
+                                    <i class="bi bi-hand-thumbs-up-fill me-1"></i> <?php echo e($idea->thumbs_up_count); ?>
 
                                 </span>
-                                <span class="idea-stat text-danger">
-                                    <i class="fas fa-thumbs-down"></i> <?php echo e($idea->thumbs_down_count); ?>
+                                <span class="text-danger">
+                                    <i class="bi bi-hand-thumbs-down-fill me-1"></i> <?php echo e($idea->thumbs_down_count); ?>
 
                                 </span>
-                                <span class="idea-stat">
-                                    <i class="fas fa-comment"></i> <?php echo e($idea->comments_count); ?>
+                                <span>
+                                    <i class="bi bi-chat-text me-1"></i> <?php echo e($idea->comments_count); ?>
 
                                 </span>
                             </div>
                         </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <div class="text-center text-muted py-4">
-                            <i class="fas fa-inbox fa-3x mb-3"></i>
-                            <p>No ideas submitted yet.</p>
+                            <i class="bi bi-inbox fs-1 mb-2"></i>
+                            <p class="mb-0">No ideas submitted yet.</p>
                         </div>
                     <?php endif; ?>
                     <div class="text-center mt-3">
                         <a href="<?php echo e(route('ideas.index')); ?>" class="btn btn-outline-primary btn-sm">
-                            View All Ideas <i class="fas fa-arrow-right"></i>
+                            View All Ideas <i class="bi bi-arrow-right-short ms-1"></i>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Latest Comments -->
-        <div class="col-lg-6 mb-4">
-            <div class="card">
+        <div class="col-lg-6 fade-in-up fade-in-delay-2">
+            <div class="card glass-section-card h-100">
                 <div class="card-header">
-                    <i class="fas fa-comments"></i> Latest Comments
+                    <i class="bi bi-chat-dots-fill me-2"></i>
+                    Latest Comments
                 </div>
                 <div class="card-body">
                     <?php $__empty_1 = true; $__currentLoopData = $latestComments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $comment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                        <div class="idea-card mb-3">
+                        <div class="idea-card">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h6 class="mb-0">
-                                    <i class="fas fa-comment text-primary"></i>
-                                    On: <a href="<?php echo e(route('ideas.show', $comment->idea)); ?>" class="text-decoration-none"><?php echo e($comment->idea->title); ?></a>
+                                    <i class="bi bi-chat-left-text-fill text-primary me-1"></i>
+                                    On:
+                                    <a href="<?php echo e(route('ideas.show', $comment->idea)); ?>" class="text-decoration-none">
+                                        <?php echo e($comment->idea->title); ?>
+
+                                    </a>
                                 </h6>
                                 <?php if($comment->is_anonymous): ?>
-                                    <span class="badge badge-anonymous"><i class="fas fa-user-secret"></i> Anonymous</span>
+                                    <span class="badge badge-anonymous bg-secondary-subtle text-light">
+                                        <i class="bi bi-incognito me-1"></i> Anonymous
+                                    </span>
                                 <?php endif; ?>
                             </div>
                             <p class="idea-description mb-2"><?php echo e(Str::limit($comment->content, 150)); ?></p>
                             <small class="text-muted">
-                                <i class="fas fa-clock"></i> <?php echo e($comment->created_at->diffForHumans()); ?>
+                                <i class="bi bi-clock-history me-1"></i>
+                                <?php echo e($comment->created_at->diffForHumans()); ?>
 
                             </small>
                         </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <div class="text-center text-muted py-4">
-                            <i class="fas fa-inbox fa-3x mb-3"></i>
-                            <p>No comments yet.</p>
+                            <i class="bi bi-inbox fs-1 mb-2"></i>
+                            <p class="mb-0">No comments yet.</p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -292,12 +542,14 @@
         </div>
     </div>
 
-    <!-- Categories -->
-    <div class="row">
+    <div class="row mt-4 fade-in-up">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-tags"></i> Browse by Category
+            <div class="card glass-section-card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <div>
+                        <i class="bi bi-tags-fill me-2"></i>
+                        Browse by Category
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-wrap gap-2">
@@ -318,6 +570,30 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var animated = document.querySelectorAll('.fade-in-up');
+        if ('IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            animated.forEach(function (el) {
+                observer.observe(el);
+            });
+        } else {
+            animated.forEach(function (el) {
+                el.classList.add('visible');
+            });
+        }
+    });
+</script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\university-ideas-system\resources\views/home.blade.php ENDPATH**/ ?>
