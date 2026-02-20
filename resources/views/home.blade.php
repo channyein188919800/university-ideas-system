@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Home - University Ideas System')
 
@@ -64,42 +64,119 @@
     }
 
     .stats-grid .stats-card {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
         border-radius: 1.25rem;
         padding: 1.4rem 1.1rem;
-        background: rgba(15,23,42,0.80);
-        border: 1px solid rgba(148,163,184,0.4);
-        backdrop-filter: blur(16px);
-        color: #fff;
-        transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+        background:
+            radial-gradient(circle at 20% 10%, rgba(255,255,255,0.20), transparent 40%),
+            radial-gradient(circle at 80% 90%, rgba(59,130,246,0.22), transparent 45%),
+            linear-gradient(145deg, rgba(30,41,59,0.82), rgba(51,65,85,0.72));
+        background-size: 190% 190%;
+        border: 1px solid rgba(191,219,254,0.28);
+        backdrop-filter: blur(22px) saturate(145%);
+        -webkit-backdrop-filter: blur(22px) saturate(145%);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.22),
+            inset 0 -24px 50px rgba(15,23,42,0.2),
+            0 16px 38px rgba(15,23,42,0.38);
+        transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+        animation: liquid-card-flow 9s ease-in-out infinite;
+    }
+
+    .stats-grid .stats-card::before {
+        content: "";
+        position: absolute;
+        inset: -35%;
+        z-index: -1;
+        background:
+            conic-gradient(from 120deg,
+                rgba(255,255,255,0.05),
+                rgba(147,197,253,0.18),
+                rgba(255,255,255,0.06),
+                rgba(125,211,252,0.16),
+                rgba(255,255,255,0.05));
+        filter: blur(20px);
+        animation: liquid-sheen 8s linear infinite;
+    }
+
+    .stats-grid .stats-card::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -120%;
+        width: 70%;
+        height: 100%;
+        background: linear-gradient(
+            105deg,
+            transparent,
+            rgba(255,255,255,0.26),
+            transparent
+        );
+        transform: skewX(-14deg);
+        animation: liquid-sweep 4.8s ease-in-out infinite;
+        pointer-events: none;
     }
 
     .stats-grid .stats-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 16px 40px rgba(15,23,42,0.7);
-        background: rgba(15,23,42,0.92);
+        transform: translateY(-6px) scale(1.01);
+        border-color: rgba(191,219,254,0.45);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.28),
+            inset 0 -30px 60px rgba(15,23,42,0.28),
+            0 20px 44px rgba(15,23,42,0.48);
     }
 
     .stats-icon {
-        width: 44px;
-        height: 44px;
+        width: 56px;
+        height: 56px;
         border-radius: 999px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 0.75rem;
-        background: rgba(15,23,42,0.9);
+        margin-bottom: 0.9rem;
+        background: linear-gradient(145deg, rgba(15,23,42,0.88), rgba(15,23,42,0.65));
+        border: 1px solid rgba(191,219,254,0.26);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.16),
+            0 10px 22px rgba(2,6,23,0.35);
+        font-size: 1.35rem;
     }
 
     .stats-number {
-        font-size: 1.6rem;
-        font-weight: 700;
+        font-size: 2rem;
+        font-weight: 800;
+        color: #f8fafc;
+        line-height: 1.1;
+        text-shadow: 0 1px 8px rgba(15,23,42,0.55);
     }
 
     .stats-label {
-        opacity: 0.85;
-        font-size: 0.85rem;
-        letter-spacing: 0.04em;
+        opacity: 1;
+        font-size: 0.95rem;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
+        font-weight: 600;
+        color: #dbeafe;
+        text-shadow: 0 1px 6px rgba(15,23,42,0.45);
+    }
+
+    @keyframes liquid-sheen {
+        0% { transform: rotate(0deg) scale(1); }
+        50% { transform: rotate(180deg) scale(1.05); }
+        100% { transform: rotate(360deg) scale(1); }
+    }
+
+    @keyframes liquid-sweep {
+        0%, 22% { left: -120%; }
+        40%, 100% { left: 150%; }
+    }
+
+    @keyframes liquid-card-flow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
 
     .glass-section-card {
@@ -122,22 +199,47 @@
     }
 
     .idea-card {
-        padding: 1rem 0;
+        padding: 1rem 1.1rem;
+        margin-bottom: 1rem;
+        border-radius: 1rem;
+        background: rgba(255,255,255,0.96);
         border-bottom: 1px solid rgba(148,163,184,0.25);
     }
 
     .idea-card:last-child {
         border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .idea-title {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.5rem;
+        color: #1e3a5f;
     }
 
     .idea-title a {
         color: inherit;
+        flex: 1;
+        min-width: 0;
+        line-height: 1.3;
+        word-break: break-word;
     }
 
     .badge-anonymous {
-        font-size: 0.7rem;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        flex-shrink: 0;
+        font-size: 0.78rem;
+        font-weight: 600;
         border-radius: 999px;
-        padding: 0.15rem 0.6rem;
+        padding: 0.2rem 0.7rem;
+        background: #e2e8f0;
+        border: 1px solid #cbd5e1;
+        color: #334155 !important;
     }
 
     .badge-category {
@@ -205,6 +307,14 @@
     @keyframes shimmer {
         100% {
             transform: translateX(100%);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .stats-grid .stats-card,
+        .stats-grid .stats-card::before,
+        .stats-grid .stats-card::after {
+            animation: none !important;
         }
     }
 
@@ -325,19 +435,19 @@
                 <div class="card-body">
                     @forelse($popularIdeas as $idea)
                         <div class="idea-card">
-                            <h5 class="idea-title d-flex align-items-center justify-content-between">
+                            <h5 class="idea-title">
                                 <a href="{{ route('ideas.show', $idea) }}" class="text-decoration-none">
                                     {{ $idea->title }}
                                 </a>
                                 @if($idea->is_anonymous)
-                                    <span class="badge badge-anonymous bg-secondary-subtle text-light">
+                                    <span class="badge badge-anonymous">
                                         <i class="bi bi-incognito me-1"></i> Anonymous
                                     </span>
                                 @endif
                             </h5>
                             <div class="idea-meta small mb-2">
                                 <i class="bi bi-building"></i> {{ $idea->department->name }}
-                                <span class="mx-2">•</span>
+                                <span class="mx-2">&bull;</span>
                                 <i class="bi bi-calendar3"></i> {{ $idea->created_at->diffForHumans() }}
                             </div>
                             <p class="idea-description mb-3">{{ Str::limit($idea->description, 150) }}</p>
@@ -388,19 +498,19 @@
                 <div class="card-body">
                     @forelse($mostViewedIdeas as $idea)
                         <div class="idea-card">
-                            <h5 class="idea-title d-flex align-items-center justify-content-between">
+                            <h5 class="idea-title">
                                 <a href="{{ route('ideas.show', $idea) }}" class="text-decoration-none">
                                     {{ $idea->title }}
                                 </a>
                                 @if($idea->is_anonymous)
-                                    <span class="badge badge-anonymous bg-secondary-subtle text-light">
+                                    <span class="badge badge-anonymous">
                                         <i class="bi bi-incognito me-1"></i> Anonymous
                                     </span>
                                 @endif
                             </h5>
                             <div class="idea-meta small mb-2">
                                 <i class="bi bi-building"></i> {{ $idea->department->name }}
-                                <span class="mx-2">•</span>
+                                <span class="mx-2">&bull;</span>
                                 <i class="bi bi-calendar3"></i> {{ $idea->created_at->diffForHumans() }}
                             </div>
                             <p class="idea-description mb-3">{{ Str::limit($idea->description, 150) }}</p>
@@ -441,19 +551,19 @@
                 <div class="card-body">
                     @forelse($latestIdeas as $idea)
                         <div class="idea-card">
-                            <h5 class="idea-title d-flex align-items-center justify-content-between">
+                            <h5 class="idea-title">
                                 <a href="{{ route('ideas.show', $idea) }}" class="text-decoration-none">
                                     {{ $idea->title }}
                                 </a>
                                 @if($idea->is_anonymous)
-                                    <span class="badge badge-anonymous bg-secondary-subtle text-light">
+                                    <span class="badge badge-anonymous">
                                         <i class="bi bi-incognito me-1"></i> Anonymous
                                     </span>
                                 @endif
                             </h5>
                             <div class="idea-meta small mb-2">
                                 <i class="bi bi-building"></i> {{ $idea->department->name }}
-                                <span class="mx-2">•</span>
+                                <span class="mx-2">&bull;</span>
                                 <i class="bi bi-calendar3"></i> {{ $idea->created_at->diffForHumans() }}
                             </div>
                             <p class="idea-description mb-3">{{ Str::limit($idea->description, 150) }}</p>
@@ -502,7 +612,7 @@
                                     </a>
                                 </h6>
                                 @if($comment->is_anonymous)
-                                    <span class="badge badge-anonymous bg-secondary-subtle text-light">
+                                    <span class="badge badge-anonymous">
                                         <i class="bi bi-incognito me-1"></i> Anonymous
                                     </span>
                                 @endif
@@ -576,3 +686,6 @@
     });
 </script>
 @endsection
+
+
+
