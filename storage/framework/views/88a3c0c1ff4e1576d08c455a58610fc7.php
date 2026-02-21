@@ -1,213 +1,580 @@
+﻿
+
 <?php $__env->startSection('title', 'Admin Dashboard - University Ideas System'); ?>
 
 <?php $__env->startSection('content'); ?>
-<div class="container py-4">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2><i class="fas fa-cog"></i> Admin Dashboard</h2>
-            <p class="text-muted mb-0">System administration and management</p>
-        </div>
-    </div>
+<div class="admin-shell">
+    <button class="btn admin-menu-toggle d-lg-none" type="button" id="adminMenuToggle">
+        <i class="bi bi-list"></i>
+    </button>
 
-    <!-- Stats Row -->
-    <div class="row mb-4">
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stats-card">
-                <div class="stats-icon primary">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stats-number"><?php echo e($stats['total_users']); ?></div>
-                <div class="stats-label">Total Users</div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stats-card">
-                <div class="stats-icon success">
-                    <i class="fas fa-lightbulb"></i>
-                </div>
-                <div class="stats-number"><?php echo e($stats['total_ideas']); ?></div>
-                <div class="stats-label">Total Ideas</div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stats-card">
-                <div class="stats-icon warning">
-                    <i class="fas fa-comments"></i>
-                </div>
-                <div class="stats-number"><?php echo e($stats['total_comments']); ?></div>
-                <div class="stats-label">Total Comments</div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stats-card">
-                <div class="stats-icon info">
-                    <i class="fas fa-building"></i>
-                </div>
-                <div class="stats-number"><?php echo e($stats['total_departments']); ?></div>
-                <div class="stats-label">Departments</div>
-            </div>
-        </div>
-    </div>
+    <div class="admin-backdrop" id="adminBackdrop"></div>
 
-    <!-- Closure Dates -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-calendar-alt"></i> System Settings
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6>Idea Closure Date</h6>
-                            <p class="mb-0">
-                                <?php if($ideaClosureDate): ?>
-                                    <span class="badge <?php echo e(now()->lt($ideaClosureDate) ? 'bg-success' : 'bg-danger'); ?>">
-                                        <?php echo e($ideaClosureDate->format('F d, Y H:i')); ?>
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="admin-brand">
+            <span class="admin-brand-icon"><i class="bi bi-shield-lock"></i></span>
+            <div>
+                <h5 class="mb-0">Admin Panel</h5>
+                <small>University Ideas</small>
+            </div>
+        </div>
 
-                                    </span>
-                                    <?php if(now()->lt($ideaClosureDate)): ?>
-                                        <small class="text-muted">(Open for <?php echo e(now()->diffForHumans($ideaClosureDate, false)); ?>)</small>
+        <div class="admin-nav-group">
+            <p class="admin-nav-title">Overview</p>
+            <a href="<?php echo e(route('admin.dashboard')); ?>" class="admin-nav-link <?php echo e(request()->routeIs('admin.dashboard') ? 'active' : ''); ?>">
+                <i class="bi bi-grid-1x2"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="<?php echo e(route('ideas.index')); ?>" class="admin-nav-link <?php echo e(request()->routeIs('ideas.*') ? 'active' : ''); ?>">
+                <i class="bi bi-lightbulb"></i>
+                <span>All Ideas</span>
+            </a>
+        </div>
+
+        <div class="admin-nav-group">
+            <p class="admin-nav-title">Administration</p>
+            <a href="<?php echo e(route('admin.users.index')); ?>" class="admin-nav-link <?php echo e(request()->routeIs('admin.users.index') ? 'active' : ''); ?>">
+                <i class="bi bi-people"></i>
+                <span>Manage Users</span>
+            </a>
+            <a href="<?php echo e(route('admin.users.create')); ?>" class="admin-nav-link <?php echo e(request()->routeIs('admin.users.create') ? 'active' : ''); ?>">
+                <i class="bi bi-person-plus"></i>
+                <span>Add User</span>
+            </a>
+            <a href="<?php echo e(route('admin.departments.index')); ?>" class="admin-nav-link <?php echo e(request()->routeIs('admin.departments.index') ? 'active' : ''); ?>">
+                <i class="bi bi-building"></i>
+                <span>Departments</span>
+            </a>
+            <a href="<?php echo e(route('admin.departments.create')); ?>" class="admin-nav-link <?php echo e(request()->routeIs('admin.departments.create') ? 'active' : ''); ?>">
+                <i class="bi bi-building-add"></i>
+                <span>Add Department</span>
+            </a>
+            <a href="<?php echo e(route('admin.settings.index')); ?>" class="admin-nav-link <?php echo e(request()->routeIs('admin.settings.*') ? 'active' : ''); ?>">
+                <i class="bi bi-sliders"></i>
+                <span>System Settings</span>
+            </a>
+        </div>
+
+        <div class="admin-nav-group mt-auto">
+            <p class="admin-nav-title">Account</p>
+            <a href="<?php echo e(route('home')); ?>" class="admin-nav-link">
+                <i class="bi bi-house-door"></i>
+                <span>Main Site</span>
+            </a>
+            <form method="POST" action="<?php echo e(route('logout')); ?>">
+                <?php echo csrf_field(); ?>
+                <button type="submit" class="admin-nav-link w-100 text-start border-0 bg-transparent">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <section class="admin-main">
+        <div class="admin-topbar">
+            <div>
+                <h3 class="mb-1">Welcome back, <?php echo e(auth()->user()->name); ?></h3>
+                <p class="text-muted mb-0">System administration and monitoring center</p>
+            </div>
+            <div class="admin-topbar-tools">
+                <div class="admin-search d-none d-md-flex">
+                    <i class="bi bi-search"></i>
+                    <span>Search ideas, users, departments...</span>
+                </div>
+                <div class="admin-avatar">
+                    <i class="bi bi-person-circle"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-xl-3 col-md-6">
+                <article class="admin-stat-card reveal" style="--delay: .05s;">
+                    <div class="stat-icon users"><i class="bi bi-people-fill"></i></div>
+                    <h4><?php echo e(number_format($stats['total_users'])); ?></h4>
+                    <p>Total Users</p>
+                </article>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <article class="admin-stat-card reveal" style="--delay: .1s;">
+                    <div class="stat-icon ideas"><i class="bi bi-lightbulb-fill"></i></div>
+                    <h4><?php echo e(number_format($stats['total_ideas'])); ?></h4>
+                    <p>Total Ideas</p>
+                </article>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <article class="admin-stat-card reveal" style="--delay: .15s;">
+                    <div class="stat-icon comments"><i class="bi bi-chat-left-text-fill"></i></div>
+                    <h4><?php echo e(number_format($stats['total_comments'])); ?></h4>
+                    <p>Total Comments</p>
+                </article>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <article class="admin-stat-card reveal" style="--delay: .2s;">
+                    <div class="stat-icon departments"><i class="bi bi-buildings-fill"></i></div>
+                    <h4><?php echo e(number_format($stats['total_departments'])); ?></h4>
+                    <p>Departments</p>
+                </article>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="admin-card reveal" style="--delay: .25s;">
+                    <div class="admin-card-header">
+                        <h5><i class="bi bi-calendar-event"></i> Closure Timeline</h5>
+                        <a href="<?php echo e(route('admin.settings.index')); ?>" class="btn btn-sm btn-primary">Edit</a>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="deadline-box">
+                                    <small>Idea Closure Date</small>
+                                    <?php if($ideaClosureDate): ?>
+                                        <h6><?php echo e($ideaClosureDate->format('M d, Y h:i A')); ?></h6>
+                                        <span class="badge <?php echo e(now()->lt($ideaClosureDate) ? 'text-bg-success' : 'text-bg-danger'); ?>">
+                                            <?php echo e(now()->lt($ideaClosureDate) ? 'Open' : 'Closed'); ?>
+
+                                        </span>
                                     <?php else: ?>
-                                        <small class="text-muted">(Closed)</small>
+                                        <h6>Not Set</h6>
+                                        <span class="badge text-bg-secondary">Pending</span>
                                     <?php endif; ?>
-                                <?php else: ?>
-                                    <span class="badge bg-secondary">Not Set</span>
-                                <?php endif; ?>
-                            </p>
-                        </div>
-                        <div class="col-md-6">
-                            <h6>Final Closure Date</h6>
-                            <p class="mb-0">
-                                <?php if($finalClosureDate): ?>
-                                    <span class="badge <?php echo e(now()->lt($finalClosureDate) ? 'bg-success' : 'bg-danger'); ?>">
-                                        <?php echo e($finalClosureDate->format('F d, Y H:i')); ?>
-
-                                    </span>
-                                    <?php if(now()->lt($finalClosureDate)): ?>
-                                        <small class="text-muted">(Comments open for <?php echo e(now()->diffForHumans($finalClosureDate, false)); ?>)</small>
-                                    <?php else: ?>
-                                        <small class="text-muted">(Closed)</small>
-                                    <?php endif; ?>
-                                <?php else: ?>
-                                    <span class="badge bg-secondary">Not Set</span>
-                                <?php endif; ?>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-3">
-                        <a href="<?php echo e(route('admin.settings.index')); ?>" class="btn btn-primary btn-sm">
-                            <i class="fas fa-edit"></i> Edit Settings
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-bolt"></i> Quick Actions
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-3 col-sm-6">
-                            <a href="<?php echo e(route('admin.users.index')); ?>" class="btn btn-outline-primary w-100">
-                                <i class="fas fa-users"></i> Manage Users
-                            </a>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <a href="<?php echo e(route('admin.departments.index')); ?>" class="btn btn-outline-success w-100">
-                                <i class="fas fa-building"></i> Manage Departments
-                            </a>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <a href="<?php echo e(route('admin.settings.index')); ?>" class="btn btn-outline-warning w-100">
-                                <i class="fas fa-cog"></i> System Settings
-                            </a>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <a href="<?php echo e(route('ideas.index')); ?>" class="btn btn-outline-info w-100">
-                                <i class="fas fa-lightbulb"></i> View All Ideas
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <!-- Recent Ideas -->
-        <div class="col-lg-6 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-lightbulb"></i> Recent Ideas
-                </div>
-                <div class="card-body">
-                    <?php $__empty_1 = true; $__currentLoopData = $recentIdeas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 <?php echo e(!$loop->last ? 'border-bottom' : ''); ?>">
-                            <div>
-                                <h6 class="mb-1">
-                                    <a href="<?php echo e(route('ideas.show', $idea)); ?>" class="text-decoration-none">
-                                        <?php echo e(Str::limit($idea->title, 50)); ?>
-
-                                    </a>
-                                </h6>
-                                <small class="text-muted">
-                                    <i class="fas fa-building"></i> <?php echo e($idea->department->name); ?>
-
-                                    <span class="mx-1">|</span>
-                                    <i class="fas fa-clock"></i> <?php echo e($idea->created_at->diffForHumans()); ?>
-
-                                </small>
+                                </div>
                             </div>
-                            <span class="badge bg-primary">
-                                <?php echo e($idea->popularity_score > 0 ? '+' : ''); ?><?php echo e($idea->popularity_score); ?>
+                            <div class="col-md-6">
+                                <div class="deadline-box">
+                                    <small>Final Closure Date</small>
+                                    <?php if($finalClosureDate): ?>
+                                        <h6><?php echo e($finalClosureDate->format('M d, Y h:i A')); ?></h6>
+                                        <span class="badge <?php echo e(now()->lt($finalClosureDate) ? 'text-bg-success' : 'text-bg-danger'); ?>">
+                                            <?php echo e(now()->lt($finalClosureDate) ? 'Open' : 'Closed'); ?>
 
-                            </span>
+                                        </span>
+                                    <?php else: ?>
+                                        <h6>Not Set</h6>
+                                        <span class="badge text-bg-secondary">Pending</span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                        <p class="text-muted mb-0">No ideas submitted yet.</p>
-                    <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Comments -->
-        <div class="col-lg-6 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-comments"></i> Recent Comments
+        <div class="row g-4">
+            <div class="col-xl-6">
+                <div class="admin-card reveal" style="--delay: .35s;">
+                    <div class="admin-card-header">
+                        <h5><i class="bi bi-lightbulb"></i> Recent Ideas</h5>
+                    </div>
+                    <div class="admin-card-body">
+                        <?php $__empty_1 = true; $__currentLoopData = $recentIdeas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <div class="feed-item <?php echo e(!$loop->last ? 'with-border' : ''); ?>">
+                                <div class="feed-main">
+                                    <a href="<?php echo e(route('ideas.show', $idea)); ?>" class="feed-title"><?php echo e(Str::limit($idea->title, 60)); ?></a>
+                                    <p class="feed-meta mb-0">
+                                        <i class="bi bi-building"></i> <?php echo e($idea->department->name); ?>
+
+                                        <span class="mx-2">•</span>
+                                        <i class="bi bi-clock"></i> <?php echo e($idea->created_at->diffForHumans()); ?>
+
+                                    </p>
+                                </div>
+                                <span class="badge text-bg-primary">
+                                    <?php echo e($idea->popularity_score > 0 ? '+' : ''); ?><?php echo e($idea->popularity_score); ?>
+
+                                </span>
+                            </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                            <p class="text-muted mb-0">No ideas submitted yet.</p>
+                        <?php endif; ?>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <?php $__empty_1 = true; $__currentLoopData = $recentComments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $comment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                        <div class="mb-3 pb-3 <?php echo e(!$loop->last ? 'border-bottom' : ''); ?>">
-                            <h6 class="mb-1">
-                                <i class="fas fa-comment text-primary"></i>
-                                On: <a href="<?php echo e(route('ideas.show', $comment->idea)); ?>" class="text-decoration-none">
-                                    <?php echo e(Str::limit($comment->idea->title, 40)); ?>
+            </div>
 
-                                </a>
-                            </h6>
-                            <p class="mb-1 small"><?php echo e(Str::limit($comment->content, 80)); ?></p>
-                            <small class="text-muted">
-                                <i class="fas fa-clock"></i> <?php echo e($comment->created_at->diffForHumans()); ?>
-
-                            </small>
-                        </div>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                        <p class="text-muted mb-0">No comments yet.</p>
-                    <?php endif; ?>
+            <div class="col-xl-6">
+                <div class="admin-card reveal" style="--delay: .4s;">
+                    <div class="admin-card-header">
+                        <h5><i class="bi bi-chat-dots"></i> Recent Comments</h5>
+                    </div>
+                    <div class="admin-card-body">
+                        <?php $__empty_1 = true; $__currentLoopData = $recentComments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $comment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <div class="feed-item <?php echo e(!$loop->last ? 'with-border' : ''); ?>">
+                                <div class="feed-main">
+                                    <a href="<?php echo e(route('ideas.show', $comment->idea)); ?>" class="feed-title"><?php echo e(Str::limit($comment->idea->title, 52)); ?></a>
+                                    <p class="feed-content mb-1"><?php echo e(Str::limit($comment->content, 90)); ?></p>
+                                    <p class="feed-meta mb-0"><i class="bi bi-clock"></i> <?php echo e($comment->created_at->diffForHumans()); ?></p>
+                                </div>
+                            </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                            <p class="text-muted mb-0">No comments yet.</p>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 </div>
 <?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('styles'); ?>
+<style>
+    .admin-shell {
+        display: flex;
+        min-height: calc(100vh - 72px);
+        background: radial-gradient(circle at 0% 0%, #e9f2ff 0%, #f4f7fc 35%, #f8fafc 100%);
+        position: relative;
+    }
+
+    .admin-sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #0f1f3a 0%, #15294a 100%);
+        color: #cdd8ee;
+        padding: 1.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        position: sticky;
+        top: 0;
+        max-height: 100vh;
+        box-shadow: 8px 0 30px rgba(16, 29, 59, 0.2);
+        z-index: 50;
+    }
+
+    .admin-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .admin-brand h5 {
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .admin-brand small {
+        color: #8ca3cf;
+    }
+
+    .admin-brand-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #4d6ff5 0%, #46b8fc 100%);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .admin-nav-title {
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.72rem;
+        color: #7287b8;
+        margin: 0 0 0.45rem 0.6rem;
+    }
+
+    .admin-nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border-radius: 0.65rem;
+        color: #cdd8ee;
+        text-decoration: none;
+        padding: 0.68rem 0.75rem;
+        margin-bottom: 0.25rem;
+        transition: all 0.25s ease;
+    }
+
+    .admin-nav-link i {
+        font-size: 1.05rem;
+    }
+
+    .admin-nav-link:hover,
+    .admin-nav-link.active {
+        background: rgba(125, 160, 255, 0.18);
+        color: #ffffff;
+        transform: translateX(4px);
+    }
+
+    .admin-main {
+        flex: 1;
+        padding: 1.5rem;
+        overflow: hidden;
+    }
+
+    .admin-topbar {
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid #e2e8f4;
+        border-radius: 1rem;
+        padding: 1rem 1.2rem;
+        margin-bottom: 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        backdrop-filter: blur(8px);
+    }
+
+    .admin-topbar h3 {
+        font-weight: 700;
+        color: #1c2a45;
+    }
+
+    .admin-topbar-tools {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .admin-search {
+        background: #f1f5fb;
+        border: 1px solid #dde5f3;
+        padding: 0.5rem 0.8rem;
+        border-radius: 0.7rem;
+        color: #6b7891;
+        min-width: 280px;
+        align-items: center;
+        gap: 0.45rem;
+        font-size: 0.9rem;
+    }
+
+    .admin-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #dce4f3;
+        background: #fff;
+        color: #47649b;
+        display: grid;
+        place-items: center;
+        font-size: 1.2rem;
+    }
+
+    .admin-stat-card {
+        background: #fff;
+        border-radius: 1rem;
+        padding: 1.2rem;
+        border: 1px solid #e4ebf8;
+        box-shadow: 0 10px 24px rgba(27, 52, 102, 0.08);
+    }
+
+    .admin-stat-card:hover {
+        transform: translateY(-4px);
+        transition: transform 0.25s ease;
+    }
+
+    .admin-stat-card h4 {
+        font-size: 1.65rem;
+        font-weight: 700;
+        margin: 0.75rem 0 0.2rem;
+        color: #22314f;
+    }
+
+    .admin-stat-card p {
+        margin: 0;
+        color: #70809f;
+        font-size: 0.9rem;
+    }
+
+    .stat-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        font-size: 1.2rem;
+    }
+
+    .stat-icon.users { background: linear-gradient(135deg, #3577ff, #5ea8ff); }
+    .stat-icon.ideas { background: linear-gradient(135deg, #00a58b, #35d1b2); }
+    .stat-icon.comments { background: linear-gradient(135deg, #e58f07, #f8bc5e); }
+    .stat-icon.departments { background: linear-gradient(135deg, #7946fd, #9f75ff); }
+
+    .admin-card {
+        background: #fff;
+        border-radius: 1rem;
+        border: 1px solid #e4ebf8;
+        box-shadow: 0 10px 24px rgba(27, 52, 102, 0.08);
+        overflow: hidden;
+    }
+
+    .admin-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.1rem;
+        border-bottom: 1px solid #edf2fb;
+        background: linear-gradient(90deg, #f9fbff, #f3f7ff);
+    }
+
+    .admin-card-header h5 {
+        margin: 0;
+        font-size: 1rem;
+        color: #253558;
+        font-weight: 600;
+    }
+
+    .admin-card-body {
+        padding: 1rem 1.1rem;
+    }
+
+    .deadline-box {
+        border: 1px solid #e6eef9;
+        border-radius: 0.85rem;
+        padding: 0.9rem;
+        background: #fbfdff;
+    }
+
+    .deadline-box small {
+        color: #6a7b9a;
+        display: block;
+        margin-bottom: 0.35rem;
+    }
+
+    .deadline-box h6 {
+        margin-bottom: 0.5rem;
+        color: #253558;
+    }
+
+    .feed-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.15rem 0;
+    }
+
+    .feed-item.with-border {
+        border-bottom: 1px solid #edf2fb;
+        padding-bottom: 0.85rem;
+        margin-bottom: 0.85rem;
+    }
+
+    .feed-main {
+        min-width: 0;
+    }
+
+    .feed-title {
+        color: #263a64;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 0.35rem;
+    }
+
+    .feed-title:hover {
+        color: #1f6dff;
+    }
+
+    .feed-meta {
+        font-size: 0.85rem;
+        color: #6a7b9a;
+    }
+
+    .feed-content {
+        font-size: 0.9rem;
+        color: #4f6288;
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(10px);
+        animation: admin-reveal .5s ease forwards;
+        animation-delay: var(--delay, 0s);
+    }
+
+    .admin-menu-toggle {
+        position: fixed;
+        top: 12px;
+        left: 10px;
+        z-index: 60;
+        background: #0f1f3a;
+        color: #fff;
+        border: none;
+        border-radius: 0.55rem;
+    }
+
+    .admin-backdrop {
+        display: none;
+    }
+
+    .navbar {
+        display: none !important;
+    }
+
+    @keyframes admin-reveal {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 991.98px) {
+        .admin-sidebar {
+            position: fixed;
+            inset: 0 auto 0 0;
+            max-height: 100vh;
+            transform: translateX(-102%);
+            transition: transform 0.25s ease;
+        }
+
+        .admin-sidebar.open {
+            transform: translateX(0);
+        }
+
+        .admin-main {
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .admin-topbar {
+            padding: 1rem;
+            margin-top: 2.3rem;
+        }
+
+        .admin-backdrop.open {
+            display: block;
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 17, 31, 0.55);
+            z-index: 45;
+        }
+    }
+</style>
+<?php $__env->stopPush(); ?>
+
+<?php $__env->startPush('scripts'); ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleButton = document.getElementById('adminMenuToggle');
+        const sidebar = document.getElementById('adminSidebar');
+        const backdrop = document.getElementById('adminBackdrop');
+
+        if (!toggleButton || !sidebar || !backdrop) {
+            return;
+        }
+
+        toggleButton.addEventListener('click', function () {
+            sidebar.classList.toggle('open');
+            backdrop.classList.toggle('open');
+        });
+
+        backdrop.addEventListener('click', function () {
+            sidebar.classList.remove('open');
+            backdrop.classList.remove('open');
+        });
+    });
+</script>
+<?php $__env->stopPush(); ?>
+
 
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\university-ideas-system\resources\views/admin/dashboard.blade.php ENDPATH**/ ?>
