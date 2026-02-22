@@ -77,15 +77,7 @@
                 <h3 class="mb-1">Welcome back, {{ auth()->user()->name }}</h3>
                 <p class="text-muted mb-0">System administration and monitoring center</p>
             </div>
-            <div class="admin-topbar-tools">
-                <div class="admin-search d-none d-md-flex">
-                    <i class="bi bi-search"></i>
-                    <span>Search ideas, users, departments...</span>
-                </div>
-                <div class="admin-avatar">
-                    <i class="bi bi-person-circle"></i>
-                </div>
-            </div>
+            
         </div>
 
         <div class="row g-3 mb-4">
@@ -156,6 +148,33 @@
                                     @endif
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-xl-7">
+                <div class="admin-card reveal" style="--delay: .3s;">
+                    <div class="admin-card-header">
+                        <h5><i class="bi bi-bar-chart-fill"></i> Ideas per Department</h5>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="chart-container">
+                            <canvas id="deptChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-5">
+                <div class="admin-card reveal" style="--delay: .35s;">
+                    <div class="admin-card-header">
+                        <h5><i class="bi bi-pie-chart-fill"></i> Idea Engagement</h5>
+                    </div>
+                    <div class="admin-card-body d-flex align-items-center justify-content-center">
+                        <div class="chart-container chart-container-doughnut">
+                            <canvas id="commentChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -544,10 +563,150 @@
             z-index: 45;
         }
     }
+
+    .chart-container {
+        position: relative;
+        width: 100%;
+        min-height: 300px;
+    }
+
+    .chart-container-doughnut {
+        max-width: 320px;
+        min-height: 300px;
+    }
 </style>
 @endpush
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // === Bar Chart: Ideas per Department ===
+        const deptCtx = document.getElementById('deptChart');
+        if (deptCtx) {
+            const deptData = @json($ideasPerDepartment);
+            new Chart(deptCtx, {
+                type: 'bar',
+                data: {
+                    labels: deptData.map(d => d.name),
+                    datasets: [{
+                        label: 'Ideas',
+                        data: deptData.map(d => d.count),
+                        backgroundColor: [
+                            'rgba(77, 111, 245, 0.85)',
+                            'rgba(0, 165, 139, 0.85)',
+                            'rgba(229, 143, 7, 0.85)',
+                            'rgba(121, 70, 253, 0.85)',
+                            'rgba(53, 119, 255, 0.85)',
+                            'rgba(245, 101, 101, 0.85)',
+                            'rgba(72, 187, 120, 0.85)',
+                            'rgba(237, 100, 166, 0.85)'
+                        ],
+                        borderColor: [
+                            '#4d6ff5', '#00a58b', '#e58f07', '#7946fd',
+                            '#3577ff', '#f56565', '#48bb78', '#ed64a6'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1c2a45',
+                            titleFont: { size: 13, weight: '600' },
+                            bodyFont: { size: 12 },
+                            padding: 12,
+                            cornerRadius: 10,
+                            displayColors: false,
+                            callbacks: {
+                                label: ctx => ctx.parsed.y + ' idea' + (ctx.parsed.y !== 1 ? 's' : '')
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0,
+                                color: '#70809f',
+                                font: { size: 12 }
+                            },
+                            grid: { color: 'rgba(226,232,244,0.6)' }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#70809f',
+                                font: { size: 12, weight: '500' }
+                            },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // === Doughnut Chart: Ideas with/without comments ===
+        const commentCtx = document.getElementById('commentChart');
+        if (commentCtx) {
+            const withComments = {{ $ideasWithComments }};
+            const withoutComments = {{ $ideasWithoutComments }};
+            new Chart(commentCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['With Comments', 'Without Comments'],
+                    datasets: [{
+                        data: [withComments, withoutComments],
+                        backgroundColor: [
+                            'rgba(53, 119, 255, 0.85)',
+                            'rgba(245, 101, 101, 0.85)'
+                        ],
+                        borderColor: ['#3577ff', '#f56565'],
+                        borderWidth: 2,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '62%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#4a5568',
+                                font: { size: 13, weight: '500' },
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'rectRounded'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1c2a45',
+                            titleFont: { size: 13, weight: '600' },
+                            bodyFont: { size: 12 },
+                            padding: 12,
+                            cornerRadius: 10,
+                            callbacks: {
+                                label: function(ctx) {
+                                    const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                    const pct = total > 0 ? Math.round(ctx.parsed / total * 100) : 0;
+                                    return ctx.label + ': ' + ctx.parsed + ' (' + pct + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const toggleButton = document.getElementById('adminMenuToggle');

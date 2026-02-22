@@ -56,11 +56,47 @@
     }
 
     .blur-surface {
-        background: rgba(15,23,42,0.70);
+        background: transparent;
         border-radius: 1.25rem;
-        border: 1px solid rgba(148,163,184,0.35);
-        backdrop-filter: blur(16px);
-        box-shadow: 0 14px 40px rgba(15,23,42,0.55);
+        border: 2px solid #d69e2e;
+        backdrop-filter: none;
+        box-shadow: none;
+    }
+
+    .blur-surface .key-dates-label {
+        color: #d69e2e;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    .blur-surface .key-dates-label .badge {
+        background: #d69e2e !important;
+        color: #fff !important;
+        font-size: 0.95rem;
+        padding: 0.4rem 0.9rem;
+    }
+
+    .blur-surface .date-item {
+        color: #1e293b;
+        font-size: 1.2rem;
+        font-weight: 500;
+        line-height: 1.6;
+    }
+
+    .blur-surface .date-item strong {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #d69e2e;
+    }
+
+    .blur-surface .date-item .date-label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+        margin-bottom: 0.25rem;
     }
 
     .stats-grid .stats-card {
@@ -363,22 +399,30 @@
 
 <div class="container mb-5" id="home-content-root">
     @if($ideaClosureDate || $finalClosureDate)
-        <div class="blur-surface mt-n4 mb-4 p-3 p-md-4 fade-in-up fade-in-delay-1">
-            <div class="d-flex align-items-start">
-                <div class="me-3">
-                    <span class="badge rounded-pill bg-light text-dark">
-                        <i class="bi bi-calendar-event-fill me-1"></i>
-                        Key Dates
-                    </span>
-                </div>
-                <div>
-                    @if($ideaClosureDate)
-                        <div>Idea submission closes on <strong>{{ $ideaClosureDate->format('F d, Y') }}</strong></div>
-                    @endif
-                    @if($finalClosureDate)
-                        <div>Final closure (comments) on <strong>{{ $finalClosureDate->format('F d, Y') }}</strong></div>
-                    @endif
-                </div>
+        <div class="blur-surface mt-3 mb-4 p-3 p-md-4 fade-in-up fade-in-delay-1">
+            <div class="key-dates-label mb-3">
+                <span class="badge rounded-pill">
+                    <i class="bi bi-calendar-event-fill me-1"></i>
+                    Key Dates
+                </span>
+            </div>
+            <div class="row g-3">
+                @if($ideaClosureDate)
+                    <div class="col-md-6">
+                        <div class="date-item">
+                            <span class="date-label"><i class="bi bi-clock me-1"></i>Idea Submission Closes</span>
+                            <strong>{{ $ideaClosureDate->format('F d, Y') }}</strong>
+                        </div>
+                    </div>
+                @endif
+                @if($finalClosureDate)
+                    <div class="col-md-6">
+                        <div class="date-item">
+                            <span class="date-label"><i class="bi bi-calendar-x me-1"></i>Final Closure (Comments)</span>
+                            <strong>{{ $finalClosureDate->format('F d, Y') }}</strong>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     @endif

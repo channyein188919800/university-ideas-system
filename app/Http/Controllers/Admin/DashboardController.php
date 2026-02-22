@@ -22,13 +22,29 @@ class DashboardController extends Controller
             'total_categories' => Category::count(),
             'total_departments' => Department::count(),
         ];
-        
+
         $recentIdeas = Idea::latest()->take(5)->get();
         $recentComments = Comment::latest()->take(5)->get();
-        
+
         $ideaClosureDate = Setting::getIdeaClosureDate();
         $finalClosureDate = Setting::getFinalClosureDate();
-        
-        return view('admin.dashboard', compact('stats', 'recentIdeas', 'recentComments', 'ideaClosureDate', 'finalClosureDate'));
+
+        // Chart data: ideas per department
+        $ideasPerDepartment = Department::withCount('ideas')
+            ->get()
+            ->map(function ($dept) {
+                return ['name' => $dept->name, 'count' => $dept->ideas_count];
+            })
+            ->values();
+
+        // Chart data: ideas with comments vs without
+        $ideasWithComments = Idea::has('comments')->count();
+        $ideasWithoutComments = Idea::doesntHave('comments')->count();
+
+        return view('admin.dashboard', compact(
+            'stats', 'recentIdeas', 'recentComments',
+            'ideaClosureDate', 'finalClosureDate',
+            'ideasPerDepartment', 'ideasWithComments', 'ideasWithoutComments'
+        ));
     }
 }
