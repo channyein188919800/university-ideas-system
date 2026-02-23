@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -17,6 +18,7 @@ class User extends Authenticatable
         'password',
         'role',
         'department_id',
+        'profile_image',
         'terms_accepted',
         'terms_accepted_at',
     ];
@@ -108,6 +110,15 @@ class User extends Authenticatable
     public function getDisplayName()
     {
         return $this->name;
+    }
+
+    public function getProfileImageUrlAttribute()
+    {
+        if (!$this->profile_image) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->profile_image);
     }
 
     public function scopeByDepartment($query, $departmentId)

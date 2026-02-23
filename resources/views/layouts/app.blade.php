@@ -80,6 +80,36 @@
             background-color: var(--accent-color);
             color: white !important;
         }
+
+        .profile-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.28);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .profile-avatar-fallback {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255,255,255,0.28);
+            background: rgba(255,255,255,0.13);
+            color: white;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .user-dropdown-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
         
         /* Card Styles */
         .card {
@@ -531,8 +561,15 @@
                         </li>
                     @else
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle"></i> {{ auth()->user()->name }}
+                            <a class="nav-link dropdown-toggle user-dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                @if(auth()->user()->profile_image_url)
+                                    <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }}" class="profile-avatar">
+                                @else
+                                    <span class="profile-avatar-fallback">
+                                        <i class="bi bi-person-fill"></i>
+                                    </span>
+                                @endif
+                                <span>{{ auth()->user()->name }}</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @if(auth()->user()->isAdmin())

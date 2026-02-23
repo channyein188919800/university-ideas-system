@@ -7,6 +7,7 @@ use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -31,7 +32,12 @@ class UserController extends Controller
             'password' => 'required|min:8',
             'role' => 'required|in:admin,qa_manager,qa_coordinator,staff',
             'department_id' => 'nullable|exists:departments,id',
+            'profile_image' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('profile_image')) {
+            $validated['profile_image'] = $request->file('profile_image')->store('profile-images', 'public');
+        }
 
         $validated['password'] = Hash::make($validated['password']);
         
@@ -54,10 +60,19 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'role' => 'required|in:admin,qa_manager,qa_coordinator,staff',
             'department_id' => 'nullable|exists:departments,id',
+            'profile_image' => 'nullable|image|max:2048',
         ]);
 
         if ($request->filled('password')) {
             $validated['password'] = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('profile_image')) {
+            if ($user->profile_image) {
+                Storage::disk('public')->delete($user->profile_image);
+            }
+
+            $validated['profile_image'] = $request->file('profile_image')->store('profile-images', 'public');
         }
 
         $user->update($validated);
@@ -69,6 +84,10 @@ class UserController extends Controller
     {
         if ($user->id === auth()->id()) {
             return redirect()->back()->with('error', 'You cannot delete your own account.');
+        }
+
+        if ($user->profile_image) {
+            Storage::disk('public')->delete($user->profile_image);
         }
 
         $user->delete();
