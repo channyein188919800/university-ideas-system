@@ -180,7 +180,7 @@
         justify-content: center;
         align-items: center;
         text-align: center;
-        background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.7) 100%);
+        background: linear-gradient(180deg, rgba(13, 42, 74, 0.9) 0%, rgba(13, 42, 74, 0.7) 100%);
         border-right: 1px solid rgba(255, 255, 255, 0.05);
         position: relative;
         overflow: hidden;
@@ -744,10 +744,9 @@
             <div class="logo-container">
                 <div class="logo-ring"></div>
                 <div class="logo-space">
-                    <img src="{{ asset('images/logo.png') }}" alt="University Logo">
+                    <img src="{{ asset('images/logo1_no_bg.png') }}" alt="University Logo">
                 </div>
             </div>
-            <h2 class="brand-title">University Ideas</h2>
             <p class="brand-copy">
                 Keep ideas flowing across departments with one secure and simple login experience.
             </p>
