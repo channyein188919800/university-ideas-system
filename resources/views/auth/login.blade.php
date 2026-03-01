@@ -824,7 +824,7 @@
                         <span class="checkmark"></span>
                         Remember me
                     </label>
-                    <a href="#" class="hint-link">Forgot password?</a>
+                    <a href="{{ route('password.request') }}" class="hint-link">Forgot password?</a>
                 </div>
 
                 <button type="submit" id="loginButton" class="login-btn">
