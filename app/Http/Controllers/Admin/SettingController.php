@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Support\AuditLogger;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
@@ -21,6 +22,12 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
+        $before = [
+            'academic_year' => Setting::getValue('academic_year'),
+            'idea_closure_date' => Setting::getValue('idea_closure_date'),
+            'final_closure_date' => Setting::getValue('final_closure_date'),
+        ];
+
         $validated = $request->validate([
             'academic_year' => 'required|string|max:20',
             'idea_closure_date' => 'required|date',
@@ -30,6 +37,13 @@ class SettingController extends Controller
         Setting::setValue('academic_year', $validated['academic_year'], 'string', 'closure_dates', 'Current academic year');
         Setting::setValue('idea_closure_date', $validated['idea_closure_date'], 'datetime', 'closure_dates', 'Date when idea submission closes');
         Setting::setValue('final_closure_date', $validated['final_closure_date'], 'datetime', 'closure_dates', 'Final date when commenting closes');
+
+        AuditLogger::log(
+            'SET_DEADLINE',
+            "Updated system settings. Academic Year: {$before['academic_year']} -> {$validated['academic_year']}, " .
+                "Idea Closure: {$before['idea_closure_date']} -> {$validated['idea_closure_date']}, " .
+                "Final Closure: {$before['final_closure_date']} -> {$validated['final_closure_date']}."
+        );
 
         return redirect()->route('admin.settings.index')->with('success', 'Settings updated successfully!');
     }

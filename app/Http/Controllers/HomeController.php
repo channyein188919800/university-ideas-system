@@ -15,7 +15,11 @@ class HomeController extends Controller
         $popularIdeas = Idea::published()->popular()->take(5)->get();
         $mostViewedIdeas = Idea::published()->mostViewed()->take(5)->get();
         $latestIdeas = Idea::published()->latest()->take(5)->get();
-        $latestComments = Comment::with('idea')->latest()->take(5)->get();
+        $latestComments = Comment::with('idea')
+            ->whereHas('idea')
+            ->latest()
+            ->take(5)
+            ->get();
         $categories = Category::active()->ordered()->get();
         
         $ideaClosureDate = Setting::getIdeaClosureDate();

@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\DepartmentController as AdminDepartmentController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\QaManager\DashboardController as QaManagerDashboardController;
 use App\Http\Controllers\QaManager\CategoryController;
 use App\Http\Controllers\QaManager\ReportController;
@@ -95,6 +96,13 @@ Route::middleware(['auth', 'terms', 'role:admin'])
     // Settings
     Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+
+    // Idea Moderation
+    Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])->name('ideas.destroy');
+
+    // Audit Logs
+    Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])->name('audit-logs.index');
+    Route::get('/audit-logs/export', [AdminAuditLogController::class, 'export'])->name('audit-logs.export');
     
 });
 

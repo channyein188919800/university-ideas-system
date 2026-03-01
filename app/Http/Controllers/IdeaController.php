@@ -8,6 +8,7 @@ use App\Models\Document;
 use App\Models\Setting;
 use App\Models\User;
 use App\Notifications\IdeaSubmittedNotification;
+use App\Support\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
@@ -83,6 +84,12 @@ class IdeaController extends Controller
         $idea->is_anonymous = $request->boolean('is_anonymous');
         $idea->status = 'approved';
         $idea->save();
+
+        AuditLogger::log(
+            'SUBMIT_IDEA',
+            "Submitted idea #{$idea->id}: {$idea->title}.",
+            $idea
+        );
         
         $idea->categories()->attach($validated['categories']);
         
@@ -157,5 +164,30 @@ class IdeaController extends Controller
                 Notification::send($qaCoordinator, new IdeaSubmittedNotification($idea));
             }
         }
+    }
+
+    public function destroy(Request $request, Idea $idea)
+    {
+        if (!Auth::user() || !Auth::user()->isAdmin()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'reason' => 'nullable|string|max:255',
+        ]);
+
+        $ideaId = $idea->id;
+        $title = $idea->title;
+        $reason = $validated['reason'] ?? 'No reason provided.';
+
+        $idea->delete();
+
+        AuditLogger::log(
+            'DELETE_IDEA',
+            "Removed Idea #{$ideaId} ({$title}). Reason: {$reason}",
+            $idea
+        );
+
+        return redirect()->route('ideas.index')->with('success', 'Idea deleted successfully.');
     }
 }

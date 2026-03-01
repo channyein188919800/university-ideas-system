@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Department;
 use App\Models\User;
+use App\Support\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -41,7 +42,13 @@ class UserController extends Controller
 
         $validated['password'] = Hash::make($validated['password']);
         
-        User::create($validated);
+        $user = User::create($validated);
+
+        AuditLogger::log(
+            'CREATE_USER',
+            "Created user {$user->name} ({$user->email}) with role {$user->role}.",
+            $user
+        );
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully!');
     }
@@ -75,7 +82,17 @@ class UserController extends Controller
             $validated['profile_image'] = $request->file('profile_image')->store('profile-images', 'public');
         }
 
+        $oldRole = $user->role;
+        $oldDepartment = $user->department_id;
+
         $user->update($validated);
+
+        AuditLogger::log(
+            'UPDATE_USER',
+            "Updated user {$user->name} ({$user->email}). Role: {$oldRole} -> {$user->role}, Department: " .
+                (($oldDepartment ?? 'none') . ' -> ' . ($user->department_id ?? 'none')),
+            $user
+        );
 
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully!');
     }
@@ -83,6 +100,12 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         if ($user->id === auth()->id()) {
+            AuditLogger::log(
+                'DELETE_USER',
+                'Attempted to delete own account, action blocked.',
+                $user,
+                'warning'
+            );
             return redirect()->back()->with('error', 'You cannot delete your own account.');
         }
 
@@ -90,7 +113,16 @@ class UserController extends Controller
             Storage::disk('public')->delete($user->profile_image);
         }
 
+        $deletedUserName = $user->name;
+        $deletedUserEmail = $user->email;
+
         $user->delete();
+
+        AuditLogger::log(
+            'DELETE_USER',
+            "Deleted user {$deletedUserName} ({$deletedUserEmail})."
+        );
+
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully!');
     }
 }

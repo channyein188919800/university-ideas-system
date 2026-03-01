@@ -10,9 +10,14 @@
             <h2><i class="fas fa-building"></i> Manage Departments</h2>
             <p class="text-muted mb-0">View and manage university departments</p>
         </div>
-        <a href="{{ route('admin.departments.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Add Department
-        </a>
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin.audit-logs.index') }}" class="btn btn-outline-primary">
+                <i class="bi bi-journal-text"></i> Audit Logs
+            </a>
+            <a href="{{ route('admin.departments.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Department
+            </a>
+        </div>
     </div>
 
     <!-- Departments Table -->

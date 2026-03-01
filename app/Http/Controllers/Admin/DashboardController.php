@@ -24,7 +24,11 @@ class DashboardController extends Controller
         ];
 
         $recentIdeas = Idea::latest()->take(5)->get();
-        $recentComments = Comment::latest()->take(5)->get();
+        $recentComments = Comment::with('idea')
+            ->whereHas('idea')
+            ->latest()
+            ->take(5)
+            ->get();
 
         $ideaClosureDate = Setting::getIdeaClosureDate();
         $finalClosureDate = Setting::getFinalClosureDate();

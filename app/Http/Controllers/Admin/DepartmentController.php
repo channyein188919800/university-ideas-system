@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Department;
 use App\Models\User;
+use App\Support\AuditLogger;
 use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
@@ -30,7 +31,13 @@ class DepartmentController extends Controller
             'qa_coordinator_id' => 'nullable|exists:users,id',
         ]);
 
-        Department::create($validated);
+        $department = Department::create($validated);
+
+        AuditLogger::log(
+            'CREATE_DEPARTMENT',
+            "Created department {$department->name} ({$department->code}).",
+            $department
+        );
 
         return redirect()->route('admin.departments.index')->with('success', 'Department created successfully!');
     }
@@ -53,7 +60,17 @@ class DepartmentController extends Controller
 
         $validated['is_active'] = $request->boolean('is_active', true);
 
+        $oldCode = $department->code;
+        $oldStatus = $department->is_active ? 'active' : 'inactive';
+
         $department->update($validated);
+
+        AuditLogger::log(
+            'UPDATE_DEPARTMENT',
+            "Updated department {$department->name}. Code: {$oldCode} -> {$department->code}, Status: {$oldStatus} -> " .
+                ($department->is_active ? 'active' : 'inactive') . '.',
+            $department
+        );
 
         return redirect()->route('admin.departments.index')->with('success', 'Department updated successfully!');
     }
@@ -61,10 +78,24 @@ class DepartmentController extends Controller
     public function destroy(Department $department)
     {
         if ($department->users()->count() > 0) {
+            AuditLogger::log(
+                'DELETE_DEPARTMENT',
+                "Attempted to delete department {$department->name} ({$department->code}) with existing users, action blocked.",
+                $department,
+                'warning'
+            );
             return redirect()->back()->with('error', 'Cannot delete department with existing users.');
         }
 
+        $departmentName = $department->name;
+        $departmentCode = $department->code;
         $department->delete();
+
+        AuditLogger::log(
+            'DELETE_DEPARTMENT',
+            "Deleted department {$departmentName} ({$departmentCode})."
+        );
+
         return redirect()->route('admin.departments.index')->with('success', 'Department deleted successfully!');
     }
 }

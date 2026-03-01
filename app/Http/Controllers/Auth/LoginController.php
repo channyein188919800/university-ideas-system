@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Support\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -27,8 +28,20 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
+            AuditLogger::log(
+                'LOGIN_SUCCESS',
+                "User {$request->email} logged in successfully."
+            );
+
             return redirect()->intended($this->redirectPath());
         }
+
+        AuditLogger::log(
+            'LOGIN_FAILED',
+            "Failed login attempt for {$request->email}.",
+            null,
+            'failed'
+        );
 
         throw ValidationException::withMessages([
             'email' => __('auth.failed'),
@@ -37,9 +50,15 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        $name = Auth::user()?->name;
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        AuditLogger::log(
+            'LOGOUT',
+            ($name ? "User {$name}" : 'User') . ' logged out.'
+        );
 
         return redirect('/');
     }

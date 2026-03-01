@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\AuditLogger;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -28,8 +29,19 @@ class PasswordResetController extends Controller
         );
 
         if ($status === Password::RESET_LINK_SENT) {
+            AuditLogger::log(
+                'PASSWORD_RESET_LINK_SENT',
+                "Password reset link sent to {$request->email}."
+            );
             return back()->with('status', __($status));
         }
+
+        AuditLogger::log(
+            'PASSWORD_RESET_LINK_FAILED',
+            "Password reset link request failed for {$request->email}.",
+            null,
+            'failed'
+        );
 
         throw ValidationException::withMessages([
             'email' => [__($status)],
@@ -65,12 +77,22 @@ class PasswordResetController extends Controller
         );
 
         if ($status === Password::PASSWORD_RESET) {
+            AuditLogger::log(
+                'PASSWORD_RESET_SUCCESS',
+                "Password reset completed for {$request->email}."
+            );
             return redirect()->route('login')->with('status', __($status));
         }
+
+        AuditLogger::log(
+            'PASSWORD_RESET_FAILED',
+            "Password reset failed for {$request->email}.",
+            null,
+            'failed'
+        );
 
         return back()
             ->withInput($request->only('email'))
             ->withErrors(['email' => [__($status)]]);
     }
 }
-

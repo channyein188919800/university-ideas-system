@@ -4,384 +4,363 @@
 
 @section('content')
 <style>
+    :root {
+        --brand-navy: #0f172a;
+        --brand-blue: #1e3a5f;
+        --brand-gold: #d69e2e;
+        --paper: #f8fafc;
+        --panel: #ffffff;
+        --line: #e2e8f0;
+        --muted: #64748b;
+        --text: #0f172a;
+    }
+
     body {
-        font-family: Arial, sans-serif;
-        background: #0f172a;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background:
+            radial-gradient(circle at 0% 0%, rgba(214, 158, 46, 0.12), transparent 35%),
+            radial-gradient(circle at 100% 100%, rgba(30, 58, 95, 0.12), transparent 40%),
+            var(--paper);
         min-height: 100vh;
     }
 
     h1, h2, h3, h4, h5, h6 {
-        font-family: "Merriweather", serif;
+        font-family: 'Merriweather', serif;
+        color: var(--text);
     }
 
-    /* ── Hero Banner ── */
+    .ideas-shell {
+        padding: 1.75rem 0 3rem;
+    }
+
     .ideas-hero {
-        position: relative;
-        min-height: 38vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 3.5rem 1rem 3rem;
-        color: #fff;
-        background-image:
-            linear-gradient(135deg, rgba(15,23,42,0.82), rgba(15,23,42,0.55)),
-            url('https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-    }
-
-    .ideas-hero-card {
-        max-width: 680px;
-        width: 100%;
-        margin: 0 auto;
-        padding: 2.2rem 2rem;
-        border-radius: 1.5rem;
-        background: rgba(15,23,42,0.55);
-        border: 1px solid rgba(255,255,255,0.09);
-        backdrop-filter: blur(18px);
-        box-shadow: 0 18px 45px rgba(0,0,0,0.45);
-        text-align: center;
-    }
-
-    .ideas-hero-card .hero-icon {
-        font-size: 2.8rem;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
-
-    .ideas-hero-card h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        color: #f8fafc;
-    }
-
-    .ideas-hero-card p {
-        opacity: 0.85;
-        color: #cbd5e1;
-        margin-bottom: 1.4rem;
-        font-size: 1rem;
-    }
-
-    /* ── Page Body ── */
-    .ideas-body {
-        background: #0f172a;
-        padding: 2rem 0 4rem;
-    }
-
-    /* ── Glass Filter Card ── */
-    .filter-glass {
         border-radius: 1.25rem;
-        background: rgba(30,41,59,0.72);
-        border: 1px solid rgba(148,163,184,0.22);
-        backdrop-filter: blur(18px);
-        box-shadow: 0 8px 30px rgba(0,0,0,0.35);
-        padding: 1.4rem 1.6rem;
-        margin-bottom: 2rem;
-    }
-
-    .filter-glass label {
-        color: #94a3b8;
-        font-size: 0.82rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        margin-bottom: 0.4rem;
-    }
-
-    .filter-glass .form-select {
-        background: rgba(15,23,42,0.75);
-        border: 1px solid rgba(148,163,184,0.28);
-        color: #f1f5f9;
-        border-radius: 0.75rem;
-        padding: 0.55rem 0.9rem;
-        transition: border-color 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .filter-glass .form-select:focus {
-        border-color: rgba(59,130,246,0.55);
-        box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
-        outline: none;
-    }
-
-    .filter-glass .form-select option {
-        background: #1e293b;
-        color: #f1f5f9;
-    }
-
-    .btn-reset {
-        border-radius: 0.75rem;
-        background: rgba(148,163,184,0.12);
-        border: 1px solid rgba(148,163,184,0.25);
-        color: #94a3b8;
-        font-weight: 600;
-        padding: 0.55rem 1rem;
-        transition: all 0.25s ease;
-        width: 100%;
-    }
-
-    .btn-reset:hover {
-        background: rgba(148,163,184,0.22);
-        color: #f1f5f9;
-        border-color: rgba(148,163,184,0.45);
-    }
-
-    /* ── Idea Card ── */
-    .idea-item {
-        position: relative;
-        isolation: isolate;
-        border-radius: 1.25rem;
-        background:
-            radial-gradient(circle at 15% 10%, rgba(255,255,255,0.06), transparent 40%),
-            linear-gradient(145deg, rgba(30,41,59,0.88), rgba(15,23,42,0.78));
-        border: 1px solid rgba(148,163,184,0.18);
-        backdrop-filter: blur(18px);
-        box-shadow:
-            inset 0 1px 0 rgba(255,255,255,0.08),
-            0 10px 30px rgba(0,0,0,0.35);
-        padding: 1.6rem 1.8rem;
-        margin-bottom: 1.2rem;
-        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        overflow: hidden;
-        cursor: pointer;
-    }
-
-    /* Golden glow overlay on hover */
-    .idea-item::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(ellipse at 50% 60%, rgba(214,158,46,0.18) 0%, transparent 70%);
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    .idea-item:hover::before {
-        opacity: 1;
-    }
-
-    /* Shimmer sweep on hover */
-    .idea-item::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -120%;
-        width: 65%;
-        height: 100%;
-        background: linear-gradient(105deg, transparent, rgba(214,158,46,0.12), transparent);
-        transform: skewX(-14deg);
-        transition: left 0.6s ease;
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    .idea-item:hover {
-        transform: translateY(-5px);
-        border-color: rgba(214,158,46,0.45);
-        box-shadow:
-            inset 0 1px 0 rgba(255,255,255,0.12),
-            0 20px 45px rgba(0,0,0,0.5),
-            0 0 30px rgba(214,158,46,0.12);
-    }
-
-    .idea-item:hover::after {
-        left: 150%;
-    }
-
-    /* Click / active press effect */
-    .idea-item:active {
-        transform: translateY(-2px) scale(0.99);
-        transition: transform 0.1s ease;
-    }
-
-    .idea-item-title {
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: #f8fafc;
-        margin-bottom: 0.35rem;
-        display: flex;
-        align-items: flex-start;
-        gap: 0.6rem;
-        flex-wrap: wrap;
-    }
-
-    .idea-item-title a {
-        color: inherit;
-        text-decoration: none;
-        flex: 1;
-        min-width: 0;
-        word-break: break-word;
-        transition: color 0.2s ease;
-    }
-
-    .idea-item-title a:hover {
-        color: #93c5fd;
-    }
-
-    .idea-item-meta {
-        font-size: 0.83rem;
-        color: #d69e2e;
-        margin-bottom: 0.75rem;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.6rem;
-        align-items: center;
-    }
-
-    .idea-item-meta i {
-        color: #d69e2e;
-    }
-
-    .idea-item-meta .sep {
-        color: rgba(214,158,46,0.4);
-    }
-
-    .idea-item-description {
-        color: #94a3b8;
-        font-size: 0.92rem;
-        line-height: 1.65;
+        padding: 1.4rem 1.5rem;
+        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+        border: 1px solid var(--line);
+        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.07);
         margin-bottom: 1rem;
     }
 
-    /* ── Category badges ── */
-    .badge-cat {
-        display: inline-flex;
-        align-items: center;
-        border-radius: 999px;
-        padding: 0.3rem 0.75rem;
-        font-size: 0.78rem;
-        font-weight: 600;
-        background: rgba(15,23,42,0.85);
-        border: 1px solid rgba(148,163,184,0.35);
-        color: #cbd5e1;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-    }
-
-    .badge-cat:hover {
-        transform: translateY(-2px);
-        background: rgba(30,64,175,0.55);
-        border-color: rgba(99,179,237,0.45);
-        box-shadow: 0 6px 18px rgba(0,0,0,0.45);
-        color: #e2e8f0;
-    }
-
-    /* ── Anonymous badge ── */
-    .badge-anon {
-        display: inline-flex;
-        align-items: center;
-        white-space: nowrap;
-        flex-shrink: 0;
-        font-size: 0.75rem;
-        font-weight: 600;
-        border-radius: 999px;
-        padding: 0.2rem 0.65rem;
-        background: rgba(51,65,85,0.75);
-        border: 1px solid rgba(100,116,139,0.45);
-        color: #94a3b8;
-    }
-
-    /* ── Stats strip ── */
-    .stats-strip {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.9rem;
-        align-items: center;
-        font-size: 0.83rem;
-        color: #64748b;
-    }
-
-    .stats-strip .stat-item {
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-        font-weight: 600;
-    }
-
-    .stat-up   { color: #4ade80; }
-    .stat-down { color: #f87171; }
-    .stat-view { color: #60a5fa; }
-    .stat-comm { color: #fbbf24; }
-
-    /* ── Score badge ── */
-    .score-badge {
-        display: inline-flex;
-        align-items: center;
+    .hero-kicker {
         font-size: 0.78rem;
         font-weight: 700;
-        border-radius: 999px;
-        padding: 0.25rem 0.75rem;
-        background: linear-gradient(135deg, rgba(30,64,175,0.55), rgba(99,102,241,0.45));
-        border: 1px solid rgba(99,179,237,0.35);
-        color: #93c5fd;
+        letter-spacing: 0.07em;
+        color: var(--brand-blue);
+        text-transform: uppercase;
+        margin-bottom: 0.3rem;
     }
 
-    /* ── View Details button ── */
-    .btn-view {
-        border-radius: 0.75rem;
-        background: linear-gradient(135deg, rgba(30,64,175,0.65), rgba(99,102,241,0.55));
-        border: 1px solid rgba(99,179,237,0.3);
-        color: #e2e8f0;
-        font-size: 0.83rem;
-        font-weight: 600;
-        padding: 0.45rem 1rem;
-        transition: all 0.25s ease;
-        white-space: nowrap;
+    .hero-title {
+        margin: 0;
+        font-size: 1.75rem;
     }
 
-    .btn-view:hover {
-        background: linear-gradient(135deg, rgba(30,64,175,0.85), rgba(99,102,241,0.75));
-        border-color: rgba(99,179,237,0.55);
-        color: #fff;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 22px rgba(30,64,175,0.45);
-    }
-
-    /* ── Submit Idea button in hero ── */
-    .btn-submit-hero {
-        border-radius: 999px;
-        background: linear-gradient(135deg, #1d4ed8, #6366f1);
-        border: none;
-        color: #fff;
-        font-weight: 700;
-        padding: 0.65rem 1.8rem;
+    .hero-copy {
+        color: var(--muted);
+        margin: 0.45rem 0 0;
         font-size: 0.95rem;
-        transition: all 0.25s ease;
-        box-shadow: 0 6px 20px rgba(30,64,175,0.45);
     }
 
-    .btn-submit-hero:hover {
-        background: linear-gradient(135deg, #1e40af, #4f46e5);
-        transform: translateY(-3px);
-        box-shadow: 0 12px 30px rgba(30,64,175,0.6);
+    .hero-stats {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .hero-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.8rem;
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        border: 1px solid #cbd5e1;
+        color: #334155;
+        background: #fff;
+        font-weight: 600;
+    }
+
+    .hero-chip strong {
+        color: var(--brand-blue);
+    }
+
+    .btn-submit {
+        border: 0;
+        border-radius: 0.8rem;
+        padding: 0.62rem 1.1rem;
+        font-weight: 700;
         color: #fff;
+        background: linear-gradient(135deg, var(--brand-navy), var(--brand-blue));
+        box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    /* ── Empty state ── */
+    .btn-submit:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 14px 24px rgba(15, 23, 42, 0.25);
+    }
+
+    .filter-card {
+        border-radius: 1.15rem;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .filter-card label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        color: #475569;
+        text-transform: uppercase;
+        margin-bottom: 0.35rem;
+    }
+
+    .filter-card .form-select {
+        border-radius: 0.72rem;
+        border: 1px solid #cbd5e1;
+        color: #0f172a;
+        background: #fff;
+        font-size: 0.92rem;
+    }
+
+    .filter-card .form-select:focus {
+        border-color: var(--brand-gold);
+        box-shadow: 0 0 0 0.2rem rgba(214, 158, 46, 0.15);
+    }
+
+    .btn-reset {
+        border-radius: 0.72rem;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        color: #334155;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.55rem 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        width: 100%;
+        transition: all 0.2s ease;
+    }
+
+    .btn-reset:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+        color: #0f172a;
+    }
+
+    .idea-item {
+        border: 1px solid var(--line);
+        border-radius: 1.1rem;
+        background: #fff;
+        box-shadow: 0 8px 26px rgba(15, 23, 42, 0.07);
+        padding: 1.15rem;
+        margin-bottom: 0.9rem;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .idea-item:hover {
+        transform: translateY(-2px);
+        border-color: #cbd5e1;
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.1);
+    }
+
+    .idea-title-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.5rem;
+    }
+
+    .idea-title {
+        margin: 0;
+        font-size: 1.08rem;
+        font-weight: 700;
+    }
+
+    .idea-title a {
+        color: #0f172a;
+        text-decoration: none;
+    }
+
+    .idea-title a:hover {
+        color: var(--brand-blue);
+    }
+
+    .badge-anon {
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 0.22rem 0.65rem;
+        background: rgba(15, 23, 42, 0.06);
+        color: #334155;
+        border: 1px solid #cbd5e1;
+    }
+
+    .idea-meta {
+        display: flex;
+        gap: 0.7rem;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 0.81rem;
+        color: #64748b;
+        margin-bottom: 0.6rem;
+    }
+
+    .idea-meta i {
+        color: var(--brand-blue);
+    }
+
+    .idea-desc {
+        color: #334155;
+        line-height: 1.58;
+        font-size: 0.92rem;
+        margin-bottom: 0.7rem;
+    }
+
+    .tag-wrap {
+        display: flex;
+        gap: 0.38rem;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 0.22rem 0.68rem;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: #334155;
+        font-size: 0.73rem;
+        font-weight: 700;
+    }
+
+    .author-panel {
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        padding: 0.75rem;
+    }
+
+    .author-head {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+    }
+
+    .author-avatar {
+        width: 2.15rem;
+        height: 2.15rem;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0f172a, #1e3a5f);
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .author-name {
+        margin: 0;
+        font-size: 0.88rem;
+        color: #0f172a;
+        font-weight: 700;
+        line-height: 1.25;
+    }
+
+    .author-email {
+        margin: 0.08rem 0 0;
+        font-size: 0.76rem;
+        color: #64748b;
+        word-break: break-word;
+    }
+
+    .author-role {
+        display: inline-flex;
+        margin-top: 0.4rem;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        text-transform: capitalize;
+        color: #0f172a;
+        background: rgba(214, 158, 46, 0.14);
+        border: 1px solid rgba(214, 158, 46, 0.35);
+        padding: 0.2rem 0.58rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.38rem;
+        margin-top: 0.75rem;
+    }
+
+    .stat-chip {
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        border-radius: 0.7rem;
+        padding: 0.34rem 0.45rem;
+        font-size: 0.77rem;
+        font-weight: 700;
+        color: #334155;
+        display: flex;
+        align-items: center;
+        gap: 0.28rem;
+    }
+
+    .stat-chip i { color: var(--brand-blue); }
+
+    .score-chip {
+        margin-top: 0.5rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.32rem;
+        border-radius: 999px;
+        padding: 0.22rem 0.72rem;
+        font-size: 0.74rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, rgba(214, 158, 46, 0.2), rgba(214, 158, 46, 0.1));
+        color: #7c4a03;
+        border: 1px solid rgba(214, 158, 46, 0.4);
+    }
+
     .empty-state {
-        border-radius: 1.25rem;
-        background: rgba(30,41,59,0.65);
-        border: 1px solid rgba(148,163,184,0.15);
-        backdrop-filter: blur(18px);
-        padding: 3.5rem 2rem;
+        border: 1px dashed #cbd5e1;
+        border-radius: 1rem;
+        background: #fff;
+        padding: 2.5rem 1.3rem;
         text-align: center;
         color: #64748b;
     }
 
     .empty-state i {
-        font-size: 3.5rem;
-        margin-bottom: 1rem;
+        font-size: 2.5rem;
+        color: #94a3b8;
+        margin-bottom: 0.7rem;
         display: block;
-        color: #334155;
     }
 
-    /* ── Fade-in animation ── */
     .fade-in-up {
         opacity: 0;
-        transform: translateY(18px);
-        transition: opacity 0.55s ease, transform 0.55s ease;
+        transform: translateY(14px);
+        transition: opacity 0.45s ease, transform 0.45s ease;
     }
 
     .fade-in-up.visible {
@@ -389,47 +368,77 @@
         transform: translateY(0);
     }
 
-    .fade-in-delay-1 { transition-delay: 0.08s; }
-    .fade-in-delay-2 { transition-delay: 0.16s; }
-    .fade-in-delay-3 { transition-delay: 0.24s; }
+    .fade-in-delay-1 { transition-delay: 0.06s; }
+    .fade-in-delay-2 { transition-delay: 0.12s; }
 
-    /* ── Pagination styling ── */
     .pagination .page-link {
-        background: rgba(30,41,59,0.75);
-        border: 1px solid rgba(148,163,184,0.22);
-        color: #94a3b8;
-        border-radius: 0.65rem !important;
-        margin: 0 2px;
-        transition: all 0.2s ease;
+        border-radius: 0.6rem !important;
+        color: #334155;
+        border-color: #cbd5e1;
+        margin: 0 0.12rem;
     }
 
     .pagination .page-link:hover {
-        background: rgba(30,64,175,0.45);
-        border-color: rgba(99,179,237,0.4);
-        color: #e2e8f0;
+        background: #f8fafc;
+        color: #0f172a;
+        border-color: #94a3b8;
     }
 
     .pagination .page-item.active .page-link {
-        background: linear-gradient(135deg, #1d4ed8, #6366f1);
+        background: linear-gradient(135deg, var(--brand-navy), var(--brand-blue));
         border-color: transparent;
         color: #fff;
     }
 
     @media (max-width: 767.98px) {
-        .ideas-hero-card { padding: 1.7rem 1.2rem; }
-        .ideas-hero-card h1 { font-size: 1.5rem; }
-        .idea-item { padding: 1.2rem 1.2rem; }
+        .ideas-shell {
+            padding-top: 1rem;
+        }
+
+        .ideas-hero {
+            padding: 1rem;
+        }
+
+        .hero-title {
+            font-size: 1.35rem;
+        }
+
+        .idea-item {
+            padding: 0.95rem;
+        }
     }
 </style>
 
-
-
-{{-- ── Page Body ── --}}
-<div class="ideas-body">
+<div class="ideas-shell">
     <div class="container">
+        <div class="ideas-hero fade-in-up">
+            <div class="row g-3 align-items-center">
+                <div class="col-lg-8">
+                    <p class="hero-kicker">Community Hub</p>
+                    <h1 class="hero-title">Explore Approved Ideas</h1>
+                    <p class="hero-copy">
+                        Browse submissions across departments with a clearer contributor panel and light reading layout.
+                    </p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="hero-stats mb-2">
+                        <span class="hero-chip"><i class="bi bi-lightbulb"></i> Ideas: <strong>{{ $ideas->total() }}</strong></span>
+                        <span class="hero-chip"><i class="bi bi-funnel"></i> Filtered: <strong>{{ $ideas->count() }}</strong></span>
+                    </div>
+                    @auth
+                        @if(auth()->user()->canSubmitIdea())
+                            <div class="text-lg-end">
+                                <a href="{{ route('ideas.create') }}" class="btn-submit">
+                                    <i class="bi bi-plus-circle-fill"></i> Submit Idea
+                                </a>
+                            </div>
+                        @endif
+                    @endauth
+                </div>
+            </div>
+        </div>
 
-        {{-- ── Filters ── --}}
-        <div class="filter-glass fade-in-up fade-in-delay-1">
+        <div class="filter-card fade-in-up fade-in-delay-1">
             <form method="GET" action="{{ route('ideas.index') }}" class="row g-3 align-items-end">
                 <div class="col-md-4">
                     <label><i class="bi bi-funnel-fill me-1"></i> Category</label>
@@ -445,106 +454,105 @@
                 <div class="col-md-4">
                     <label><i class="bi bi-sort-down me-1"></i> Sort By</label>
                     <select name="sort" class="form-select" onchange="this.form.submit()">
-                        <option value="latest"  {{ request('sort') == 'latest'  ? 'selected' : '' }}>Latest</option>
+                        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest</option>
                         <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Most Popular</option>
-                        <option value="views"   {{ request('sort') == 'views'   ? 'selected' : '' }}>Most Viewed</option>
+                        <option value="views" {{ request('sort') == 'views' ? 'selected' : '' }}>Most Viewed</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label class="d-block" style="visibility:hidden;">Reset</label>
-                    <a href="{{ route('ideas.index') }}" class="btn-reset d-flex align-items-center justify-content-center gap-2">
+                    <a href="{{ route('ideas.index') }}" class="btn-reset">
                         <i class="bi bi-arrow-counterclockwise"></i> Reset Filters
                     </a>
                 </div>
             </form>
         </div>
 
-        {{-- ── Ideas List ── --}}
         @forelse($ideas as $idea)
-            <div class="idea-item fade-in-up" data-href="{{ route('ideas.show', $idea) }}">
-                <div class="row align-items-start g-3">
-                    {{-- Left: content --}}
-                    <div class="col-md-8">
-                        <h5 class="idea-item-title">
-                            <a href="{{ route('ideas.show', $idea) }}">{{ $idea->title }}</a>
-                            @if($idea->is_anonymous)
-                                <span class="badge-anon">
-                                    <i class="bi bi-incognito me-1"></i> Anonymous
-                                </span>
-                            @endif
-                        </h5>
+            @php
+                $authorName = $idea->is_anonymous ? 'Anonymous Contributor' : ($idea->user?->name ?? 'Unknown User');
+                $authorEmail = $idea->is_anonymous ? 'Identity hidden by submitter' : ($idea->user?->email ?? 'Email unavailable');
+                $roleLabel = $idea->is_anonymous ? 'Anonymous' : str_replace('_', ' ', ($idea->user?->role ?? 'staff'));
+                $initials = collect(explode(' ', trim($authorName)))->filter()->map(fn ($part) => strtoupper(substr($part, 0, 1)))->take(2)->implode('');
+                $initials = $initials ?: 'UI';
+            @endphp
 
-                        <div class="idea-item-meta">
-                            <span><i class="bi bi-building me-1"></i>{{ $idea->department->name }}</span>
-                            <span class="sep">&bull;</span>
-                            <span><i class="bi bi-person me-1"></i>{{ $idea->author_name }}</span>
-                            <span class="sep">&bull;</span>
-                            <span><i class="bi bi-calendar3 me-1"></i>{{ $idea->created_at->format('M d, Y') }}</span>
+            <article class="idea-item fade-in-up" data-href="{{ route('ideas.show', $idea) }}">
+                <div class="row g-3">
+                    <div class="col-lg-8">
+                        <div class="idea-title-row">
+                            <h5 class="idea-title mb-0">
+                                <a href="{{ route('ideas.show', $idea) }}">{{ $idea->title }}</a>
+                            </h5>
+                            @if($idea->is_anonymous)
+                                <span class="badge-anon"><i class="bi bi-incognito me-1"></i> Anonymous</span>
+                            @endif
                         </div>
 
-                        <p class="idea-item-description">{{ Str::limit($idea->description, 250) }}</p>
+                        <div class="idea-meta">
+                            <span><i class="bi bi-building me-1"></i>{{ $idea->department->name }}</span>
+                            <span><i class="bi bi-calendar3 me-1"></i>{{ $idea->created_at->format('M d, Y') }}</span>
+                            <span><i class="bi bi-clock-history me-1"></i>{{ $idea->created_at->diffForHumans() }}</span>
+                        </div>
 
-                        <div class="d-flex flex-wrap gap-2">
+                        <p class="idea-desc">{{ Str::limit($idea->description, 240) }}</p>
+
+                        <div class="tag-wrap">
                             @foreach($idea->categories as $category)
-                                <span class="badge-cat">{{ $category->name }}</span>
+                                <span class="tag">{{ $category->name }}</span>
                             @endforeach
                         </div>
                     </div>
 
-                    {{-- Right: stats + actions --}}
-                    <div class="col-md-4">
-                        <div class="d-flex flex-column align-items-end justify-content-between h-100 gap-3">
-                            <div class="stats-strip justify-content-end">
-                                <span class="stat-item stat-up">
-                                    <i class="bi bi-hand-thumbs-up-fill"></i> {{ $idea->thumbs_up_count }}
-                                </span>
-                                <span class="stat-item stat-down">
-                                    <i class="bi bi-hand-thumbs-down-fill"></i> {{ $idea->thumbs_down_count }}
-                                </span>
-                                <span class="stat-item stat-view">
-                                    <i class="bi bi-eye-fill"></i> {{ $idea->views_count }}
-                                </span>
-                                <span class="stat-item stat-comm">
-                                    <i class="bi bi-chat-text-fill"></i> {{ $idea->comments_count }}
-                                </span>
+                    <div class="col-lg-4">
+                        <div class="author-panel h-100">
+                            <div class="author-head">
+                                <span class="author-avatar">{{ $initials }}</span>
+                                <div>
+                                    <p class="author-name">{{ $authorName }}</p>
+                                    <p class="author-email">{{ $authorEmail }}</p>
+                                </div>
+                            </div>
+                            <span class="author-role">{{ $roleLabel }}</span>
+
+                            <div class="stats-grid">
+                                <span class="stat-chip"><i class="bi bi-hand-thumbs-up-fill"></i> {{ $idea->thumbs_up_count }}</span>
+                                <span class="stat-chip"><i class="bi bi-hand-thumbs-down-fill"></i> {{ $idea->thumbs_down_count }}</span>
+                                <span class="stat-chip"><i class="bi bi-eye-fill"></i> {{ $idea->views_count }}</span>
+                                <span class="stat-chip"><i class="bi bi-chat-text-fill"></i> {{ $idea->comments_count }}</span>
                             </div>
 
-                            <div class="text-end">
-                                <span class="score-badge mb-2 d-inline-block">
-                                    <i class="bi bi-star-fill me-1" style="color:#fbbf24;"></i>
-                                    Score: {{ $idea->popularity_score > 0 ? '+' : '' }}{{ $idea->popularity_score }}
-                                </span>
-                            </div>
+                            <span class="score-chip">
+                                <i class="bi bi-star-fill"></i>
+                                Score {{ $idea->popularity_score > 0 ? '+' : '' }}{{ $idea->popularity_score }}
+                            </span>
                         </div>
                     </div>
                 </div>
-            </div>
+            </article>
         @empty
             <div class="empty-state fade-in-up">
                 <i class="bi bi-inbox"></i>
-                <h5 style="color:#475569;font-family:'Merriweather',serif;">No ideas found</h5>
-                <p style="color:#334155;margin-bottom:1.2rem;">Be the first to submit an idea to the community!</p>
+                <h5 class="mb-2">No ideas found</h5>
+                <p class="mb-3">Try changing filters or be the first to submit a new idea.</p>
                 @auth
                     @if(auth()->user()->canSubmitIdea())
-                        <a href="{{ route('ideas.create') }}" class="btn btn-submit-hero">
-                            <i class="bi bi-plus-circle-fill me-1"></i> Submit Idea
+                        <a href="{{ route('ideas.create') }}" class="btn-submit">
+                            <i class="bi bi-plus-circle-fill"></i> Submit Idea
                         </a>
                     @endif
                 @endauth
             </div>
         @endforelse
 
-        {{-- ── Pagination ── --}}
         <div class="mt-4 d-flex justify-content-center">
             {{ $ideas->withQueryString()->links() }}
         </div>
-
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Fade-in observer
         var els = document.querySelectorAll('.fade-in-up');
         if ('IntersectionObserver' in window) {
             var observer = new IntersectionObserver(function (entries) {
@@ -554,17 +562,22 @@
                         observer.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.08 });
-            els.forEach(function (el) { observer.observe(el); });
+            }, { threshold: 0.1 });
+
+            els.forEach(function (el) {
+                observer.observe(el);
+            });
         } else {
-            els.forEach(function (el) { el.classList.add('visible'); });
+            els.forEach(function (el) {
+                el.classList.add('visible');
+            });
         }
 
-        // Clickable idea cards
         document.querySelectorAll('.idea-item[data-href]').forEach(function (card) {
             card.addEventListener('click', function (e) {
-                // Don't navigate if user clicked a link/button inside the card
-                if (e.target.closest('a, button, select')) return;
+                if (e.target.closest('a, button, select')) {
+                    return;
+                }
                 window.location.href = card.dataset.href;
             });
         });

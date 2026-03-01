@@ -10,9 +10,14 @@
             <h2><i class="fas fa-users"></i> Manage Users</h2>
             <p class="text-muted mb-0">View and manage system users</p>
         </div>
-        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Add User
-        </a>
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin.audit-logs.index') }}" class="btn btn-outline-primary">
+                <i class="bi bi-journal-text"></i> Audit Logs
+            </a>
+            <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add User
+            </a>
+        </div>
     </div>
 
     <!-- Users Table -->

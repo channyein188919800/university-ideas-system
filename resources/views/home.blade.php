@@ -651,9 +651,13 @@
                                 <h6 class="mb-0">
                                     <i class="bi bi-chat-left-text-fill text-primary me-1"></i>
                                     On:
-                                    <a href="{{ route('ideas.show', $comment->idea) }}" class="text-decoration-none">
-                                        {{ $comment->idea->title }}
-                                    </a>
+                                    @if($comment->idea)
+                                        <a href="{{ route('ideas.show', $comment->idea) }}" class="text-decoration-none">
+                                            {{ $comment->idea->title }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Idea unavailable</span>
+                                    @endif
                                 </h6>
                                 @if($comment->is_anonymous)
                                     <span class="badge badge-anonymous">

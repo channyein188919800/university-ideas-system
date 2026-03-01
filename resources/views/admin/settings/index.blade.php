@@ -12,9 +12,14 @@
                     <h2><i class="fas fa-cog"></i> System Settings</h2>
                     <p class="text-muted mb-0">Configure system closure dates and academic year</p>
                 </div>
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left"></i> Back
-                </a>
+                <div class="d-flex gap-2">
+                    <a href="{{ route('admin.audit-logs.index') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-journal-text"></i> Audit Logs
+                    </a>
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                </div>
             </div>
 
             <div class="card">

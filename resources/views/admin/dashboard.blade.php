@@ -53,6 +53,10 @@
                 <i class="bi bi-sliders"></i>
                 <span>System Settings</span>
             </a>
+            <a href="{{ route('admin.audit-logs.index') }}" class="admin-nav-link {{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}">
+                <i class="bi bi-journal-text"></i>
+                <span>System Audit Logs</span>
+            </a>
         </div>
 
         <div class="admin-nav-group mt-auto">
@@ -77,7 +81,9 @@
                 <h3 class="mb-1">Welcome back, {{ auth()->user()->name }}</h3>
                 <p class="text-muted mb-0">System administration and monitoring center</p>
             </div>
-            
+            <a href="{{ route('admin.audit-logs.index') }}" class="btn btn-outline-primary">
+                <i class="bi bi-journal-text"></i> View Audit Logs
+            </a>
         </div>
 
         <div class="row g-3 mb-4">
@@ -218,7 +224,11 @@
                         @forelse($recentComments as $comment)
                             <div class="feed-item {{ !$loop->last ? 'with-border' : '' }}">
                                 <div class="feed-main">
-                                    <a href="{{ route('ideas.show', $comment->idea) }}" class="feed-title">{{ Str::limit($comment->idea->title, 52) }}</a>
+                                    @if($comment->idea)
+                                        <a href="{{ route('ideas.show', $comment->idea) }}" class="feed-title">{{ Str::limit($comment->idea->title, 52) }}</a>
+                                    @else
+                                        <span class="feed-title text-muted">Idea unavailable</span>
+                                    @endif
                                     <p class="feed-content mb-1">{{ Str::limit($comment->content, 90) }}</p>
                                     <p class="feed-meta mb-0"><i class="bi bi-clock"></i> {{ $comment->created_at->diffForHumans() }}</p>
                                 </div>
@@ -729,4 +739,3 @@
     });
 </script>
 @endpush
-
