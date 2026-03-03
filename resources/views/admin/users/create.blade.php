@@ -3,6 +3,10 @@
 @section('title', 'Add User - University Ideas System')
 
 @section('content')
+<div class="admin-shell">
+    @include('admin.partials.sidebar')
+
+    <section class="admin-main p-0">
     <style>
         .user-create-hero {
             position: relative;
@@ -797,4 +801,8 @@
             }
         });
     </script>
+    </section>
+</div>
 @endsection
+
+@include('admin.partials.sidebar-assets')
