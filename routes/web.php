@@ -159,3 +159,40 @@ Route::middleware(['auth', 'terms', 'role:staff'])
     Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('dashboard');
     
 });
+
+/*
+|--------------------------------------------------------------------------
+| QA Coordinator Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'terms', 'role:qa_coordinator'])
+    ->prefix('qa-coordinator')
+    ->name('qa-coordinator.')
+    ->group(function () {
+        
+    // Dashboard
+    Route::get('/dashboard', [QaCoordinatorDashboardController::class, 'index'])->name('dashboard');
+    
+    // Reminder endpoints (for AJAX calls in dashboard)
+    Route::post('/remind-all', [QaCoordinatorDashboardController::class, 'remindAll'])->name('remind-all');
+    Route::post('/remind-staff/{user}', [QaCoordinatorDashboardController::class, 'remindStaff'])->name('remind-staff');
+    
+    // Chart data endpoint (for period filtering)
+    Route::get('/chart-data', [QaCoordinatorDashboardController::class, 'getChartData'])->name('chart-data');
+    
+    // Statistics page
+    Route::get('/statistics', [QaCoordinatorDashboardController::class, 'statistics'])->name('statistics');
+    
+    // Exception reports
+    Route::get('/reports/exceptions', [QaCoordinatorDashboardController::class, 'exceptions'])->name('reports.exceptions');
+    
+    // Notifications
+    Route::get('/notifications', [QaCoordinatorDashboardController::class, 'notifications'])->name('notifications');
+    Route::post('/notifications/{id}/read', [QaCoordinatorDashboardController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [QaCoordinatorDashboardController::class, 'markAllAsRead'])->name('notifications.read-all');
+    
+    // Staff management
+    Route::get('/staff', [QaCoordinatorDashboardController::class, 'staffList'])->name('staff.index');
+    
+});
