@@ -9,6 +9,7 @@ use App\Support\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -28,12 +29,17 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
-            'role' => 'required|in:admin,qa_manager,qa_coordinator,staff',
-            'department_id' => 'nullable|exists:departments,id',
-            'profile_image' => 'nullable|image|max:2048',
+            'name'         => 'required|string|max:255',
+            'email'        => 'required|email|unique:users',
+            'password'     => [
+                'required',
+                Password::min(8)
+                    ->mixedCase()
+                    ->symbols(),
+            ],
+            'role'         => 'required|in:admin,qa_manager,qa_coordinator,staff',
+            'department_id'=> 'nullable|exists:departments,id',
+            'profile_image'=> 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('profile_image')) {
@@ -41,7 +47,7 @@ class UserController extends Controller
         }
 
         $validated['password'] = Hash::make($validated['password']);
-        
+
         $user = User::create($validated);
 
         AuditLogger::log(
@@ -63,11 +69,11 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'role' => 'required|in:admin,qa_manager,qa_coordinator,staff',
-            'department_id' => 'nullable|exists:departments,id',
-            'profile_image' => 'nullable|image|max:2048',
+            'name'         => 'required|string|max:255',
+            'email'        => 'required|email|unique:users,email,' . $user->id,
+            'role'         => 'required|in:admin,qa_manager,qa_coordinator,staff',
+            'department_id'=> 'nullable|exists:departments,id',
+            'profile_image'=> 'nullable|image|max:2048',
         ]);
 
         if ($request->filled('password')) {
@@ -78,11 +84,10 @@ class UserController extends Controller
             if ($user->profile_image) {
                 Storage::disk('public')->delete($user->profile_image);
             }
-
             $validated['profile_image'] = $request->file('profile_image')->store('profile-images', 'public');
         }
 
-        $oldRole = $user->role;
+        $oldRole       = $user->role;
         $oldDepartment = $user->department_id;
 
         $user->update($validated);
@@ -113,7 +118,7 @@ class UserController extends Controller
             Storage::disk('public')->delete($user->profile_image);
         }
 
-        $deletedUserName = $user->name;
+        $deletedUserName  = $user->name;
         $deletedUserEmail = $user->email;
 
         $user->delete();

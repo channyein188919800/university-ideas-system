@@ -6,803 +6,771 @@
 <div class="admin-shell">
     @include('admin.partials.sidebar')
 
-    <section class="admin-main p-0">
-    <style>
-        .user-create-hero {
-            position: relative;
-            min-height: calc(100vh - 160px);
-            padding: 2.5rem 1rem 3rem;
-            background-image:
-                linear-gradient(135deg, rgba(15, 23, 42, 0.86), rgba(15, 23, 42, 0.58)),
-                url('https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-
-        .user-create-shell {
-            max-width: 920px;
-            margin: 0 auto;
-        }
-
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            color: rgba(255, 255, 255, 0.72);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 999px;
-            padding: 0.45rem 1rem;
-            margin-bottom: 1.3rem;
-            transition: all 0.25s ease;
-        }
-
-        .back-link:hover {
-            color: #fff;
-            border-color: rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateX(-3px);
-        }
-
-        .glass-card {
-            position: relative;
-            border-radius: 1.2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(15, 23, 42, 0.5);
-            box-shadow: 0 18px 42px rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            padding: 2rem 1.6rem;
-            color: #e2e8f0;
-            overflow: hidden;
-        }
-
-        .glass-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -130%;
-            width: 65%;
-            height: 100%;
-            background: linear-gradient(110deg, transparent, rgba(255, 255, 255, 0.08), transparent);
-            transform: skewX(-15deg);
-            animation: card-sweep 6.2s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes card-sweep {
-
-            0%,
-            30% {
-                left: -130%;
-            }
-
-            65%,
-            100% {
-                left: 150%;
-            }
-        }
-
-        .create-header {
-            text-align: center;
-            margin-bottom: 1.8rem;
-            position: relative;
-        }
-
-        .create-header-badge {
-            width: 68px;
-            height: 68px;
-            margin: 0 auto 0.85rem;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            color: #fbbf24;
-            background: linear-gradient(145deg, rgba(251, 191, 36, 0.25), rgba(251, 191, 36, 0.07));
-            border: 1px solid rgba(251, 191, 36, 0.32);
-            box-shadow: 0 8px 24px rgba(251, 191, 36, 0.2);
-        }
-
-        .create-title {
-            font-size: 1.7rem;
-            font-weight: 700;
-            margin-bottom: 0.2rem;
-            color: #f8fafc;
-        }
-
-        .create-subtitle {
-            margin: 0;
-            color: rgba(226, 232, 240, 0.76);
-            font-size: 0.92rem;
-        }
-
-        .field-wrap {
-            margin-bottom: 1.15rem;
-        }
-
-        .glass-label {
-            display: flex;
-            align-items: center;
-            gap: 0.48rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #dbeafe;
-            margin-bottom: 0.45rem;
-        }
-
-        .label-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            background: rgba(255, 255, 255, 0.08);
-            font-size: 0.82rem;
-        }
-
-        .required-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #f87171;
-            margin-left: 0.1rem;
-        }
-
-        .glass-input,
-        .glass-select {
-            width: 100%;
-            border-radius: 0.75rem;
-            border: 1px solid rgba(255, 255, 255, 0.13);
-            background: rgba(255, 255, 255, 0.07);
-            color: #f1f5f9;
-            padding: 0.72rem 0.95rem;
-            transition: all 0.25s ease;
-        }
-
-        .glass-input::placeholder {
-            color: rgba(241, 245, 249, 0.45);
-        }
-
-        .glass-input:focus,
-        .glass-select:focus {
-            outline: none;
-            border-color: rgba(96, 165, 250, 0.8);
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
-        }
-
-        .glass-select option {
-            background: #1f2937;
-            color: #f8fafc;
-        }
-
-        .glass-error {
-            margin-top: 0.4rem;
-            font-size: 0.8rem;
-            color: #fca5a5;
-            display: flex;
-            align-items: center;
-            gap: 0.32rem;
-        }
-
-        .glass-input.is-invalid,
-        .glass-select.is-invalid {
-            border-color: rgba(248, 113, 113, 0.6);
-        }
-
-        .upload-box {
-            border: 2px dashed rgba(255, 255, 255, 0.2);
-            border-radius: 0.9rem;
-            background: rgba(255, 255, 255, 0.04);
-            padding: 1rem;
-            text-align: center;
-            position: relative;
-            transition: all 0.25s ease;
-        }
-
-        .upload-box:hover,
-        .upload-box.drag-over {
-            border-color: rgba(96, 165, 250, 0.8);
-            background: rgba(59, 130, 246, 0.12);
-        }
-
-        .upload-box input[type="file"] {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .upload-icon {
-            font-size: 1.7rem;
-            color: rgba(255, 255, 255, 0.5);
-            margin-bottom: 0.3rem;
-        }
-
-        .upload-title {
-            font-size: 0.88rem;
-            color: #bfdbfe;
-        }
-
-        .upload-sub {
-            font-size: 0.78rem;
-            color: rgba(226, 232, 240, 0.58);
-        }
-
-        .responsibilities-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            margin-bottom: 1.4rem;
-            padding: 1.2rem;
-            background: rgba(59, 130, 246, 0.08);
-            border-radius: 0.9rem;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            min-height: 60px;
-            align-items: center;
-        }
-
-        .responsibilities-container.hidden {
-            display: none;
-        }
-
-        .responsibility-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 0.9rem;
-            background: rgba(96, 165, 250, 0.15);
-            border: 1px solid rgba(96, 165, 250, 0.3);
-            border-radius: 0.6rem;
-            color: #bfdbfe;
-            font-size: 0.85rem;
-            font-weight: 500;
-            white-space: nowrap;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        .responsibility-badge i {
-            font-size: 0.95rem;
-            opacity: 0.8;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .responsibilities-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #bfdbfe;
-            width: 100%;
-            margin-bottom: 0.4rem;
-        }
-
-        .image-preview-wrapper {
-            position: relative;
-            display: inline-block;
-            margin: 0.8rem auto 0;
-        }
-
-        .preview-avatar {
-            width: 86px;
-            height: 86px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.35);
-            display: none;
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
-        }
-
-        .image-actions {
-            position: absolute;
-            bottom: -8px;
-            right: -8px;
-            display: none;
-            gap: 0.4rem;
-        }
-
-        .image-actions.visible {
-            display: flex;
-        }
-
-        .image-action-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .image-action-btn.edit-btn {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-        }
-
-        .image-action-btn.edit-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
-        }
-
-        .image-action-btn.delete-btn {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-        }
-
-        .image-action-btn.delete-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
-        }
-
-        .divider-line {
-            height: 1px;
-            margin: 1.4rem 0 1.2rem;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
-        }
-
-        .btn-glass-outline,
-        .btn-glass-solid {
-            border-radius: 0.75rem;
-            border: none;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
-            padding: 0.68rem 1.35rem;
-            transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .btn-glass-outline {
-            color: rgba(241, 245, 249, 0.86);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.07);
-        }
-
-        .btn-glass-outline:hover {
-            color: #fff;
-            border-color: rgba(255, 255, 255, 0.35);
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
-        }
-
-        .btn-glass-solid {
-            color: #fff;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            box-shadow: 0 8px 22px rgba(37, 99, 235, 0.34);
-        }
-
-        .btn-glass-solid:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 11px 26px rgba(37, 99, 235, 0.45);
-        }
-
-        .btn-glass-outline:active,
-        .btn-glass-solid:active {
-            transform: scale(0.97);
-        }
-
-        .ripple-container {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.32);
-            transform: scale(0);
-            animation: ripple-expand 0.62s ease-out forwards;
-            pointer-events: none;
-        }
-
-        @keyframes ripple-expand {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(18px);
-            transition: opacity 0.55s ease, transform 0.55s ease;
-        }
-
-        .fade-in-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .fade-delay-1 {
-            transition-delay: 0.08s;
-        }
-
-        .fade-delay-2 {
-            transition-delay: 0.16s;
-        }
-
-        .fade-delay-3 {
-            transition-delay: 0.24s;
-        }
-
-        .fade-delay-4 {
-            transition-delay: 0.32s;
-        }
-
-        @media (max-width: 767.98px) {
-            .glass-card {
-                padding: 1.5rem 1rem;
-            }
-
-            .create-title {
-                font-size: 1.4rem;
-            }
-
-            .action-row {
-                flex-direction: column;
-                gap: 0.7rem;
-            }
-
-            .btn-glass-outline,
-            .btn-glass-solid {
-                width: 100%;
+    <section class="admin-main p-0" style="overflow-x:hidden;">
+
+        {{-- ===== INLINE STYLES ===== --}}
+        <style>
+            /* ── Page shell ──────────────────────────────────────────── */
+            .uc-stage {
+                min-height: 100vh;
+                display: flex;
+                align-items: flex-start;
                 justify-content: center;
+                padding: 2.5rem 1.5rem 3rem;
+                background: radial-gradient(circle at 15% 15%, rgba(214,158,46,.08) 0%, transparent 55%),
+                            radial-gradient(circle at 85% 80%, rgba(44,82,130,.12) 0%, transparent 60%),
+                            linear-gradient(180deg, #0c1222 0%, #1a2744 55%, #0f172a 100%);
+                position: relative;
+                overflow: hidden;
             }
-        }
-    </style>
 
-    <section class="user-create-hero">
-        <div class="user-create-shell">
-            <a href="{{ route('admin.users.index') }}" class="back-link fade-in-up ripple-container">
-                <i class="bi bi-arrow-left-short"></i>
-                Back to Users
-            </a>
+            /* floating orbs */
+            .uc-orb {
+                position: fixed;
+                border-radius: 50%;
+                filter: blur(80px);
+                pointer-events: none;
+                z-index: 0;
+                animation: uc-pulse 9s ease-in-out infinite alternate;
+            }
+            .uc-orb-1 { width:480px;height:480px;background:radial-gradient(circle,rgba(214,158,46,.4),transparent 70%);top:-140px;left:-100px;animation-delay:0s; }
+            .uc-orb-2 { width:360px;height:360px;background:radial-gradient(circle,rgba(56,161,105,.3),transparent 70%);bottom:-80px;right:-60px;animation-delay:4s; }
+            .uc-orb-3 { width:280px;height:280px;background:radial-gradient(circle,rgba(99,102,241,.25),transparent 70%);top:40%;left:55%;transform:translate(-50%,-50%);animation-delay:2s; }
+            @keyframes uc-pulse { 0%{opacity:.3;transform:scale(1)} 100%{opacity:.5;transform:scale(1.12)} }
 
-            <div class="glass-card fade-in-up fade-delay-1">
-                <div class="create-header">
-                    <div class="create-header-badge">
-                        <i class="bi bi-person-plus-fill"></i>
-                    </div>
-                    <h1 class="create-title">Create New User</h1>
-                    <p class="create-subtitle">Add a user account with role, department, and optional profile photo.</p>
-                </div>
+            /* floating particles */
+            .uc-particle {
+                position: fixed;
+                width: 4px; height: 4px;
+                background: rgba(214,158,46,.7);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 0;
+                animation: uc-float 14s infinite ease-in-out;
+            }
+            .uc-particle:nth-child(1){left:8%;top:18%;animation-delay:0s;animation-duration:12s;}
+            .uc-particle:nth-child(2){left:22%;top:74%;animation-delay:2s;animation-duration:15s;}
+            .uc-particle:nth-child(3){left:65%;top:38%;animation-delay:4s;animation-duration:16s;}
+            .uc-particle:nth-child(4){left:82%;top:62%;animation-delay:1s;animation-duration:13s;}
+            .uc-particle:nth-child(5){left:44%;top:85%;animation-delay:3s;animation-duration:14s;}
+            .uc-particle:nth-child(6){left:76%;top:14%;animation-delay:0.5s;animation-duration:11s;}
+            @keyframes uc-float {
+                0%,100%{transform:translateY(0)translateX(0);opacity:.7}
+                25%{transform:translateY(-90px)translateX(40px);opacity:1}
+                50%{transform:translateY(-160px)translateX(-25px);opacity:.4}
+                75%{transform:translateY(-110px)translateX(60px);opacity:.9}
+            }
 
-                <form method="POST" action="{{ route('admin.users.store') }}" enctype="multipart/form-data">
-                    @csrf
+            /* ── Card ────────────────────────────────────────────────── */
+            .uc-card {
+                position: relative;
+                z-index: 2;
+                width: 100%;
+                max-width: 860px;
+                border-radius: 1.75rem;
+                background: linear-gradient(145deg, rgba(255,255,255,.97) 0%, rgba(241,245,249,.97) 100%);
+                border: 1px solid rgba(255,255,255,.12);
+                box-shadow: 0 28px 60px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.06) inset;
+                animation: uc-card-in .9s ease-out forwards;
+                opacity: 0;
+                transform: translateY(36px) scale(0.97);
+                overflow: hidden;
+            }
+            @keyframes uc-card-in { to{ opacity:1; transform:translateY(0) scale(1); } }
 
-                    <div class="row">
-                        <div class="col-md-6 field-wrap fade-in-up fade-delay-1">
-                            <label class="glass-label" for="name">
-                                <span class="label-icon"><i class="bi bi-person"></i></span>
-                                Full Name
-                                <span class="required-dot"></span>
-                            </label>
-                            <input type="text" id="name" name="name" value="{{ old('name') }}"
-                                class="glass-input @error('name') is-invalid @enderror" placeholder="Enter full name"
-                                required>
-                            @error('name')
-                                <div class="glass-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>
-                            @enderror
-                        </div>
+            /* card top accent bar */
+            .uc-card-bar {
+                height: 5px;
+                background: linear-gradient(90deg, #d69e2e 0%, #38a169 50%, #2c5282 100%);
+            }
 
-                        <div class="col-md-6 field-wrap fade-in-up fade-delay-1">
-                            <label class="glass-label" for="email">
-                                <span class="label-icon"><i class="bi bi-envelope"></i></span>
-                                Email
-                                <span class="required-dot"></span>
-                            </label>
-                            <input type="email" id="email" name="email" value="{{ old('email') }}"
-                                class="glass-input @error('email') is-invalid @enderror" placeholder="name@university.edu"
-                                required>
-                            @error('email')
-                                <div class="glass-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
+            /* card inner padding */
+            .uc-card-body { padding: 2.2rem 2.6rem 2.6rem; }
 
-                    <div class="row">
-                        <div class="col-md-6 field-wrap fade-in-up fade-delay-2">
-                            <label class="glass-label" for="password">
-                                <span class="label-icon"><i class="bi bi-shield-lock"></i></span>
-                                Password
-                                <span class="required-dot"></span>
-                            </label>
-                            <input type="password" id="password" name="password"
-                                class="glass-input @error('password') is-invalid @enderror"
-                                placeholder="Minimum 8 characters" required>
-                            @error('password')
-                                <div class="glass-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>
-                            @enderror
-                        </div>
+            /* ── Card header ─────────────────────────────────────────── */
+            .uc-header {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                margin-bottom: 2rem;
+                animation: uc-slide-up .6s ease-out .2s both;
+            }
+            .uc-header-icon {
+                width: 56px; height: 56px;
+                border-radius: 1rem;
+                background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+                display: flex; align-items: center; justify-content: center;
+                color: #d69e2e;
+                font-size: 1.5rem;
+                flex-shrink: 0;
+                box-shadow: 0 8px 24px rgba(15,23,42,.35);
+            }
+            .uc-header-text h2 {
+                font-size: 1.7rem; font-weight: 800;
+                color: #0f172a; margin: 0; letter-spacing: -.02em;
+            }
+            .uc-header-text p { margin: 0; color: #64748b; font-size:.9rem; }
 
-                        <div class="col-md-6 field-wrap fade-in-up fade-delay-2">
-                            <label class="glass-label" for="role">
-                                <span class="label-icon"><i class="bi bi-person-badge"></i></span>
-                                Role
-                                <span class="required-dot"></span>
-                            </label>
-                            <select id="role" name="role" class="glass-select @error('role') is-invalid @enderror" required>
-                                @foreach($roles as $role)
-                                    <option value="{{ $role }}" {{ old('role') == $role ? 'selected' : '' }}>
-                                        {{ ucwords(str_replace('_', ' ', $role)) }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('role')
-                                <div class="glass-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
+            /* ── Divider ─────────────────────────────────────────────── */
+            .uc-divider {
+                height: 1px;
+                background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+                margin: 1.4rem 0;
+            }
+            .uc-section-title {
+                font-size: .72rem;
+                font-weight: 700;
+                color: #94a3b8;
+                text-transform: uppercase;
+                letter-spacing: .1em;
+                margin: 0 0 1rem;
+            }
 
-                    <div class="row">
-                        <div class="col-md-6 field-wrap fade-in-up fade-delay-3">
-                            <label class="glass-label" for="department_id">
-                                <span class="label-icon"><i class="bi bi-building"></i></span>
-                                Department
-                            </label>
-                            <select id="department_id" name="department_id"
-                                class="glass-select @error('department_id') is-invalid @enderror">
-                                <option value="">Select Department</option>
-                                @foreach($departments as $department)
-                                    <option value="{{ $department->id }}" {{ old('department_id') == $department->id ? 'selected' : '' }}>
-                                        {{ $department->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('department_id')
-                                <div class="glass-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>
-                            @enderror
-                        </div>
+            /* ── Field ───────────────────────────────────────────────── */
+            .uc-field { margin-bottom: 1.2rem; }
+            .uc-label {
+                display: block;
+                margin-bottom: .5rem;
+                font-size: .82rem;
+                font-weight: 700;
+                color: #334155;
+                text-transform: uppercase;
+                letter-spacing: .05em;
+            }
+            .uc-label .req { color: #ef4444; margin-left: 2px; }
 
-                        <div class="col-md-6 field-wrap fade-in-up fade-delay-3">
-                            <label class="glass-label">
-                                <span class="label-icon"><i class="bi bi-image"></i></span>
-                                Profile Image
-                            </label>
-                            <div class="upload-box ripple-container" id="avatarUploadBox">
-                                <input type="file" id="profile_image" name="profile_image"
-                                    accept="image/png,image/jpeg,image/jpg,image/webp">
-                                <div class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
-                                <div class="upload-title">Click to upload profile image</div>
-                                <div class="upload-sub">JPG, PNG, WEBP – Max 2MB</div>
+            .uc-shell { position: relative; }
+            .uc-shell > .bi {
+                position: absolute;
+                left: 1rem; top: 50%;
+                transform: translateY(-50%);
+                color: #94a3b8;
+                font-size: 1.05rem;
+                transition: color .3s;
+                z-index: 2;
+                pointer-events: none;
+            }
+            .uc-shell:focus-within > .bi { color: #d69e2e; }
+
+            .uc-input, .uc-select {
+                width: 100%;
+                padding: .85rem 1rem .85rem 2.85rem;
+                font-size: .97rem;
+                border: 2px solid #e2e8f0;
+                border-radius: 1rem;
+                background: #fff;
+                color: #0f172a;
+                transition: all .3s ease;
+                outline: none;
+                font-family: inherit;
+            }
+            .uc-input::placeholder { color: #94a3b8; }
+            .uc-input:focus, .uc-select:focus {
+                border-color: #d69e2e;
+                box-shadow: 0 0 0 4px rgba(214,158,46,.12);
+                transform: translateY(-1px);
+            }
+            .uc-input.is-invalid, .uc-select.is-invalid {
+                border-color: #ef4444;
+                box-shadow: 0 0 0 3px rgba(239,68,68,.1);
+            }
+
+            /* input bottom highlight sweep */
+            .uc-highlight {
+                position: absolute;
+                bottom: 0; left: 50%;
+                width: 0; height: 2px;
+                background: linear-gradient(90deg,transparent,#d69e2e,transparent);
+                transition: all .4s;
+                transform: translateX(-50%);
+                border-radius: 0 0 1rem 1rem;
+            }
+            .uc-input:focus ~ .uc-highlight { width: 80%; }
+
+            /* password toggle */
+            .uc-eye {
+                position: absolute;
+                right: .9rem; top: 50%;
+                transform: translateY(-50%);
+                background: none; border: none;
+                color: #94a3b8; cursor: pointer;
+                padding: .4rem;
+                transition: color .3s;
+                z-index: 3;
+            }
+            .uc-eye:hover { color: #d69e2e; }
+
+            /* ── Password strength bar ───────────────────────────────── */
+            .uc-strength-bar {
+                height: 4px;
+                border-radius: 2px;
+                background: #e2e8f0;
+                margin-top: .5rem;
+                overflow: hidden;
+            }
+            .uc-strength-fill {
+                height: 100%;
+                border-radius: 2px;
+                transition: width .4s ease, background .4s ease;
+                width: 0%;
+            }
+            .uc-strength-hints {
+                display: flex;
+                flex-wrap: wrap;
+                gap: .35rem .75rem;
+                margin-top: .55rem;
+            }
+            .uc-hint {
+                display: inline-flex;
+                align-items: center;
+                gap: .28rem;
+                font-size: .76rem;
+                color: #94a3b8;
+                transition: color .3s;
+            }
+            .uc-hint.ok { color: #38a169; }
+            .uc-hint.ok .bi { color: #38a169; }
+            .uc-hint .bi { font-size: .72rem; }
+
+            /* ── Role badges ─────────────────────────────────────────── */
+            .uc-role-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: .6rem;
+            }
+            .uc-role-btn {
+                position: relative;
+                cursor: pointer;
+            }
+            .uc-role-btn input[type="radio"] { display: none; }
+            .uc-role-label {
+                display: flex;
+                align-items: center;
+                gap: .6rem;
+                padding: .7rem 1rem;
+                border: 2px solid #e2e8f0;
+                border-radius: .9rem;
+                background: #fff;
+                cursor: pointer;
+                transition: all .25s;
+                font-size: .88rem;
+                font-weight: 600;
+                color: #475569;
+                user-select: none;
+            }
+            .uc-role-label .role-icon {
+                width: 30px; height: 30px;
+                border-radius: .5rem;
+                display: flex; align-items: center; justify-content: center;
+                font-size: .95rem;
+                background: #f1f5f9;
+                color: #64748b;
+                transition: all .25s;
+                flex-shrink: 0;
+            }
+            .uc-role-btn input:checked + .uc-role-label {
+                border-color: #d69e2e;
+                background: linear-gradient(135deg, rgba(214,158,46,.08), rgba(214,158,46,.03));
+                color: #0f172a;
+                box-shadow: 0 0 0 3px rgba(214,158,46,.12);
+            }
+            .uc-role-btn input:checked + .uc-role-label .role-icon {
+                background: linear-gradient(135deg,#0f172a,#1e3a5f);
+                color: #d69e2e;
+            }
+            .uc-role-label:hover { border-color: #d69e2e; }
+
+            /* ── Upload box ──────────────────────────────────────────── */
+            .uc-upload {
+                border: 2px dashed #cbd5e1;
+                border-radius: 1rem;
+                padding: 1.2rem;
+                text-align: center;
+                position: relative;
+                transition: all .25s;
+                background: #f8fafc;
+                cursor: pointer;
+            }
+            .uc-upload:hover, .uc-upload.drag-over {
+                border-color: #d69e2e;
+                background: rgba(214,158,46,.04);
+            }
+            .uc-upload input[type="file"] {
+                position: absolute; inset: 0;
+                opacity: 0; cursor: pointer;
+            }
+            .uc-upload-icon { font-size: 1.8rem; color: #94a3b8; margin-bottom: .3rem; }
+            .uc-upload-text { font-size: .84rem; color: #64748b; }
+            .uc-upload-sub  { font-size: .76rem; color: #94a3b8; margin-top:.2rem; }
+
+            /* avatar preview */
+            .uc-avatar-wrap { display: none; text-align: center; margin-top: .8rem; position: relative; }
+            .uc-avatar-wrap.visible { display: block; }
+            .uc-avatar-preview {
+                width: 90px; height: 90px;
+                border-radius: 50%; object-fit: cover;
+                border: 3px solid #d69e2e;
+                box-shadow: 0 8px 20px rgba(214,158,46,.25);
+            }
+            .uc-avatar-clear {
+                position: absolute; top: -6px; right: calc(50% - 50px);
+                width: 26px; height: 26px;
+                border-radius: 50%;
+                background: #ef4444; color: #fff;
+                border: none; cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+                font-size: .75rem;
+                box-shadow: 0 2px 8px rgba(239,68,68,.35);
+            }
+
+            /* ── Responsibilities strip ──────────────────────────────── */
+            .uc-perms {
+                display: none;
+                flex-wrap: wrap;
+                gap: .45rem;
+                padding: .9rem 1rem;
+                background: rgba(214,158,46,.06);
+                border: 1px solid rgba(214,158,46,.2);
+                border-radius: .9rem;
+                margin-top: .75rem;
+                animation: uc-slide-up .4s ease-out both;
+            }
+            .uc-perms.visible { display: flex; }
+            .uc-perm-badge {
+                display: inline-flex; align-items: center; gap: .3rem;
+                padding: .25rem .7rem;
+                background: rgba(15,23,42,.06);
+                border: 1px solid rgba(15,23,42,.1);
+                border-radius: 999px;
+                font-size: .77rem; color: #334155; font-weight: 600;
+            }
+            .uc-perm-badge .bi { color: #d69e2e; font-size: .72rem; }
+
+            /* ── Error message ───────────────────────────────────────── */
+            .uc-error {
+                margin-top: .4rem;
+                font-size: .78rem; color: #ef4444;
+                display: flex; align-items: center; gap: .3rem;
+                animation: uc-shake .4s ease;
+            }
+            @keyframes uc-shake {
+                0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)}
+            }
+
+            /* ── Submit button ───────────────────────────────────────── */
+            .uc-submit-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+                margin-top: 1.8rem;
+                padding-top: 1.4rem;
+                border-top: 1px solid #f1f5f9;
+                animation: uc-slide-up .6s ease-out .5s both;
+            }
+            .uc-btn-cancel {
+                display: inline-flex; align-items: center; gap: .5rem;
+                padding: .8rem 1.5rem;
+                border: 2px solid #e2e8f0;
+                border-radius: 1rem;
+                background: #fff;
+                color: #64748b;
+                font-weight: 600; font-size: .95rem;
+                text-decoration: none;
+                transition: all .25s;
+            }
+            .uc-btn-cancel:hover { border-color: #94a3b8; color: #0f172a; transform: translateX(-2px); }
+            .uc-btn-submit {
+                display: inline-flex; align-items: center; gap: .55rem;
+                padding: .85rem 2.2rem;
+                border: none; border-radius: 1rem;
+                background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+                background-size: 200% 200%;
+                color: #fff;
+                font-weight: 700; font-size: 1rem;
+                cursor: pointer;
+                position: relative; overflow: hidden;
+                transition: all .35s;
+                box-shadow: 0 8px 24px rgba(15,23,42,.3);
+            }
+            .uc-btn-submit::before {
+                content: '';
+                position: absolute; inset: 0;
+                background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,.18) 50%, transparent 100%);
+                transform: translateX(-110%);
+                transition: transform .55s ease;
+            }
+            .uc-btn-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(15,23,42,.4); background-position: 100% 0; }
+            .uc-btn-submit:hover::before { transform: translateX(110%); }
+            .uc-btn-submit:active { transform: scale(.97); }
+            /* click ripple */
+            .uc-btn-submit .ripple {
+                position: absolute; border-radius: 50%;
+                background: rgba(255,255,255,.3);
+                transform: scale(0);
+                animation: uc-ripple .6s linear;
+                pointer-events: none;
+            }
+            @keyframes uc-ripple { to { transform: scale(4); opacity: 0; } }
+
+            /* ── Back link ───────────────────────────────────────────── */
+            .uc-back {
+                display: inline-flex; align-items: center; gap: .4rem;
+                color: rgba(255,255,255,.6);
+                text-decoration: none; font-size: .88rem; font-weight: 600;
+                margin-bottom: 1.4rem;
+                border: 1px solid rgba(255,255,255,.14);
+                background: rgba(255,255,255,.06);
+                padding: .4rem 1rem; border-radius: 999px;
+                transition: all .25s;
+                position: relative; z-index: 2;
+            }
+            .uc-back:hover { color: #fff; border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.12); transform: translateX(-3px); }
+
+            /* animation helpers */
+            @keyframes uc-slide-up {
+                from { opacity:0; transform:translateY(14px); }
+                to   { opacity:1; transform:translateY(0); }
+            }
+
+            /* responsive */
+            @media (max-width: 600px) {
+                .uc-card-body { padding: 1.5rem 1.2rem; }
+                .uc-role-grid { grid-template-columns: 1fr; }
+                .uc-submit-row { flex-direction: column-reverse; }
+                .uc-btn-cancel, .uc-btn-submit { width:100%; justify-content:center; }
+            }
+        </style>
+
+        {{-- Ambient background --}}
+        <div class="uc-stage">
+            <div class="uc-orb uc-orb-1"></div>
+            <div class="uc-orb uc-orb-2"></div>
+            <div class="uc-orb uc-orb-3"></div>
+            <div class="uc-particle"></div>
+            <div class="uc-particle"></div>
+            <div class="uc-particle"></div>
+            <div class="uc-particle"></div>
+            <div class="uc-particle"></div>
+            <div class="uc-particle"></div>
+
+            <div style="position:relative;z-index:2;width:100%;max-width:860px;">
+                {{-- Back link --}}
+                <a href="{{ route('admin.users.index') }}" class="uc-back">
+                    <i class="bi bi-arrow-left-short"></i> Back to Users
+                </a>
+
+                {{-- Main card --}}
+                <div class="uc-card">
+                    <div class="uc-card-bar"></div>
+                    <div class="uc-card-body">
+
+                        {{-- Header --}}
+                        <div class="uc-header">
+                            <div class="uc-header-icon"><i class="bi bi-person-plus-fill"></i></div>
+                            <div class="uc-header-text">
+                                <h2>Create New User</h2>
+                                <p>Add a university staff or admin account</p>
                             </div>
-                            <div class="image-preview-wrapper">
-                                <img id="avatarPreview" class="preview-avatar" alt="Avatar preview">
-                                <div class="image-actions" id="imageActions">
-                                    <button type="button" class="image-action-btn edit-btn" id="editImageBtn"
-                                        title="Edit image">
-                                        <i class="bi bi-pencil-fill"></i>
-                                    </button>
-                                    <button type="button" class="image-action-btn delete-btn" id="deleteImageBtn"
-                                        title="Delete image">
-                                        <i class="bi bi-trash-fill"></i>
-                                    </button>
+                        </div>
+
+                        {{-- Session errors --}}
+                        @if($errors->any())
+                            <div style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.25);border-radius:.9rem;padding:.9rem 1rem;margin-bottom:1.2rem;color:#b91c1c;font-size:.88rem;">
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                Please fix the errors below before submitting.
+                            </div>
+                        @endif
+
+                        <form method="POST" action="{{ route('admin.users.store') }}" enctype="multipart/form-data" id="ucForm">
+                            @csrf
+
+                            {{-- ── Basic Info ── --}}
+                            <p class="uc-section-title">Basic Information</p>
+                            <div class="row g-3">
+                                {{-- Name --}}
+                                <div class="col-md-6">
+                                    <div class="uc-field">
+                                        <label class="uc-label" for="name">Full Name <span class="req">*</span></label>
+                                        <div class="uc-shell">
+                                            <i class="bi bi-person"></i>
+                                            <input type="text" id="name" name="name"
+                                                value="{{ old('name') }}"
+                                                class="uc-input @error('name') is-invalid @enderror"
+                                                placeholder="Enter full name" required>
+                                            <div class="uc-highlight"></div>
+                                        </div>
+                                        @error('name')
+                                            <div class="uc-error"><i class="bi bi-exclamation-circle-fill"></i>{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                {{-- Email --}}
+                                <div class="col-md-6">
+                                    <div class="uc-field">
+                                        <label class="uc-label" for="email">Email Address <span class="req">*</span></label>
+                                        <div class="uc-shell">
+                                            <i class="bi bi-envelope"></i>
+                                            <input type="email" id="email" name="email"
+                                                value="{{ old('email') }}"
+                                                class="uc-input @error('email') is-invalid @enderror"
+                                                placeholder="name@university.edu" required>
+                                            <div class="uc-highlight"></div>
+                                        </div>
+                                        @error('email')
+                                            <div class="uc-error"><i class="bi bi-exclamation-circle-fill"></i>{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
+
+                            {{-- ── Password ── --}}
+                            <div class="uc-divider"></div>
+                            <p class="uc-section-title">Security</p>
+
+                            <div class="uc-field">
+                                <label class="uc-label" for="password">Password <span class="req">*</span></label>
+                                <div class="uc-shell">
+                                    <i class="bi bi-shield-lock"></i>
+                                    <input type="password" id="password" name="password"
+                                        class="uc-input @error('password') is-invalid @enderror"
+                                        placeholder="Min 8 chars · 1 uppercase · 1 lowercase · 1 symbol"
+                                        required autocomplete="new-password">
+                                    <div class="uc-highlight"></div>
+                                    <button type="button" class="uc-eye" id="ucTogglePwd" title="Toggle password">
+                                        <i class="bi bi-eye" id="ucEyeIcon"></i>
+                                    </button>
+                                </div>
+
+                                {{-- Strength bar --}}
+                                <div class="uc-strength-bar"><div class="uc-strength-fill" id="ucStrengthFill"></div></div>
+
+                                {{-- Live hints --}}
+                                <div class="uc-strength-hints">
+                                    <span class="uc-hint" id="hint-len"><i class="bi bi-circle"></i> 8+ chars</span>
+                                    <span class="uc-hint" id="hint-upper"><i class="bi bi-circle"></i> Uppercase</span>
+                                    <span class="uc-hint" id="hint-lower"><i class="bi bi-circle"></i> Lowercase</span>
+                                    <span class="uc-hint" id="hint-symbol"><i class="bi bi-circle"></i> Symbol</span>
+                                </div>
+
+                                @error('password')
+                                    <div class="uc-error"><i class="bi bi-exclamation-circle-fill"></i>{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- ── Role ── --}}
+                            <div class="uc-divider"></div>
+                            <p class="uc-section-title">Role & Department</p>
+
+                            <div class="uc-field">
+                                <label class="uc-label">Role <span class="req">*</span></label>
+                                <div class="uc-role-grid" id="ucRoleGrid">
+                                    @php
+                                        $roleIcons = [
+                                            'admin'          => ['icon' => 'bi-shield-fill-check', 'label' => 'Admin'],
+                                            'qa_manager'     => ['icon' => 'bi-bar-chart-fill',    'label' => 'QA Manager'],
+                                            'qa_coordinator' => ['icon' => 'bi-people-fill',       'label' => 'QA Coordinator'],
+                                            'staff'          => ['icon' => 'bi-person-fill',       'label' => 'Staff'],
+                                        ];
+                                    @endphp
+                                    @foreach($roles as $role)
+                                    <label class="uc-role-btn">
+                                        <input type="radio" name="role" value="{{ $role }}"
+                                            {{ old('role', 'staff') === $role ? 'checked' : '' }}>
+                                        <span class="uc-role-label">
+                                            <span class="role-icon"><i class="bi {{ $roleIcons[$role]['icon'] }}"></i></span>
+                                            {{ $roleIcons[$role]['label'] }}
+                                        </span>
+                                    </label>
+                                    @endforeach
+                                </div>
+                                @error('role')
+                                    <div class="uc-error"><i class="bi bi-exclamation-circle-fill"></i>{{ $message }}</div>
+                                @enderror
+
+                                {{-- Role responsibilities --}}
+                                <div class="uc-perms" id="ucPerms"></div>
+                            </div>
+
+                            {{-- Department --}}
+                            <div class="uc-field">
+                                <label class="uc-label" for="department_id">Department</label>
+                                <div class="uc-shell">
+                                    <i class="bi bi-building"></i>
+                                    <select id="department_id" name="department_id"
+                                        class="uc-select @error('department_id') is-invalid @enderror"
+                                        style="padding-left:2.85rem;">
+                                        <option value="">Select Department (optional)</option>
+                                        @foreach($departments as $dept)
+                                            <option value="{{ $dept->id }}" {{ old('department_id') == $dept->id ? 'selected' : '' }}>
+                                                {{ $dept->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                @error('department_id')
+                                    <div class="uc-error"><i class="bi bi-exclamation-circle-fill"></i>{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- ── Profile Image ── --}}
+                            <div class="uc-divider"></div>
+                            <p class="uc-section-title">Profile Image (optional)</p>
+
+                            <div class="uc-upload" id="ucUpload">
+                                <input type="file" id="profile_image" name="profile_image"
+                                    accept="image/png,image/jpeg,image/jpg,image/webp">
+                                <div class="uc-upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                                <div class="uc-upload-text">Click or drag &amp; drop to upload</div>
+                                <div class="uc-upload-sub">JPG, PNG, WEBP — max 2 MB</div>
+                            </div>
+
+                            <div class="uc-avatar-wrap" id="ucAvatarWrap">
+                                <img id="ucAvatarPreview" class="uc-avatar-preview" alt="Preview">
+                                <button type="button" class="uc-avatar-clear" id="ucAvatarClear" title="Remove image">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
                             @error('profile_image')
-                                <div class="glass-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>
+                                <div class="uc-error mt-1"><i class="bi bi-exclamation-circle-fill"></i>{{ $message }}</div>
                             @enderror
-                        </div>
-                    </div>
 
-                    <div id="responsibilitiesSection" class="responsibilities-container hidden fade-in-up fade-delay-4">
-                        <div class="responsibilities-label">
-                            <i class="bi bi-shield-check"></i> Role Responsibilities
-                        </div>
-                    </div>
+                            {{-- ── Actions ── --}}
+                            <div class="uc-submit-row">
+                                <a href="{{ route('admin.users.index') }}" class="uc-btn-cancel">
+                                    <i class="bi bi-x-lg"></i> Cancel
+                                </a>
+                                <button type="submit" class="uc-btn-submit" id="ucSubmitBtn">
+                                    <i class="bi bi-person-plus-fill"></i> Create User
+                                </button>
+                            </div>
+                        </form>
 
-                    <div class="divider-line"></div>
-
-                    <div class="d-flex justify-content-between align-items-center action-row fade-in-up fade-delay-4">
-                        <a href="{{ route('admin.users.index') }}" class="btn-glass-outline ripple-container">
-                            <i class="bi bi-x-lg"></i>
-                            Cancel
-                        </a>
-                        <button type="submit" class="btn-glass-solid ripple-container">
-                            <i class="bi bi-check2-circle"></i>
-                            Create User
-                        </button>
-                    </div>
-                </form>
+                    </div>{{-- /card-body --}}
+                </div>{{-- /card --}}
             </div>
-        </div>
-    </section>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Role responsibilities mapping with icons
-            var responsibilitiesMap = {
-                'admin': [
-                    { name: 'Create User', icon: 'bi-person-plus' },
-                    { name: 'Update User', icon: 'bi-person-check' },
-                    { name: 'View User Logs', icon: 'bi-file-text' },
-                    { name: 'Manage System Setting', icon: 'bi-gear' },
-                    { name: 'Create Idea', icon: 'bi-lightbulb' },
-                    { name: 'Create Comment', icon: 'bi-chat-left-text' },
-                    { name: 'Manage Category', icon: 'bi-tag' }
-                ],
-                'qa_manager': [
-                    { name: 'View User Logs', icon: 'bi-file-text' },
-                    { name: 'Create Idea', icon: 'bi-lightbulb' },
-                    { name: 'Create Comment', icon: 'bi-chat-left-text' },
-                    { name: 'Remove Idea', icon: 'bi-trash' },
-                    { name: 'Remove Comments', icon: 'bi-chat-left-x' },
-                    { name: 'Manage Category', icon: 'bi-tag' },
-                    { name: 'Reports', icon: 'bi-bar-chart' }
-                ],
-                'qa_coordinator': [
-                    { name: 'Create Idea', icon: 'bi-lightbulb' },
-                    { name: 'Create Comment', icon: 'bi-chat-left-text' }
-                ],
-                'staff': [
-                    { name: 'Create Idea', icon: 'bi-lightbulb' },
-                    { name: 'Create Comment', icon: 'bi-chat-left-text' }
-                ]
-            };
-
-            var animated = document.querySelectorAll('.fade-in-up');
-
-            if ('IntersectionObserver' in window) {
-                var observer = new IntersectionObserver(function (entries) {
-                    entries.forEach(function (entry) {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, { threshold: 0.08 });
-
-                animated.forEach(function (el) { observer.observe(el); });
-            } else {
-                animated.forEach(function (el) { el.classList.add('visible'); });
-            }
-
-            document.querySelectorAll('.ripple-container').forEach(function (el) {
-                el.addEventListener('click', function (e) {
-                    var rect = el.getBoundingClientRect();
-                    var ripple = document.createElement('span');
-                    var size = Math.max(rect.width, rect.height);
-
-                    ripple.className = 'ripple';
-                    ripple.style.width = size + 'px';
-                    ripple.style.height = size + 'px';
-                    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-                    ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
-
-                    el.appendChild(ripple);
-                    ripple.addEventListener('animationend', function () { ripple.remove(); });
-                });
-            });
-
-            // Profile image preview and actions
-            var fileInput = document.getElementById('profile_image');
-            var preview = document.getElementById('avatarPreview');
-            var uploadBox = document.getElementById('avatarUploadBox');
-            var imageActions = document.getElementById('imageActions');
-            var editImageBtn = document.getElementById('editImageBtn');
-            var deleteImageBtn = document.getElementById('deleteImageBtn');
-
-            function updateImagePreview() {
-                var file = fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
-
-                if (!file) {
-                    preview.style.display = 'none';
-                    preview.removeAttribute('src');
-                    imageActions.classList.remove('visible');
-                    uploadBox.style.display = 'block';
-                    return;
-                }
-
-                preview.src = URL.createObjectURL(file);
-                preview.style.display = 'block';
-                imageActions.classList.add('visible');
-                uploadBox.style.display = 'none';
-            }
-
-            if (fileInput && preview) {
-                fileInput.addEventListener('change', updateImagePreview);
-            }
-
-            if (editImageBtn) {
-                editImageBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    fileInput.click();
-                });
-            }
-
-            if (deleteImageBtn) {
-                deleteImageBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    fileInput.value = '';
-                    preview.style.display = 'none';
-                    preview.removeAttribute('src');
-                    imageActions.classList.remove('visible');
-                    uploadBox.style.display = 'block';
-                });
-            }
-
-            if (uploadBox) {
-                ['dragenter', 'dragover'].forEach(function (evt) {
-                    uploadBox.addEventListener(evt, function (e) {
-                        e.preventDefault();
-                        uploadBox.classList.add('drag-over');
-                    });
-                });
-
-                ['dragleave', 'drop'].forEach(function (evt) {
-                    uploadBox.addEventListener(evt, function (e) {
-                        e.preventDefault();
-                        uploadBox.classList.remove('drag-over');
-                    });
-                });
-            }
-
-            // Role responsibilities display
-            var roleSelect = document.getElementById('role');
-            var responsibilitiesSection = document.getElementById('responsibilitiesSection');
-
-            function updateResponsibilities() {
-                var selectedRole = roleSelect.value;
-                console.log('Selected role:', selectedRole);
-                var responsibilities = responsibilitiesMap[selectedRole] || [];
-                console.log('Responsibilities:', responsibilities);
-
-                // Clear existing badges (but keep the label)
-                var existingBadges = responsibilitiesSection.querySelectorAll('.responsibility-badge');
-                existingBadges.forEach(function (badge) { badge.remove(); });
-
-                if (responsibilities.length === 0) {
-                    responsibilitiesSection.classList.add('hidden');
-                    return;
-                }
-
-                // Add new badges
-                responsibilities.forEach(function (resp) {
-                    var badge = document.createElement('div');
-                    badge.className = 'responsibility-badge';
-                    badge.innerHTML = '<i class="bi ' + resp.icon + '"></i> ' + resp.name;
-                    responsibilitiesSection.appendChild(badge);
-                });
-
-                responsibilitiesSection.classList.remove('hidden');
-            }
-
-            if (roleSelect) {
-                roleSelect.addEventListener('change', updateResponsibilities);
-                // Initialize on page load
-                setTimeout(function() {
-                    updateResponsibilities();
-                }, 100);
-            }
-        });
-    </script>
+        </div>{{-- /stage --}}
     </section>
 </div>
 @endsection
 
 @include('admin.partials.sidebar-assets')
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    /* ── Password strength & hints ───────────────────────── */
+    var pwdInput   = document.getElementById('password');
+    var fillBar    = document.getElementById('ucStrengthFill');
+    var hintLen    = document.getElementById('hint-len');
+    var hintUpper  = document.getElementById('hint-upper');
+    var hintLower  = document.getElementById('hint-lower');
+    var hintSymbol = document.getElementById('hint-symbol');
+
+    function setHint(el, ok) {
+        var icon = el.querySelector('.bi');
+        if (ok) {
+            el.classList.add('ok');
+            icon.className = 'bi bi-check-circle-fill';
+        } else {
+            el.classList.remove('ok');
+            icon.className = 'bi bi-circle';
+        }
+    }
+
+    pwdInput && pwdInput.addEventListener('input', function () {
+        var v = pwdInput.value;
+        var hasLen    = v.length >= 8;
+        var hasUpper  = /[A-Z]/.test(v);
+        var hasLower  = /[a-z]/.test(v);
+        var hasSymbol = /[^A-Za-z0-9]/.test(v);
+
+        setHint(hintLen,    hasLen);
+        setHint(hintUpper,  hasUpper);
+        setHint(hintLower,  hasLower);
+        setHint(hintSymbol, hasSymbol);
+
+        var score = [hasLen, hasUpper, hasLower, hasSymbol].filter(Boolean).length;
+        var pct   = (score / 4) * 100;
+        var color = score <= 1 ? '#ef4444' : score === 2 ? '#f59e0b' : score === 3 ? '#3b82f6' : '#22c55e';
+        fillBar.style.width     = pct + '%';
+        fillBar.style.background = color;
+    });
+
+    /* ── Password toggle ─────────────────────────────────── */
+    var toggleBtn = document.getElementById('ucTogglePwd');
+    var eyeIcon   = document.getElementById('ucEyeIcon');
+    toggleBtn && toggleBtn.addEventListener('click', function () {
+        var shown = pwdInput.type === 'text';
+        pwdInput.type    = shown ? 'password' : 'text';
+        eyeIcon.className = shown ? 'bi bi-eye' : 'bi bi-eye-slash';
+    });
+
+    /* ── Role responsibilities ───────────────────────────── */
+    var permsMap = {
+        'admin':          [['bi-person-plus','Create User'],['bi-person-check','Edit Users'],['bi-file-text','Audit Logs'],['bi-gear','System Settings'],['bi-lightbulb','Submit Idea'],['bi-chat-left-text','Comment']],
+        'qa_manager':     [['bi-file-text','Audit Logs'],['bi-lightbulb','Submit Idea'],['bi-chat-left-text','Comment'],['bi-trash','Remove Idea'],['bi-bar-chart','Reports']],
+        'qa_coordinator': [['bi-lightbulb','Submit Idea'],['bi-chat-left-text','Comment'],['bi-people','Dept. Overview']],
+        'staff':          [['bi-lightbulb','Submit Idea'],['bi-chat-left-text','Comment']]
+    };
+    var permsBox  = document.getElementById('ucPerms');
+    var roleRadios = document.querySelectorAll('input[name="role"]');
+
+    function updatePerms() {
+        var selected = document.querySelector('input[name="role"]:checked');
+        var role = selected ? selected.value : null;
+        if (!role || !permsMap[role]) { permsBox.classList.remove('visible'); return; }
+        permsBox.innerHTML = permsMap[role].map(function(p) {
+            return '<span class="uc-perm-badge"><i class="bi ' + p[0] + '"></i>' + p[1] + '</span>';
+        }).join('');
+        permsBox.classList.add('visible');
+    }
+    roleRadios.forEach(function(r){ r.addEventListener('change', updatePerms); });
+    updatePerms();
+
+    /* ── Profile image preview ───────────────────────────── */
+    var fileInput  = document.getElementById('profile_image');
+    var avatarWrap = document.getElementById('ucAvatarWrap');
+    var avatarImg  = document.getElementById('ucAvatarPreview');
+    var clearBtn   = document.getElementById('ucAvatarClear');
+    var uploadBox  = document.getElementById('ucUpload');
+
+    fileInput && fileInput.addEventListener('change', function () {
+        if (fileInput.files && fileInput.files[0]) {
+            avatarImg.src = URL.createObjectURL(fileInput.files[0]);
+            avatarWrap.classList.add('visible');
+            uploadBox.style.display = 'none';
+        }
+    });
+    clearBtn && clearBtn.addEventListener('click', function () {
+        fileInput.value = '';
+        avatarImg.src   = '';
+        avatarWrap.classList.remove('visible');
+        uploadBox.style.display = '';
+    });
+
+    /* drag & drop */
+    uploadBox && ['dragenter','dragover'].forEach(function(e){
+        uploadBox.addEventListener(e, function(ev){ ev.preventDefault(); uploadBox.classList.add('drag-over'); });
+    });
+    uploadBox && ['dragleave','drop'].forEach(function(e){
+        uploadBox.addEventListener(e, function(ev){ ev.preventDefault(); uploadBox.classList.remove('drag-over'); });
+    });
+
+    /* ── Submit button ripple ────────────────────────────── */
+    var submitBtn = document.getElementById('ucSubmitBtn');
+    submitBtn && submitBtn.addEventListener('click', function (e) {
+        var rect   = submitBtn.getBoundingClientRect();
+        var ripple = document.createElement('span');
+        var size   = Math.max(rect.width, rect.height);
+        ripple.className = 'ripple';
+        ripple.style.cssText = 'width:'+size+'px;height:'+size+'px;left:'+(e.clientX-rect.left-size/2)+'px;top:'+(e.clientY-rect.top-size/2)+'px;';
+        submitBtn.appendChild(ripple);
+        ripple.addEventListener('animationend', function(){ ripple.remove(); });
+    });
+
+});
+</script>
+@endpush

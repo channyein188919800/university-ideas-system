@@ -53,7 +53,7 @@
         </a>
     </div>
 
-    <div class="admin-nav-group mt-auto">
+    <div class="admin-nav-group">
         <p class="admin-nav-title">Account</p>
         <a href="{{ route('home') }}" class="admin-nav-link">
             <i class="bi bi-house-door"></i>

@@ -2,7 +2,7 @@
 <style>
     .admin-shell {
         display: flex;
-        min-height: calc(100vh - 72px);
+        min-height: 100vh;
         background: radial-gradient(circle at 0% 0%, #e9f2ff 0%, #f4f7fc 35%, #f8fafc 100%);
         position: relative;
     }
@@ -107,12 +107,17 @@
         z-index: 1090;
     }
 
+    nav.navbar,
+    footer {
+        display: none !important;
+    }
+
     @media (max-width: 991.98px) {
         .admin-sidebar {
             position: fixed;
-            inset: 72px auto 0 0;
+            inset: 0 auto 0 0;
             transform: translateX(-105%);
-            height: calc(100vh - 72px);
+            height: 100vh;
         }
 
         .admin-sidebar.open {

@@ -4,82 +4,25 @@
 
 @section('content')
 <div class="admin-shell">
-    <button class="btn admin-menu-toggle d-lg-none" type="button" id="adminMenuToggle">
-        <i class="bi bi-list"></i>
-    </button>
-
-    <div class="admin-backdrop" id="adminBackdrop"></div>
-
-    <aside class="admin-sidebar" id="adminSidebar">
-        <div class="admin-brand">
-            <span class="admin-brand-icon"><i class="bi bi-shield-lock"></i></span>
-            <div>
-                <h5 class="mb-0">Admin Panel</h5>
-                <small>University Ideas</small>
-            </div>
-        </div>
-
-        <div class="admin-nav-group">
-            <p class="admin-nav-title">Overview</p>
-            <a href="{{ route('admin.dashboard') }}" class="admin-nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                <i class="bi bi-grid-1x2"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="{{ route('ideas.index') }}" class="admin-nav-link {{ request()->routeIs('ideas.*') ? 'active' : '' }}">
-                <i class="bi bi-lightbulb"></i>
-                <span>All Ideas</span>
-            </a>
-        </div>
-
-        <div class="admin-nav-group">
-            <p class="admin-nav-title">Administration</p>
-            <a href="{{ route('admin.users.index') }}" class="admin-nav-link {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
-                <i class="bi bi-people"></i>
-                <span>Manage Users</span>
-            </a>
-            <a href="{{ route('admin.users.create') }}" class="admin-nav-link {{ request()->routeIs('admin.users.create') ? 'active' : '' }}">
-                <i class="bi bi-person-plus"></i>
-                <span>Add User</span>
-            </a>
-            <a href="{{ route('admin.departments.index') }}" class="admin-nav-link {{ request()->routeIs('admin.departments.index') ? 'active' : '' }}">
-                <i class="bi bi-building"></i>
-                <span>Departments</span>
-            </a>
-            <a href="{{ route('admin.departments.create') }}" class="admin-nav-link {{ request()->routeIs('admin.departments.create') ? 'active' : '' }}">
-                <i class="bi bi-building-add"></i>
-                <span>Add Department</span>
-            </a>
-            <a href="{{ route('admin.settings.index') }}" class="admin-nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
-                <i class="bi bi-sliders"></i>
-                <span>System Settings</span>
-            </a>
-            <a href="{{ route('admin.audit-logs.index') }}" class="admin-nav-link {{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}">
-                <i class="bi bi-journal-text"></i>
-                <span>System Audit Logs</span>
-            </a>
-        </div>
-
-        <div class="admin-nav-group mt-auto">
-            <p class="admin-nav-title">Account</p>
-            <a href="{{ route('home') }}" class="admin-nav-link">
-                <i class="bi bi-house-door"></i>
-                <span>Main Site</span>
-            </a>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="admin-nav-link w-100 text-start border-0 bg-transparent">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>Logout</span>
-                </button>
-            </form>
-        </div>
-    </aside>
+    @include('admin.partials.sidebar')
 
     <section class="admin-main">
+        @php
+            $authUser = auth()->user();
+            $departmentName = $authUser->department->name ?? 'No Department Assigned';
+            $roleLabel = match ($authUser->role) {
+                'admin' => 'Administrator',
+                'qa_manager' => 'QA Manager',
+                'qa_coordinator' => 'QA Coordinator',
+                'staff' => 'Staff',
+                default => ucwords(str_replace('_', ' ', $authUser->role)),
+            };
+        @endphp
+
         <div class="admin-topbar">
             <div>
-                <h3 class="mb-1">Welcome back, {{ auth()->user()->name }}</h3>
-                <p class="text-muted mb-0">System administration and monitoring center</p>
+                <h3 class="mb-1">Welcome back, {{ $authUser->name }}</h3>
+                <p class="admin-topbar-subtitle mb-0">{{ $departmentName }} · {{ $roleLabel }}</p>
             </div>
             <a href="{{ route('admin.audit-logs.index') }}" class="btn btn-outline-primary">
                 <i class="bi bi-journal-text"></i> View Audit Logs
@@ -244,94 +187,12 @@
 </div>
 @endsection
 
+@include('admin.partials.sidebar-assets')
+
 @push('styles')
 <style>
-    .admin-shell {
-        display: flex;
-        min-height: calc(100vh - 72px);
-        background: radial-gradient(circle at 0% 0%, #e9f2ff 0%, #f4f7fc 35%, #f8fafc 100%);
-        position: relative;
-    }
-
-    .admin-sidebar {
-        width: 280px;
-        background: linear-gradient(180deg, #0f1f3a 0%, #15294a 100%);
-        color: #cdd8ee;
-        padding: 1.5rem 1rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        position: sticky;
-        top: 0;
-        max-height: 100vh;
-        box-shadow: 8px 0 30px rgba(16, 29, 59, 0.2);
-        z-index: 50;
-    }
-
-    .admin-brand {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.5rem;
-        margin-bottom: 0.75rem;
-    }
-
-    .admin-brand h5 {
-        color: #fff;
-        font-weight: 700;
-    }
-
-    .admin-brand small {
-        color: #8ca3cf;
-    }
-
-    .admin-brand-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, #4d6ff5 0%, #46b8fc 100%);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-    }
-
-    .admin-nav-title {
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        font-size: 0.72rem;
-        color: #7287b8;
-        margin: 0 0 0.45rem 0.6rem;
-    }
-
-    .admin-nav-link {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        border-radius: 0.65rem;
-        color: #cdd8ee;
-        text-decoration: none;
-        padding: 0.68rem 0.75rem;
-        margin-bottom: 0.25rem;
-        transition: all 0.25s ease;
-    }
-
-    .admin-nav-link i {
-        font-size: 1.05rem;
-    }
-
-    .admin-nav-link:hover,
-    .admin-nav-link.active {
-        background: rgba(125, 160, 255, 0.18);
-        color: #ffffff;
-        transform: translateX(4px);
-    }
-
-    .admin-main {
-        flex: 1;
-        padding: 1.5rem;
-        overflow: hidden;
+    .navbar {
+        display: none !important;
     }
 
     .admin-topbar {
@@ -352,34 +213,9 @@
         color: #1c2a45;
     }
 
-    .admin-topbar-tools {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .admin-search {
-        background: #f1f5fb;
-        border: 1px solid #dde5f3;
-        padding: 0.5rem 0.8rem;
-        border-radius: 0.7rem;
-        color: #6b7891;
-        min-width: 280px;
-        align-items: center;
-        gap: 0.45rem;
-        font-size: 0.9rem;
-    }
-
-    .admin-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: 2px solid #dce4f3;
-        background: #fff;
-        color: #47649b;
-        display: grid;
-        place-items: center;
-        font-size: 1.2rem;
+    .admin-topbar-subtitle {
+        color: #64748b;
+        font-size: 1.05rem;
     }
 
     .admin-stat-card {
@@ -516,25 +352,6 @@
         animation-delay: var(--delay, 0s);
     }
 
-    .admin-menu-toggle {
-        position: fixed;
-        top: 12px;
-        left: 10px;
-        z-index: 60;
-        background: #0f1f3a;
-        color: #fff;
-        border: none;
-        border-radius: 0.55rem;
-    }
-
-    .admin-backdrop {
-        display: none;
-    }
-
-    .navbar {
-        display: none !important;
-    }
-
     @keyframes admin-reveal {
         to {
             opacity: 1;
@@ -543,34 +360,9 @@
     }
 
     @media (max-width: 991.98px) {
-        .admin-sidebar {
-            position: fixed;
-            inset: 0 auto 0 0;
-            max-height: 100vh;
-            transform: translateX(-102%);
-            transition: transform 0.25s ease;
-        }
-
-        .admin-sidebar.open {
-            transform: translateX(0);
-        }
-
-        .admin-main {
-            width: 100%;
-            padding: 1rem;
-        }
-
         .admin-topbar {
             padding: 1rem;
             margin-top: 2.3rem;
-        }
-
-        .admin-backdrop.open {
-            display: block;
-            position: fixed;
-            inset: 0;
-            background: rgba(11, 17, 31, 0.55);
-            z-index: 45;
         }
     }
 
@@ -715,27 +507,6 @@
                 }
             });
         }
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggleButton = document.getElementById('adminMenuToggle');
-        const sidebar = document.getElementById('adminSidebar');
-        const backdrop = document.getElementById('adminBackdrop');
-
-        if (!toggleButton || !sidebar || !backdrop) {
-            return;
-        }
-
-        toggleButton.addEventListener('click', function () {
-            sidebar.classList.toggle('open');
-            backdrop.classList.toggle('open');
-        });
-
-        backdrop.addEventListener('click', function () {
-            sidebar.classList.remove('open');
-            backdrop.classList.remove('open');
-        });
     });
 </script>
 @endpush
