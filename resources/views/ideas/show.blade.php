@@ -563,6 +563,37 @@
                     @endauth
                 </div>
             </div>
+
+            <div class="sidebar-card anim-slide-left delay-4" style="border-top: 4px solid var(--danger-color);">
+                <div class="sidebar-title">Report This Idea</div>
+                @auth
+                    <form method="POST" action="{{ route('ideas.report', $idea) }}">
+                        @csrf
+                        <div class="mb-2">
+                            <label class="form-label small text-muted">Reason</label>
+                            <select name="reason" class="form-select form-select-sm" required>
+                                <option value="">Select a reason</option>
+                                <option value="Swearing">Swearing</option>
+                                <option value="Libel">Libel</option>
+                                <option value="Harassment">Harassment</option>
+                                <option value="Spam">Spam</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Details (optional)</label>
+                            <textarea name="details" class="form-control form-control-sm" rows="3" placeholder="Add extra context if needed."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-danger btn-sm w-100">
+                            <i class="fas fa-flag me-1"></i> Report
+                        </button>
+                    </form>
+                @else
+                    <p class="text-muted mb-0">
+                        Please <a href="{{ route('login') }}" style="color: var(--primary-color); font-weight: 700;">login</a> to report.
+                    </p>
+                @endauth
+            </div>
         </div>
     </div>
 </div>

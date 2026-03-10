@@ -1,3 +1,4 @@
+@php($hideNavFooter = true)
 @extends('layouts.app')
 
 @section('title', 'Staff Dashboard - University Ideas System')
@@ -11,12 +12,10 @@
     <div class="admin-backdrop" id="adminBackdrop"></div>
 
     <aside class="admin-sidebar" id="adminSidebar">
-        <div class="admin-brand">
-            <span class="admin-brand-icon"><i class="bi bi-person-badge"></i></span>
-            <div>
-                <h5 class="mb-0">Staff Panel</h5>
-                <small>University Ideas</small>
-            </div>
+        <div class="admin-brand" style="justify-content:center;padding:0.5rem 0 0.8rem;">
+            <img src="{{ asset('images/logo1_no_bg.png') }}"
+                 alt="University Ideas"
+                 style="width:130px;max-height:90px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));">
         </div>
 
         <div class="admin-nav-group">
@@ -41,7 +40,7 @@
             @endif
         </div>
 
-        <div class="admin-nav-group mt-auto">
+        <div class="admin-nav-group">
             <p class="admin-nav-title">Account</p>
             <a href="{{ route('home') }}" class="admin-nav-link">
                 <i class="bi bi-house-door"></i>

@@ -7,14 +7,16 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\TermsController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\DepartmentController as AdminDepartmentController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
+use App\Http\Controllers\Admin\UsageReportController as AdminUsageReportController;
 use App\Http\Controllers\QaManager\DashboardController as QaManagerDashboardController;
 use App\Http\Controllers\QaManager\CategoryController;
-use App\Http\Controllers\QaManager\ReportController;
+use App\Http\Controllers\QaManager\ReportController as QaManagerReportController;
 use App\Http\Controllers\QaCoordinator\DashboardController as QaCoordinatorDashboardController;
 use App\Http\Controllers\Staff\DashboardController as StaffDashboardController;
 
@@ -71,6 +73,9 @@ Route::middleware(['auth', 'terms'])->group(function () {
     
     // Comments
     Route::post('/ideas/{idea}/comments', [CommentController::class, 'store'])->name('comments.store');
+
+    // Report Inappropriate Idea
+    Route::post('/ideas/{idea}/report', [ReportController::class, 'store'])->name('ideas.report');
     
 });
 
@@ -103,6 +108,9 @@ Route::middleware(['auth', 'terms', 'role:admin'])
     // Audit Logs
     Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])->name('audit-logs.index');
     Route::get('/audit-logs/export', [AdminAuditLogController::class, 'export'])->name('audit-logs.export');
+
+    // Usage Reports
+    Route::get('/reports/usage', [AdminUsageReportController::class, 'index'])->name('reports.usage');
     
 });
 
@@ -123,10 +131,10 @@ Route::middleware(['auth', 'terms', 'role:qa_manager'])
     Route::resource('categories', CategoryController::class);
     
     // Reports
-    Route::get('/reports/statistics', [ReportController::class, 'statistics'])->name('reports.statistics');
-    Route::get('/reports/exceptions', [ReportController::class, 'exceptionReports'])->name('reports.exceptions');
-    Route::get('/reports/download-csv', [ReportController::class, 'downloadCsv'])->name('reports.download-csv');
-    Route::get('/reports/download-documents', [ReportController::class, 'downloadDocuments'])->name('reports.download-documents');
+    Route::get('/reports/statistics', [QaManagerReportController::class, 'statistics'])->name('reports.statistics');
+    Route::get('/reports/exceptions', [QaManagerReportController::class, 'exceptionReports'])->name('reports.exceptions');
+    Route::get('/reports/download-csv', [QaManagerReportController::class, 'downloadCsv'])->name('reports.download-csv');
+    Route::get('/reports/download-documents', [QaManagerReportController::class, 'downloadDocuments'])->name('reports.download-documents');
     
 });
 

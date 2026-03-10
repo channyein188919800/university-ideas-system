@@ -520,83 +520,85 @@
     @stack('styles')
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('home') }}">
-                <i class="fas fa-lightbulb"></i>
-                University Ideas
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
-                            <i class="fas fa-home"></i> Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('ideas.index') ? 'active' : '' }}" href="{{ route('ideas.index') }}">
-                            <i class="fas fa-ideas"></i> All Ideas
-                        </a>
-                    </li>
-                    @auth
-                        @if(auth()->user()->canSubmitIdea())
+    @unless(!empty($hideNavFooter))
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="{{ route('home') }}">
+                    <i class="fas fa-lightbulb"></i>
+                    University Ideas
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
+                                <i class="fas fa-home"></i> Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('ideas.index') ? 'active' : '' }}" href="{{ route('ideas.index') }}">
+                                <i class="fas fa-ideas"></i> All Ideas
+                            </a>
+                        </li>
+                        @auth
+                            @if(auth()->user()->canSubmitIdea())
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('ideas.create') ? 'active' : '' }}" href="{{ route('ideas.create') }}">
+                                        <i class="fas fa-plus-circle"></i> Submit Idea
+                                    </a>
+                                </li>
+                            @endif
+                        @endauth
+                    </ul>
+                    <ul class="navbar-nav">
+                        @guest
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('ideas.create') ? 'active' : '' }}" href="{{ route('ideas.create') }}">
-                                    <i class="fas fa-plus-circle"></i> Submit Idea
+                                <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">
+                                    <i class="fas fa-sign-in-alt"></i> Login
                                 </a>
                             </li>
-                        @endif
-                    @endauth
-                </ul>
-                <ul class="navbar-nav">
-                    @guest
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">
-                                <i class="fas fa-sign-in-alt"></i> Login
-                            </a>
-                        </li>
-                    @else
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle user-dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                @if(auth()->user()->profile_image_url)
-                                    <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }}" class="profile-avatar">
-                                @else
-                                    <span class="profile-avatar-fallback">
-                                        <i class="bi bi-person-fill"></i>
-                                    </span>
-                                @endif
-                                <span>{{ auth()->user()->name }}</span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                @if(auth()->user()->isAdmin())
-                                    <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}"><i class="fas fa-cog"></i> Admin Panel</a></li>
-                                @elseif(auth()->user()->isQaManager())
-                                    <li><a class="dropdown-item" href="{{ route('qa-manager.dashboard') }}"><i class="fas fa-chart-line"></i> QA Manager</a></li>
-                                @elseif(auth()->user()->isQaCoordinator())
-                                    <li><a class="dropdown-item" href="{{ route('qa-coordinator.dashboard') }}"><i class="fas fa-users-cog"></i> QA Coordinator</a></li>
-                                @else
-                                    <li><a class="dropdown-item" href="{{ route('staff.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                                @endif
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="fas fa-sign-out-alt"></i> Logout
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    @endguest
-                </ul>
+                        @else
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle user-dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                    @if(auth()->user()->profile_image_url)
+                                        <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }}" class="profile-avatar">
+                                    @else
+                                        <span class="profile-avatar-fallback">
+                                            <i class="bi bi-person-fill"></i>
+                                        </span>
+                                    @endif
+                                    <span>{{ auth()->user()->name }}</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    @if(auth()->user()->isAdmin())
+                                        <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}"><i class="fas fa-cog"></i> Admin Panel</a></li>
+                                    @elseif(auth()->user()->isQaManager())
+                                        <li><a class="dropdown-item" href="{{ route('qa-manager.dashboard') }}"><i class="fas fa-chart-line"></i> QA Manager</a></li>
+                                    @elseif(auth()->user()->isQaCoordinator())
+                                        <li><a class="dropdown-item" href="{{ route('qa-coordinator.dashboard') }}"><i class="fas fa-users-cog"></i> QA Coordinator</a></li>
+                                    @else
+                                        <li><a class="dropdown-item" href="{{ route('staff.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                    @endif
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-sign-out-alt"></i> Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endguest
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    @endunless
 
     <!-- Main Content -->
     <main class="flex-grow-1">
@@ -636,24 +638,35 @@
             </div>
         @endif
 
+        @if(session('login_notice'))
+            <div class="container mt-3">
+                <div class="alert alert-info alert-dismissible fade show">
+                    <i class="fas fa-shield-alt"></i> {{ session('login_notice') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+        @endif
+
         @yield('content')
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5><i class="fas fa-lightbulb"></i> University Ideas System</h5>
-                    <p class="mb-0">Empowering staff to contribute ideas for university improvement.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-0">&copy; {{ date('Y') }} University. All rights reserved.</p>
-                    <small>Quality Assurance Division</small>
+    @unless(!empty($hideNavFooter))
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-lightbulb"></i> University Ideas System</h5>
+                        <p class="mb-0">Empowering staff to contribute ideas for university improvement.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p class="mb-0">&copy; {{ date('Y') }} University. All rights reserved.</p>
+                        <small>Quality Assurance Division</small>
+                    </div>
                 </div>
             </div>
-        </div>
-    </footer>
+        </footer>
+    @endunless
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -28,6 +28,22 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
+            $user = Auth::user();
+            $previousLoginAt = $user?->last_login_at;
+            $user?->forceFill([
+                'last_login_at' => now(),
+                'last_login_ip' => $request->ip(),
+            ])->save();
+
+            if ($user) {
+                $request->session()->flash(
+                    'login_notice',
+                    $previousLoginAt
+                        ? 'Last login: ' . $previousLoginAt->format('M d, Y h:i A')
+                        : 'Welcome! This appears to be your first login.'
+                );
+            }
+
             AuditLogger::log(
                 'LOGIN_SUCCESS',
                 "User {$request->email} logged in successfully."

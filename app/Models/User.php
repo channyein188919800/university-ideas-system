@@ -33,6 +33,7 @@ class User extends Authenticatable
         'password' => 'hashed',
         'terms_accepted' => 'boolean',
         'terms_accepted_at' => 'datetime',
+        'last_login_at' => 'datetime',
     ];
 
     public function department()
@@ -53,6 +54,11 @@ class User extends Authenticatable
     public function votes()
     {
         return $this->hasMany(Vote::class);
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'reporter_id');
     }
 
     public function isAdmin()

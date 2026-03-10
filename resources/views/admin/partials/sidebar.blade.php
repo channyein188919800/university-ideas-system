@@ -5,12 +5,10 @@
 <div class="admin-backdrop" id="adminBackdrop"></div>
 
 <aside class="admin-sidebar" id="adminSidebar">
-    <div class="admin-brand">
-        <span class="admin-brand-icon"><i class="bi bi-shield-lock"></i></span>
-        <div>
-            <h5 class="mb-0">Admin Panel</h5>
-            <small>University Ideas</small>
-        </div>
+    <div class="admin-brand" style="justify-content:center;padding:0.5rem 0 0.8rem;">
+        <img src="{{ asset('images/logo1_no_bg.png') }}"
+             alt="University Ideas"
+             style="width:130px;max-height:90px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));">
     </div>
 
     <div class="admin-nav-group">
@@ -51,10 +49,18 @@
             <i class="bi bi-journal-text"></i>
             <span>System Audit Logs</span>
         </a>
+        <a href="{{ route('admin.reports.usage') }}" class="admin-nav-link {{ request()->routeIs('admin.reports.usage') ? 'active' : '' }}">
+            <i class="bi bi-graph-up-arrow"></i>
+            <span>Usage Reports</span>
+        </a>
     </div>
 
     <div class="admin-nav-group">
         <p class="admin-nav-title">Account</p>
+        <a href="{{ route('admin.users.edit', auth()->user()->id) }}" class="admin-nav-link {{ request()->routeIs('admin.users.edit') && optional(request()->route('user'))->id == auth()->user()->id ? 'active' : '' }}">
+            <i class="bi bi-person-gear"></i>
+            <span>Edit Account Info</span>
+        </a>
         <a href="{{ route('home') }}" class="admin-nav-link">
             <i class="bi bi-house-door"></i>
             <span>Main Site</span>
