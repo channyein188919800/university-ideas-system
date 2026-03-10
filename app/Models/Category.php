@@ -44,7 +44,7 @@ class Category extends Model
 
     public function canBeDeleted()
     {
-        return $this->ideas()->count() === 0;
+        return !$this->ideas()->exists();
     }
 
     public function scopeActive($query)

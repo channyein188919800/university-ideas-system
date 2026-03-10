@@ -63,20 +63,20 @@ Route::get('/ideas/{idea}', [IdeaController::class, 'show'])->name('ideas.show')
 */
 
 Route::middleware(['auth', 'terms'])->group(function () {
-    
+
     // Idea Submission
     Route::get('/ideas/create', [IdeaController::class, 'create'])->name('ideas.create');
     Route::post('/ideas', [IdeaController::class, 'store'])->name('ideas.store');
-    
+
     // Voting
     Route::post('/ideas/{idea}/vote', [IdeaController::class, 'vote'])->name('ideas.vote');
-    
+
     // Comments
     Route::post('/ideas/{idea}/comments', [CommentController::class, 'store'])->name('comments.store');
 
     // Report Inappropriate Idea
     Route::post('/ideas/{idea}/report', [ReportController::class, 'store'])->name('ideas.report');
-    
+
 });
 
 /*
@@ -89,30 +89,30 @@ Route::middleware(['auth', 'terms', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-    
-    // User Management
-    Route::resource('users', AdminUserController::class);
-    
-    // Department Management
-    Route::resource('departments', AdminDepartmentController::class);
-    
-    // Settings
-    Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
-    Route::post('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
 
-    // Idea Moderation
-    Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])->name('ideas.destroy');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    // Audit Logs
-    Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])->name('audit-logs.index');
-    Route::get('/audit-logs/export', [AdminAuditLogController::class, 'export'])->name('audit-logs.export');
+        // User Management
+        Route::resource('users', AdminUserController::class);
 
-    // Usage Reports
-    Route::get('/reports/usage', [AdminUsageReportController::class, 'index'])->name('reports.usage');
-    
-});
+        // Department Management
+        Route::resource('departments', AdminDepartmentController::class);
+
+        // Settings
+        Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
+        Route::post('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+
+        // Idea Moderation
+        Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])->name('ideas.destroy');
+
+        // Audit Logs
+        Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])->name('audit-logs.index');
+        Route::get('/audit-logs/export', [AdminAuditLogController::class, 'export'])->name('audit-logs.export');
+
+        // Usage Reports
+        Route::get('/reports/usage', [AdminUsageReportController::class, 'index'])->name('reports.usage');
+
+    });
 
 /*
 |--------------------------------------------------------------------------
@@ -124,19 +124,33 @@ Route::middleware(['auth', 'terms', 'role:qa_manager'])
     ->prefix('qa-manager')
     ->name('qa-manager.')
     ->group(function () {
-        
-    Route::get('/dashboard', [QaManagerDashboardController::class, 'index'])->name('dashboard');
-    
-    // Category Management
-    Route::resource('categories', CategoryController::class);
-    
-    // Reports
-    Route::get('/reports/statistics', [QaManagerReportController::class, 'statistics'])->name('reports.statistics');
-    Route::get('/reports/exceptions', [QaManagerReportController::class, 'exceptionReports'])->name('reports.exceptions');
-    Route::get('/reports/download-csv', [QaManagerReportController::class, 'downloadCsv'])->name('reports.download-csv');
-    Route::get('/reports/download-documents', [QaManagerReportController::class, 'downloadDocuments'])->name('reports.download-documents');
-    
-});
+
+        Route::get('/dashboard', [QaManagerDashboardController::class, 'index'])->name('dashboard');
+
+        // Idea Visibility
+        Route::patch('/ideas/{idea}/toggle-hidden', [IdeaController::class, 'toggleHidden'])->name('ideas.toggle-hidden');
+        Route::patch('/comments/{comment}/toggle-hidden', [CommentController::class, 'toggleHidden'])->name('comments.toggle-hidden');
+        Route::patch('/users/{user}/toggle-status', [QaManagerDashboardController::class, 'toggleUserStatus'])->name('users.toggle-status');
+
+        // Category Management
+        Route::resource('categories', CategoryController::class)->except(['show']);
+
+        // QA Manager Admin Panel
+        Route::resource('departments', QaManagerDepartmentController::class)->except(['show']);
+        Route::resource('staff', QaManagerStaffController::class)->parameters(['staff' => 'staff'])->except(['show']);
+        Route::get('/settings', [QaManagerSettingController::class, 'index'])->name('settings.index');
+        Route::post('/settings', [QaManagerSettingController::class, 'update'])->name('settings.update');
+        Route::get('/audit-logs', [QaManagerAuditLogController::class, 'index'])->name('audit-logs.index');
+        Route::get('/audit-logs/export', [QaManagerAuditLogController::class, 'export'])->name('audit-logs.export');
+        Route::get('/university-backlog', [QaManagerBacklogController::class, 'index'])->name('backlog.index');
+
+        // Reports
+        Route::get('/reports/statistics', [QaManagerReportController::class, 'statistics'])->name('reports.statistics');
+        Route::get('/reports/exceptions', [QaManagerReportController::class, 'exceptionReports'])->name('reports.exceptions');
+        Route::get('/reports/download-csv', [QaManagerReportController::class, 'downloadCsv'])->name('reports.download-csv');
+        Route::get('/reports/download-documents', [QaManagerReportController::class, 'downloadDocuments'])->name('reports.download-documents');
+
+    });
 
 /*
 |--------------------------------------------------------------------------
@@ -148,10 +162,10 @@ Route::middleware(['auth', 'terms', 'role:qa_coordinator'])
     ->prefix('qa-coordinator')
     ->name('qa-coordinator.')
     ->group(function () {
-        
-    Route::get('/dashboard', [QaCoordinatorDashboardController::class, 'index'])->name('dashboard');
-    
-});
+
+        Route::get('/dashboard', [QaCoordinatorDashboardController::class, 'index'])->name('dashboard');
+
+    });
 
 /*
 |--------------------------------------------------------------------------
@@ -163,10 +177,10 @@ Route::middleware(['auth', 'terms', 'role:staff'])
     ->prefix('staff')
     ->name('staff.')
     ->group(function () {
-        
-    Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('dashboard');
-    
-});
+
+        Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('dashboard');
+
+    });
 
 /*
 |--------------------------------------------------------------------------
@@ -178,29 +192,29 @@ Route::middleware(['auth', 'terms', 'role:qa_coordinator'])
     ->prefix('qa-coordinator')
     ->name('qa-coordinator.')
     ->group(function () {
-        
-    // Dashboard
-    Route::get('/dashboard', [QaCoordinatorDashboardController::class, 'index'])->name('dashboard');
-    
-    // Reminder endpoints (for AJAX calls in dashboard)
-    Route::post('/remind-all', [QaCoordinatorDashboardController::class, 'remindAll'])->name('remind-all');
-    Route::post('/remind-staff/{user}', [QaCoordinatorDashboardController::class, 'remindStaff'])->name('remind-staff');
-    
-    // Chart data endpoint (for period filtering)
-    Route::get('/chart-data', [QaCoordinatorDashboardController::class, 'getChartData'])->name('chart-data');
-    
-    // Statistics page
-    Route::get('/statistics', [QaCoordinatorDashboardController::class, 'statistics'])->name('statistics');
-    
-    // Exception reports
-    Route::get('/reports/exceptions', [QaCoordinatorDashboardController::class, 'exceptions'])->name('reports.exceptions');
-    
-    // Notifications
-    Route::get('/notifications', [QaCoordinatorDashboardController::class, 'notifications'])->name('notifications');
-    Route::post('/notifications/{id}/read', [QaCoordinatorDashboardController::class, 'markAsRead'])->name('notifications.read');
-    Route::post('/notifications/read-all', [QaCoordinatorDashboardController::class, 'markAllAsRead'])->name('notifications.read-all');
-    
-    // Staff management
-    Route::get('/staff', [QaCoordinatorDashboardController::class, 'staffList'])->name('staff.index');
-    
-});
+
+        // Dashboard
+        Route::get('/dashboard', [QaCoordinatorDashboardController::class, 'index'])->name('dashboard');
+
+        // Reminder endpoints (for AJAX calls in dashboard)
+        Route::post('/remind-all', [QaCoordinatorDashboardController::class, 'remindAll'])->name('remind-all');
+        Route::post('/remind-staff/{user}', [QaCoordinatorDashboardController::class, 'remindStaff'])->name('remind-staff');
+
+        // Chart data endpoint (for period filtering)
+        Route::get('/chart-data', [QaCoordinatorDashboardController::class, 'getChartData'])->name('chart-data');
+
+        // Statistics page
+        Route::get('/statistics', [QaCoordinatorDashboardController::class, 'statistics'])->name('statistics');
+
+        // Exception reports
+        Route::get('/reports/exceptions', [QaCoordinatorDashboardController::class, 'exceptions'])->name('reports.exceptions');
+
+        // Notifications
+        Route::get('/notifications', [QaCoordinatorDashboardController::class, 'notifications'])->name('notifications');
+        Route::post('/notifications/{id}/read', [QaCoordinatorDashboardController::class, 'markAsRead'])->name('notifications.read');
+        Route::post('/notifications/read-all', [QaCoordinatorDashboardController::class, 'markAllAsRead'])->name('notifications.read-all');
+
+        // Staff management
+        Route::get('/staff', [QaCoordinatorDashboardController::class, 'staffList'])->name('staff.index');
+
+    });

@@ -20,6 +20,10 @@ class IdeaController extends Controller
     public function index(Request $request)
     {
         $query = Idea::published()->with(['user', 'department', 'categories']);
+
+        if (!Auth::check() || !Auth::user()->isQaManager()) {
+            $query->visible();
+        }
         
         if ($request->has('category')) {
             $query->byCategory($request->category);
@@ -116,6 +120,10 @@ class IdeaController extends Controller
 
     public function show(Idea $idea)
     {
+        if ($idea->hidden && (!Auth::check() || !Auth::user()->isQaManager())) {
+            abort(404);
+        }
+
         $idea->incrementViews();
         
         $userVote = null;
@@ -123,13 +131,22 @@ class IdeaController extends Controller
             $userVote = $idea->getUserVote(Auth::id());
         }
         
-        $comments = $idea->comments()->with('user')->paginate(10);
+        $commentsQuery = $idea->comments()->with('user');
+        if (!Auth::check() || !Auth::user()->isQaManager()) {
+            $commentsQuery->where('hidden', false);
+        }
+
+        $comments = $commentsQuery->paginate(10);
         
         return view('ideas.show', compact('idea', 'userVote', 'comments'));
     }
 
     public function vote(Request $request, Idea $idea)
     {
+        if ($idea->hidden && (!Auth::check() || !Auth::user()->isQaManager())) {
+            abort(404);
+        }
+
         $validated = $request->validate([
             'vote_type' => 'required|in:up,down',
         ]);
@@ -189,5 +206,27 @@ class IdeaController extends Controller
         );
 
         return redirect()->route('ideas.index')->with('success', 'Idea deleted successfully.');
+    }
+
+    public function toggleHidden(Idea $idea)
+    {
+        if (!Auth::check() || !Auth::user()->isQaManager()) {
+            abort(403, 'Unauthorized access.');
+        }
+
+        $idea->update([
+            'hidden' => !$idea->hidden,
+        ]);
+
+        AuditLogger::log(
+            $idea->hidden ? 'HIDE_IDEA' : 'UNHIDE_IDEA',
+            ($idea->hidden ? 'Hidden' : 'Unhidden') . " idea #{$idea->id}: {$idea->title}.",
+            $idea
+        );
+
+        return redirect()->back()->with(
+            'success',
+            $idea->hidden ? 'Idea has been hidden successfully.' : 'Idea has been unhidden successfully.'
+        );
     }
 }

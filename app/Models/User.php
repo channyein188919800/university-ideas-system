@@ -17,6 +17,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'status',
         'department_id',
         'profile_image',
         'terms_accepted',
@@ -91,6 +92,10 @@ class User extends Authenticatable
 
     public function canSubmitIdea()
     {
+        if ($this->status === 'disabled') {
+            return false;
+        }
+
         if (!$this->terms_accepted) {
             return false;
         }
@@ -105,6 +110,10 @@ class User extends Authenticatable
 
     public function canComment()
     {
+        if ($this->status === 'disabled') {
+            return false;
+        }
+
         $finalClosureDate = Setting::getValue('final_closure_date');
         if ($finalClosureDate) {
             return now()->lt($finalClosureDate);
@@ -135,5 +144,10 @@ class User extends Authenticatable
     public function scopeWithRole($query, $role)
     {
         return $query->where('role', $role);
+    }
+
+    public function isDisabled()
+    {
+        return $this->status === 'disabled';
     }
 }

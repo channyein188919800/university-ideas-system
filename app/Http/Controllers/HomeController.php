@@ -12,11 +12,14 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $popularIdeas = Idea::published()->popular()->take(5)->get();
-        $mostViewedIdeas = Idea::published()->mostViewed()->take(5)->get();
-        $latestIdeas = Idea::published()->latest()->take(5)->get();
+        $popularIdeas = Idea::published()->visible()->popular()->take(5)->get();
+        $mostViewedIdeas = Idea::published()->visible()->mostViewed()->take(5)->get();
+        $latestIdeas = Idea::published()->visible()->latest()->take(5)->get();
         $latestComments = Comment::with('idea')
-            ->whereHas('idea')
+            ->whereHas('idea', function ($query) {
+                $query->where('hidden', false);
+            })
+            ->where('hidden', false)
             ->latest()
             ->take(5)
             ->get();
