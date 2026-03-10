@@ -171,8 +171,9 @@
 
     // Reminder functions (same as dashboard)
     function sendReminderToAll() {
-        if (!confirm('Send participation reminder to all department staff?')) return;
+        confirmAction('Send participation reminder to all department staff?', function () {
         // ... (copy reminder function from dashboard)
+        });
     }
 </script>
 @endpush

@@ -477,7 +477,7 @@
     }
 
     function sendReminderToAll() {
-        if (!confirm('Send participation reminder to all department staff?')) return;
+        confirmAction('Send participation reminder to all department staff?', function () {
         
         const modal = showLoading('Sending reminders to all staff...');
         
@@ -499,10 +499,11 @@
             showToast('Error sending reminders', false);
             console.error('Error:', error);
         });
+        });
     }
 
     function sendReminderToUser(userId, userName) {
-        if (!confirm(`Send reminder to ${userName}?`)) return;
+        confirmAction(`Send reminder to ${userName}?`, function () {
         
         const modal = showLoading(`Sending reminder to ${userName}...`);
         
@@ -523,6 +524,7 @@
             modal.hide();
             showToast('Error sending reminder', false);
             console.error('Error:', error);
+        });
         });
     }
 </script>

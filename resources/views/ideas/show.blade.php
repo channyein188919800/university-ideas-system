@@ -579,7 +579,7 @@
                     @endauth
                     @auth
                         @if(auth()->user()->isAdmin())
-                            <form method="POST" action="{{ route('admin.ideas.destroy', $idea) }}" onsubmit="return confirm('Delete this idea? This action hides it from the system.');">
+                            <form method="POST" action="{{ route('admin.ideas.destroy', $idea) }}" data-confirm="Delete this idea? This action hides it from the system.">
                                 @csrf
                                 @method('DELETE')
                                 <input type="hidden" name="reason" value="Removed by administrator">

@@ -134,27 +134,27 @@
     }
 
     function markAllAsRead() {
-        if (!confirm('Mark all notifications as read?')) return;
-        
-        const modal = showLoading();
-        
-        fetch('{{ route("qa-coordinator.notifications.read-all") }}', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            modal.hide();
-            if (data.success) {
-                location.reload();
-            }
-        })
-        .catch(() => {
-            modal.hide();
-            alert('Error marking notifications as read');
+        confirmAction('Mark all notifications as read?', function () {
+            const modal = showLoading();
+            
+            fetch('{{ route("qa-coordinator.notifications.read-all") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                modal.hide();
+                if (data.success) {
+                    location.reload();
+                }
+            })
+            .catch(() => {
+                modal.hide();
+                alert('Error marking notifications as read');
+            });
         });
     }
 

@@ -42,7 +42,7 @@
                                     <a href="{{ route('qa-manager.departments.edit', $department) }}" class="btn btn-outline-primary">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
-                                    <form method="POST" action="{{ route('qa-manager.departments.destroy', $department) }}" onsubmit="return confirm('Delete this department?');">
+                                    <form method="POST" action="{{ route('qa-manager.departments.destroy', $department) }}" data-confirm="Delete this department?">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-outline-danger">

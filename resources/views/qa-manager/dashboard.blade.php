@@ -197,7 +197,7 @@
                             <td>{{ $user->comments_count }}</td>
                             <td>
                                 <form method="POST" action="{{ route('qa-manager.users.toggle-status', $user) }}"
-                                      onsubmit="return confirm('{{ $user->status === 'disabled' ? 'Restore this user and restore their hidden ideas/comments?' : 'Disable this user and hide all their ideas/comments?' }}');">
+                                      data-confirm="{{ $user->status === 'disabled' ? 'Restore this user and restore their hidden ideas/comments?' : 'Disable this user and hide all their ideas/comments?' }}">
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" class="btn btn-sm {{ $user->status === 'disabled' ? 'btn-success' : 'btn-outline-danger' }}">

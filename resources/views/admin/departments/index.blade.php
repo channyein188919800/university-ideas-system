@@ -65,7 +65,7 @@
                                                 <a href="{{ route('admin.departments.edit', $department) }}" class="btn btn-outline-primary">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <form method="POST" action="{{ route('admin.departments.destroy', $department) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this department?');">
+                                                <form method="POST" action="{{ route('admin.departments.destroy', $department) }}" class="d-inline" data-confirm="Are you sure you want to delete this department?">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-outline-danger">

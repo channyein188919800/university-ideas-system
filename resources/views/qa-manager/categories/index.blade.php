@@ -60,7 +60,7 @@
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     @if($category->canBeDeleted())
-                                        <form method="POST" action="{{ route('qa-manager.categories.destroy', $category) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this category?');">
+                                        <form method="POST" action="{{ route('qa-manager.categories.destroy', $category) }}" class="d-inline" data-confirm="Are you sure you want to delete this category?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-outline-danger">
