@@ -1,157 +1,192 @@
-@extends('layouts.app')
+@extends('layouts.qa-manager')
 
 @section('title', 'Exception Reports - University Ideas System')
 
 @section('content')
-<div class="container py-4">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2><i class="fas fa-exclamation-triangle"></i> Exception Reports</h2>
-            <p class="text-muted mb-0">Identify ideas and comments that need attention</p>
-        </div>
-        <a href="{{ route('qa-manager.dashboard') }}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left"></i> Back
-        </a>
+<div class="qa-topbar">
+    <div>
+        <h3><i class="bi bi-exclamation-triangle"></i> Exception Reports</h3>
+        <p>Track outlier submissions and discussions requiring moderation review</p>
     </div>
+</div>
 
-    <!-- Ideas Without Comments -->
-    <div class="card mb-4">
-        <div class="card-header bg-warning text-dark">
-            <i class="fas fa-comment-slash"></i> Ideas Without Comments
-            <span class="badge bg-dark ms-2">{{ $ideasWithoutComments->count() }}</span>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Department</th>
-                            <th>Author</th>
-                            <th>Submitted</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($ideasWithoutComments as $idea)
-                            <tr>
-                                <td>{{ Str::limit($idea->title, 50) }}</td>
-                                <td>{{ $idea->department->name }}</td>
-                                <td>
-                                    @if($idea->is_anonymous)
-                                        <span class="badge badge-anonymous"><i class="fas fa-user-secret"></i> Anonymous</span>
-                                    @else
-                                        {{ $idea->user->name }}
-                                    @endif
-                                </td>
-                                <td>{{ $idea->created_at->diffForHumans() }}</td>
-                                <td>
-                                    <a href="{{ route('ideas.show', $idea) }}" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center py-4">
-                                    <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
-                                    <p class="text-muted mb-0">All ideas have comments!</p>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="qa-card">
+    <div class="qa-card-header">
+        <h5><i class="bi bi-funnel"></i> Filters</h5>
     </div>
+    <div class="qa-card-body">
+        <form method="GET" action="{{ route('qa-manager.reports.exceptions') }}" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Search</label>
+                <input type="text" name="search" class="form-control" value="{{ $search }}" placeholder="Idea title or comment text">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Department</label>
+                <select name="department_id" class="form-select">
+                    <option value="">All Departments</option>
+                    @foreach($departments as $department)
+                        <option value="{{ $department->id }}" {{ (int) $departmentId === $department->id ? 'selected' : '' }}>
+                            {{ $department->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search me-1"></i> Apply
+                </button>
+                <a href="{{ route('qa-manager.reports.exceptions') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 
-    <!-- Anonymous Ideas -->
-    <div class="card mb-4">
-        <div class="card-header bg-info text-white">
-            <i class="fas fa-user-secret"></i> Anonymous Ideas
-            <span class="badge bg-dark ms-2">{{ $anonymousIdeas->count() }}</span>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
+<div class="qa-card">
+    <div class="qa-card-header">
+        <h5>
+            <i class="bi bi-chat-slash"></i> Ideas Without Comments
+            <span class="badge bg-dark ms-2">{{ $ideasWithoutComments->total() }}</span>
+        </h5>
+    </div>
+    <div class="qa-card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Department</th>
+                        <th>Author</th>
+                        <th>Submitted</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($ideasWithoutComments as $idea)
                         <tr>
-                            <th>Title</th>
-                            <th>Department</th>
-                            <th>Submitted</th>
-                            <th>Comments</th>
-                            <th>Action</th>
+                            <td>{{ Str::limit($idea->title, 60) }}</td>
+                            <td>{{ $idea->department?->name ?? 'N/A' }}</td>
+                            <td>{{ $idea->is_anonymous ? 'Anonymous' : ($idea->user?->name ?? 'Unknown') }}</td>
+                            <td>{{ $idea->created_at->diffForHumans() }}</td>
+                            <td>
+                                <a href="{{ route('ideas.show', $idea) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($anonymousIdeas as $idea)
-                            <tr>
-                                <td>{{ Str::limit($idea->title, 50) }}</td>
-                                <td>{{ $idea->department->name }}</td>
-                                <td>{{ $idea->created_at->diffForHumans() }}</td>
-                                <td>{{ $idea->comments_count }}</td>
-                                <td>
-                                    <a href="{{ route('ideas.show', $idea) }}" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center py-4">
-                                    <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
-                                    <p class="text-muted mb-0">No anonymous ideas.</p>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                                <p class="text-muted mb-0 mt-2">No records found.</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
+<div class="mb-4 d-flex justify-content-center">
+    {{ $ideasWithoutComments->links() }}
+</div>
 
-    <!-- Anonymous Comments -->
-    <div class="card">
-        <div class="card-header bg-secondary text-white">
-            <i class="fas fa-user-secret"></i> Anonymous Comments
-            <span class="badge bg-dark ms-2">{{ $anonymousComments->count() }}</span>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
+<div class="qa-card">
+    <div class="qa-card-header">
+        <h5>
+            <i class="bi bi-incognito"></i> Anonymous Ideas
+            <span class="badge bg-dark ms-2">{{ $anonymousIdeas->total() }}</span>
+        </h5>
+    </div>
+    <div class="qa-card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Department</th>
+                        <th>Submitted</th>
+                        <th>Comments</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($anonymousIdeas as $idea)
                         <tr>
-                            <th>Idea</th>
-                            <th>Comment</th>
-                            <th>Submitted</th>
-                            <th>Action</th>
+                            <td>{{ Str::limit($idea->title, 60) }}</td>
+                            <td>{{ $idea->department?->name ?? 'N/A' }}</td>
+                            <td>{{ $idea->created_at->diffForHumans() }}</td>
+                            <td>{{ $idea->comments_count }}</td>
+                            <td>
+                                <a href="{{ route('ideas.show', $idea) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($anonymousComments as $comment)
-                            <tr>
-                                <td>{{ Str::limit($comment->idea->title, 40) }}</td>
-                                <td>{{ Str::limit($comment->content, 60) }}</td>
-                                <td>{{ $comment->created_at->diffForHumans() }}</td>
-                                <td>
-                                    <a href="{{ route('ideas.show', $comment->idea) }}" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-center py-4">
-                                    <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
-                                    <p class="text-muted mb-0">No anonymous comments.</p>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <i class="bi bi-inbox text-muted" style="font-size: 2rem;"></i>
+                                <p class="text-muted mb-0 mt-2">No records found.</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
+<div class="mb-4 d-flex justify-content-center">
+    {{ $anonymousIdeas->links() }}
+</div>
+
+<div class="qa-card">
+    <div class="qa-card-header">
+        <h5>
+            <i class="bi bi-incognito"></i> Anonymous Comments
+            <span class="badge bg-dark ms-2">{{ $anonymousComments->total() }}</span>
+        </h5>
+    </div>
+    <div class="qa-card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Idea</th>
+                        <th>Comment</th>
+                        <th>Submitted</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($anonymousComments as $comment)
+                        <tr>
+                            <td>{{ Str::limit($comment->idea?->title, 50) }}</td>
+                            <td>{{ Str::limit($comment->content, 80) }}</td>
+                            <td>{{ $comment->created_at->diffForHumans() }}</td>
+                            <td>
+                                @if($comment->idea)
+                                    <a href="{{ route('ideas.show', $comment->idea) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center py-4">
+                                <i class="bi bi-inbox text-muted" style="font-size: 2rem;"></i>
+                                <p class="text-muted mb-0 mt-2">No records found.</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="d-flex justify-content-center">
+    {{ $anonymousComments->links() }}
 </div>
 @endsection

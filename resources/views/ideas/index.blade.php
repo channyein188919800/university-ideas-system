@@ -484,6 +484,9 @@
                             <h5 class="idea-title mb-0">
                                 <a href="{{ route('ideas.show', $idea) }}">{{ $idea->title }}</a>
                             </h5>
+                            @if($idea->hidden)
+                                <span class="badge text-bg-dark"><i class="bi bi-eye-slash me-1"></i>Hidden</span>
+                            @endif
                             @if($idea->is_anonymous)
                                 <span class="badge-anon"><i class="bi bi-incognito me-1"></i> Anonymous</span>
                             @endif
@@ -526,6 +529,19 @@
                                 <i class="bi bi-star-fill"></i>
                                 Score {{ $idea->popularity_score > 0 ? '+' : '' }}{{ $idea->popularity_score }}
                             </span>
+
+                            @auth
+                                @if(auth()->user()->isQaManager())
+                                    <form method="POST" action="{{ route('qa-manager.ideas.toggle-hidden', $idea) }}" class="mt-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm {{ $idea->hidden ? 'btn-success' : 'btn-outline-danger' }}">
+                                            <i class="bi {{ $idea->hidden ? 'bi-eye' : 'bi-eye-slash' }} me-1"></i>
+                                            {{ $idea->hidden ? 'Unhide' : 'Hide' }}
+                                        </button>
+                                    </form>
+                                @endif
+                            @endauth
                         </div>
                     </div>
                 </div>

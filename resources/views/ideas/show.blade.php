@@ -370,6 +370,11 @@
                     @foreach($idea->categories as $category)
                         <span class="hero-category">{{ $category->name }}</span>
                     @endforeach
+                    @if($idea->hidden)
+                        <span class="hero-category" style="background: rgba(229, 62, 62, 0.2); border-color: rgba(229, 62, 62, 0.3);">
+                            <i class="fas fa-eye-slash"></i> Hidden
+                        </span>
+                    @endif
                     @if($idea->is_anonymous)
                         <span class="hero-category" style="background: rgba(221, 107, 32, 0.2); border-color: rgba(221, 107, 32, 0.3);">
                             <i class="fas fa-user-secret"></i> Anonymous
@@ -488,10 +493,28 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <h6 class="mb-0" style="font-weight: 700; color: var(--primary-color);">
-                                            {{ $comment->is_anonymous ? 'Anonymous' : $comment->user->name }}
-                                        </h6>
-                                        <small class="text-muted" style="font-size: 0.8rem;">{{ $comment->created_at->diffForHumans() }}</small>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <h6 class="mb-0" style="font-weight: 700; color: var(--primary-color);">
+                                                {{ $comment->is_anonymous ? 'Anonymous' : $comment->user->name }}
+                                            </h6>
+                                            @if($comment->hidden)
+                                                <span class="badge bg-dark">Hidden</span>
+                                            @endif
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <small class="text-muted" style="font-size: 0.8rem;">{{ $comment->created_at->diffForHumans() }}</small>
+                                            @auth
+                                                @if(auth()->user()->isQaManager())
+                                                    <form method="POST" action="{{ route('qa-manager.comments.toggle-hidden', $comment) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="btn btn-sm {{ $comment->hidden ? 'btn-success' : 'btn-outline-danger' }}">
+                                                            <i class="fas {{ $comment->hidden ? 'fa-eye' : 'fa-eye-slash' }}"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @endauth
+                                        </div>
                                     </div>
                                     <p class="mb-0 text-secondary" style="line-height: 1.6;">{!! nl2br(e($comment->content)) !!}</p>
                                 </div>
@@ -542,6 +565,18 @@
                     <a href="{{ route('ideas.index') }}" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-2"></i> Back to Ideas
                     </a>
+                    @auth
+                        @if(auth()->user()->isQaManager())
+                            <form method="POST" action="{{ route('qa-manager.ideas.toggle-hidden', $idea) }}">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn {{ $idea->hidden ? 'btn-success' : 'btn-warning' }} w-100">
+                                    <i class="fas {{ $idea->hidden ? 'fa-eye' : 'fa-eye-slash' }} me-2"></i>
+                                    {{ $idea->hidden ? 'Unhide Idea' : 'Hide Idea' }}
+                                </button>
+                            </form>
+                        @endif
+                    @endauth
                     @auth
                         @if(auth()->user()->isAdmin())
                             <form method="POST" action="{{ route('admin.ideas.destroy', $idea) }}" onsubmit="return confirm('Delete this idea? This action hides it from the system.');">

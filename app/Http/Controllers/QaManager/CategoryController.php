@@ -11,7 +11,11 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::withCount('ideas')->paginate(20);
+        $categories = Category::query()
+            ->withCount('ideas')
+            ->latest()
+            ->paginate(20);
+
         return view('qa-manager.categories.index', compact('categories'));
     }
 
@@ -57,7 +61,7 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        if (!$category->canBeDeleted()) {
+        if ($category->ideas()->exists()) {
             return redirect()->back()->with('error', 'Cannot delete category that has been used.');
         }
 

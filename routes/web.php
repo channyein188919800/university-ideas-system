@@ -14,6 +14,11 @@ use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\QaManager\DashboardController as QaManagerDashboardController;
 use App\Http\Controllers\QaManager\CategoryController;
+use App\Http\Controllers\QaManager\DepartmentController as QaManagerDepartmentController;
+use App\Http\Controllers\QaManager\StaffController as QaManagerStaffController;
+use App\Http\Controllers\QaManager\SettingController as QaManagerSettingController;
+use App\Http\Controllers\QaManager\AuditLogController as QaManagerAuditLogController;
+use App\Http\Controllers\QaManager\BacklogController as QaManagerBacklogController;
 use App\Http\Controllers\QaManager\ReportController;
 use App\Http\Controllers\QaCoordinator\DashboardController as QaCoordinatorDashboardController;
 use App\Http\Controllers\Staff\DashboardController as StaffDashboardController;
@@ -119,8 +124,22 @@ Route::middleware(['auth', 'terms', 'role:qa_manager'])
         
     Route::get('/dashboard', [QaManagerDashboardController::class, 'index'])->name('dashboard');
     
+    // Idea Visibility
+    Route::patch('/ideas/{idea}/toggle-hidden', [IdeaController::class, 'toggleHidden'])->name('ideas.toggle-hidden');
+    Route::patch('/comments/{comment}/toggle-hidden', [CommentController::class, 'toggleHidden'])->name('comments.toggle-hidden');
+    Route::patch('/users/{user}/toggle-status', [QaManagerDashboardController::class, 'toggleUserStatus'])->name('users.toggle-status');
+
     // Category Management
-    Route::resource('categories', CategoryController::class);
+    Route::resource('categories', CategoryController::class)->except(['show']);
+
+    // QA Manager Admin Panel
+    Route::resource('departments', QaManagerDepartmentController::class)->except(['show']);
+    Route::resource('staff', QaManagerStaffController::class)->parameters(['staff' => 'staff'])->except(['show']);
+    Route::get('/settings', [QaManagerSettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [QaManagerSettingController::class, 'update'])->name('settings.update');
+    Route::get('/audit-logs', [QaManagerAuditLogController::class, 'index'])->name('audit-logs.index');
+    Route::get('/audit-logs/export', [QaManagerAuditLogController::class, 'export'])->name('audit-logs.export');
+    Route::get('/university-backlog', [QaManagerBacklogController::class, 'index'])->name('backlog.index');
     
     // Reports
     Route::get('/reports/statistics', [ReportController::class, 'statistics'])->name('reports.statistics');

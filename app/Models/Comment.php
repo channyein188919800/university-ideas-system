@@ -15,10 +15,12 @@ class Comment extends Model
         'user_id',
         'content',
         'is_anonymous',
+        'hidden',
     ];
 
     protected $casts = [
         'is_anonymous' => 'boolean',
+        'hidden' => 'boolean',
     ];
 
     public function idea()
@@ -47,5 +49,10 @@ class Comment extends Model
     public function scopeLatest($query)
     {
         return $query->orderBy('created_at', 'desc');
+    }
+
+    public function scopeVisible($query)
+    {
+        return $query->where('hidden', false);
     }
 }

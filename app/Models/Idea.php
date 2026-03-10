@@ -22,6 +22,7 @@ class Idea extends Model
         'thumbs_down_count',
         'comments_count',
         'is_closed',
+        'hidden',
     ];
 
     protected $casts = [
@@ -31,6 +32,7 @@ class Idea extends Model
         'thumbs_up_count' => 'integer',
         'thumbs_down_count' => 'integer',
         'comments_count' => 'integer',
+        'hidden' => 'boolean',
     ];
 
     protected $with = ['user', 'department', 'categories'];
@@ -97,7 +99,7 @@ class Idea extends Model
 
     public function updateCommentsCount()
     {
-        $this->comments_count = $this->comments()->count();
+        $this->comments_count = $this->comments()->where('hidden', false)->count();
         $this->save();
     }
 
@@ -146,6 +148,11 @@ class Idea extends Model
     public function scopeOpen($query)
     {
         return $query->where('is_closed', false);
+    }
+
+    public function scopeVisible($query)
+    {
+        return $query->where('hidden', false);
     }
 
     public function scopeWithoutComments($query)
