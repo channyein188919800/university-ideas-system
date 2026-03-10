@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Idea;
-use App\Models\Setting;
 use App\Notifications\CommentAddedNotification;
 use App\Support\AuditLogger;
 use Illuminate\Http\Request;
