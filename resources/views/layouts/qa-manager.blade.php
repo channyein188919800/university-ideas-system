@@ -379,6 +379,7 @@
         .progress-bar-success {
             background: linear-gradient(90deg, #48bb78, #68d391);
         }
+
     </style>
 </head>
 <body>
@@ -494,6 +495,7 @@
                     }
                 });
             }
+
         });
     </script>
 

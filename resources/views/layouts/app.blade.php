@@ -360,6 +360,7 @@
             background-color: #bee3f8;
             color: #2a4365;
         }
+
         
         /* Form Styles */
         .form-control, .form-select {
@@ -638,14 +639,6 @@
             </div>
         @endif
 
-        @if(session('login_notice'))
-            <div class="container mt-3">
-                <div class="alert alert-info alert-dismissible fade show">
-                    <i class="fas fa-shield-alt"></i> {{ session('login_notice') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            </div>
-        @endif
 
         @yield('content')
     </main>
@@ -714,6 +707,7 @@
                     }
                 });
             }
+
         });
     </script>
     

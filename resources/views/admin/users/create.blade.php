@@ -535,7 +535,7 @@
                                     <i class="bi bi-shield-lock"></i>
                                     <input type="password" id="password" name="password"
                                         class="uc-input @error('password') is-invalid @enderror"
-                                        placeholder="Min 8 chars · 1 uppercase · 1 lowercase · 1 symbol"
+                                        placeholder="Enter password"
                                         required autocomplete="new-password">
                                     <div class="uc-highlight"></div>
                                     <button type="button" class="uc-eye" id="ucTogglePwd" title="Toggle password">
@@ -774,3 +774,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endpush
+

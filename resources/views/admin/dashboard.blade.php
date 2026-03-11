@@ -21,13 +21,24 @@
 
         <div class="admin-topbar">
             <div>
-                <h3 class="mb-1">Welcome back, {{ $authUser->name }}</h3>
+                <h3 class="mb-1">Welcome back, <span class="welcome-name">{{ $authUser->name }}</span></h3>
                 <p class="admin-topbar-subtitle mb-0">{{ $departmentName }} · {{ $roleLabel }}</p>
             </div>
             <a href="{{ route('admin.audit-logs.index') }}" class="btn btn-outline-primary">
                 <i class="bi bi-journal-text"></i> View Audit Logs
             </a>
         </div>
+
+        @if(session('login_notice'))
+            <div class="login-notice-ios" id="loginNotice">
+                <div class="login-notice-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <div class="login-notice-text">
+                    <span>{{ session('login_notice') }}</span>
+                </div>
+            </div>
+        @endif
 
         <div class="row g-3 mb-4">
             <div class="col-xl-3 col-md-6">
@@ -218,6 +229,72 @@
         font-size: 1.05rem;
     }
 
+    .welcome-name {
+        color: var(--accent-color);
+    }
+
+    .login-notice-ios {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+        background: rgba(15, 23, 42, 0.72);
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        box-shadow: 0 16px 34px rgba(15, 23, 42, 0.28);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        color: #f8fafc;
+        max-width: 560px;
+        margin: 0 0 1.2rem 0;
+        animation: loginNoticeIn 0.55s ease forwards;
+        will-change: transform, opacity;
+    }
+
+    .login-notice-ios.hide {
+        animation: loginNoticeOut 0.45s ease forwards;
+    }
+
+    .login-notice-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: rgba(59, 130, 246, 0.2);
+        color: #93c5fd;
+        flex-shrink: 0;
+    }
+
+    .login-notice-text {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #f8fafc;
+        letter-spacing: 0.01em;
+    }
+
+    @keyframes loginNoticeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-16px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes loginNoticeOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-12px);
+        }
+    }
+
     .admin-stat-card {
         background: #fff;
         border-radius: 1rem;
@@ -383,6 +460,14 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const loginNotice = document.getElementById('loginNotice');
+        if (loginNotice) {
+            setTimeout(() => {
+                loginNotice.classList.add('hide');
+                setTimeout(() => loginNotice.remove(), 400);
+            }, 4000);
+        }
+
         // === Bar Chart: Ideas per Department ===
         const deptCtx = document.getElementById('deptChart');
         if (deptCtx) {

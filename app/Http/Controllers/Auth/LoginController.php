@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Support\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
@@ -22,10 +24,38 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        $credentials = $request->only('email', 'password');
         $remember = $request->boolean('remember');
 
-        if (Auth::attempt($credentials, $remember)) {
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            AuditLogger::log(
+                'LOGIN_FAILED',
+                "Failed login attempt for {$request->email}.",
+                null,
+                'failed'
+            );
+
+            throw ValidationException::withMessages([
+                'email' => 'Wrong email.',
+            ]);
+        }
+
+        if (!Hash::check($request->password, $user->password)) {
+            AuditLogger::log(
+                'LOGIN_FAILED',
+                "Failed login attempt for {$request->email}.",
+                null,
+                'failed'
+            );
+
+            throw ValidationException::withMessages([
+                'password' => 'Wrong password.',
+            ]);
+        }
+
+        Auth::login($user, $remember);
+        if (Auth::check()) {
             $request->session()->regenerate();
 
             $user = Auth::user();

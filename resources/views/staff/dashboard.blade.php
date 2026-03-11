@@ -60,7 +60,7 @@
         <div class="staff-topbar">
             <div>
                 <h3 class="mb-1"><i class="bi bi-speedometer2"></i> My Dashboard</h3>
-                <p class="text-muted mb-0">Welcome back, {{ auth()->user()->name }}!</p>
+                <p class="text-muted mb-0">Welcome back, <span class="welcome-name">{{ auth()->user()->name }}</span>!</p>
             </div>
             @if($canSubmitIdea)
                 <a href="{{ route('ideas.create') }}" class="btn btn-primary">
@@ -68,6 +68,17 @@
                 </a>
             @endif
         </div>
+
+        @if(session('login_notice'))
+            <div class="login-notice-ios" id="loginNotice">
+                <div class="login-notice-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <div class="login-notice-text">
+                    <span>{{ session('login_notice') }}</span>
+                </div>
+            </div>
+        @endif
 
         @if($ideaClosureDate || $finalClosureDate)
             <div class="alert alert-info mb-4">
@@ -297,6 +308,72 @@
         margin-bottom: 1.2rem;
     }
 
+    .welcome-name {
+        color: var(--accent-color);
+    }
+
+    .login-notice-ios {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+        background: rgba(15, 23, 42, 0.72);
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        box-shadow: 0 16px 34px rgba(15, 23, 42, 0.28);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        color: #f8fafc;
+        max-width: 520px;
+        margin: 0 0 1.2rem 0;
+        animation: loginNoticeIn 0.55s ease forwards;
+        will-change: transform, opacity;
+    }
+
+    .login-notice-ios.hide {
+        animation: loginNoticeOut 0.45s ease forwards;
+    }
+
+    .login-notice-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: rgba(59, 130, 246, 0.2);
+        color: #93c5fd;
+        flex-shrink: 0;
+    }
+
+    .login-notice-text {
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: #f8fafc;
+        letter-spacing: 0.01em;
+    }
+
+    @keyframes loginNoticeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-16px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes loginNoticeOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-12px);
+        }
+    }
+
     .admin-menu-toggle {
         position: fixed;
         top: 84px;
@@ -368,6 +445,19 @@
             sidebar.classList.remove('open');
             backdrop.classList.remove('open');
         });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginNotice = document.getElementById('loginNotice');
+        if (!loginNotice) {
+            return;
+        }
+
+        setTimeout(() => {
+            loginNotice.classList.add('hide');
+            setTimeout(() => loginNotice.remove(), 400);
+        }, 4000);
     });
 </script>
 @endpush
