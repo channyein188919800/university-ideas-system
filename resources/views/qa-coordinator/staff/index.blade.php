@@ -1,12 +1,12 @@
 @extends('layouts.qa-coordinator')
 
-@section('title', 'Department Staff - ' . auth()->user()->department->name)
+@section('title', 'Manage Users - ' . auth()->user()->department->name)
 
 @section('content')
 <!-- Topbar -->
 <div class="qa-topbar reveal" style="--delay: 0s;">
     <div>
-        <h3>Department Staff</h3>
+        <h3>Manage Users</h3>
         <p>{{ auth()->user()->department->name }} · {{ $staff->total() }} members</p>
     </div>
     <button class="btn btn-primary" onclick="sendReminderToAll()">
@@ -42,9 +42,9 @@
 <!-- Staff List -->
 <div class="qa-card reveal" style="--delay: 0.2s;">
     <div class="qa-card-header">
-        <h5><i class="bi bi-people"></i> Staff Members</h5>
+        <h5><i class="bi bi-people"></i> Users</h5>
         <div class="d-flex gap-2">
-            <input type="text" class="form-control form-control-sm" placeholder="Search staff..." id="searchInput">
+            <input type="text" class="form-control form-control-sm" placeholder="Search users..." id="searchInput">
             <select class="form-select form-select-sm w-auto" id="filterSelect">
                 <option value="all">All</option>
                 <option value="contributors">Contributors</option>
@@ -57,13 +57,13 @@
             <table class="table table-hover mb-0" id="staffTable">
                 <thead>
                     <tr>
-                        <th>Staff Member</th>
+                        <th>User</th>
                         <th>Email</th>
                         <th>Ideas</th>
                         <th>Comments</th>
                         <th>Last Active</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>

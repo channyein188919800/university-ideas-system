@@ -1,36 +1,47 @@
 <aside class="qa-sidebar" id="qaSidebar">
-    <div class="qa-brand">
-        <span class="qa-brand-icon"><i class="bi bi-building"></i></span>
-        <div>
-            <h5 class="mb-0">QA Coordinator</h5>
-            <small>{{ auth()->user()->department->name ?? 'Department' }}</small>
-        </div>
+    <div class="qa-brand" style="justify-content:center;padding:0.5rem 0 0.8rem;">
+        <img src="{{ asset('images/logo1_no_bg.png') }}"
+             alt="University Ideas"
+             style="width:130px;max-height:90px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));">
     </div>
 
-    <!-- MAIN NAVIGATION -->
+    <!-- OVERVIEW -->
     <div class="qa-nav-group">
-        <p class="qa-nav-title">Main</p>
+        <p class="qa-nav-title">Overview</p>
         
-        <!-- Dashboard -->
         <a href="{{ route('qa-coordinator.dashboard') }}" 
            class="qa-nav-link {{ request()->routeIs('qa-coordinator.dashboard') ? 'active' : '' }}">
             <i class="bi bi-speedometer2"></i>
             <span>Dashboard</span>
         </a>
+
+        <a href="{{ route('ideas.index', ['department' => auth()->user()->department_id]) }}" 
+           class="qa-nav-link">
+            <i class="bi bi-lightbulb"></i>
+            <span>All Ideas</span>
+        </a>
+
+        <a href="{{ route('ideas.index', ['sort' => 'popular']) }}" class="qa-nav-link">
+            <i class="bi bi-fire"></i>
+            <span>Popular Ideas</span>
+        </a>
+        
+        <a href="{{ route('ideas.index', ['sort' => 'latest']) }}" class="qa-nav-link">
+            <i class="bi bi-clock-history"></i>
+            <span>Latest Ideas</span>
+        </a>
     </div>
 
-    <!-- STATISTICS & REPORTS -->
+    <!-- ADMINISTRATION -->
     <div class="qa-nav-group">
-        <p class="qa-nav-title">Analytics</p>
+        <p class="qa-nav-title">Administration</p>
         
-        <!-- Statistics -->
         <a href="{{ route('qa-coordinator.statistics') }}" 
            class="qa-nav-link {{ request()->routeIs('qa-coordinator.statistics') ? 'active' : '' }}">
             <i class="bi bi-bar-chart"></i>
             <span>Department Statistics</span>
         </a>
         
-        <!-- Exception Reports -->
         <a href="{{ route('qa-coordinator.reports.exceptions') }}" 
            class="qa-nav-link {{ request()->routeIs('qa-coordinator.reports.exceptions') ? 'active' : '' }}">
             <i class="bi bi-exclamation-triangle"></i>
@@ -45,17 +56,12 @@
                 <span class="badge bg-warning ms-auto">{{ $exceptionsCount }}</span>
             @endif
         </a>
-    </div>
-
-    <!-- MANAGEMENT -->
-    <div class="qa-nav-group">
-        <p class="qa-nav-title">Management</p>
         
         <!-- Staff List -->
         <a href="{{ route('qa-coordinator.staff.index') }}" 
            class="qa-nav-link {{ request()->routeIs('qa-coordinator.staff.index') ? 'active' : '' }}">
             <i class="bi bi-people"></i>
-            <span>Department Staff</span>
+            <span>Manage Users</span>
             @php
                 $pendingStaff = \App\Models\User::where('department_id', auth()->user()->department_id)
                     ->where('role', 'staff')
@@ -82,31 +88,16 @@
         </a>
     </div>
 
-    <!-- IDEAS (Quick Links) -->
-    <div class="qa-nav-group">
-        <p class="qa-nav-title">Quick Views</p>
-        
-        <a href="{{ route('ideas.index', ['department' => auth()->user()->department_id]) }}" 
-           class="qa-nav-link">
-            <i class="bi bi-lightbulb"></i>
-            <span>All Department Ideas</span>
-        </a>
-        
-        <a href="{{ route('ideas.index', ['sort' => 'popular']) }}" class="qa-nav-link">
-            <i class="bi bi-fire"></i>
-            <span>Popular Ideas</span>
-        </a>
-        
-        <a href="{{ route('ideas.index', ['sort' => 'latest']) }}" class="qa-nav-link">
-            <i class="bi bi-clock-history"></i>
-            <span>Latest Ideas</span>
-        </a>
-    </div>
-
     <!-- ACCOUNT -->
     <div class="qa-nav-group mt-auto">
         <p class="qa-nav-title">Account</p>
-        
+
+        <a href="{{ route('qa-coordinator.profile.edit') }}"
+           class="qa-nav-link {{ request()->routeIs('qa-coordinator.profile.*') ? 'active' : '' }}">
+            <i class="bi bi-person-gear"></i>
+            <span>My Profile</span>
+        </a>
+
         <a href="{{ route('home') }}" class="qa-nav-link">
             <i class="bi bi-house-door"></i>
             <span>Main Site</span>

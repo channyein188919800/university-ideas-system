@@ -39,14 +39,14 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('qa-manager.departments.edit', $department) }}" class="btn btn-outline-primary">
-                                        <i class="bi bi-pencil-square"></i>
+                                    <a href="{{ route('qa-manager.departments.edit', $department) }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-edit fa-fw"></i>
                                     </a>
                                     <form method="POST" action="{{ route('qa-manager.departments.destroy', $department) }}" data-confirm="Delete this department?">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-danger">
-                                            <i class="bi bi-trash"></i>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-trash fa-fw"></i>
                                         </button>
                                     </form>
                                 </div>

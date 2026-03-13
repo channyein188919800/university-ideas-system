@@ -547,9 +547,6 @@
                         @auth
                             @if(auth()->user()->canSubmitIdea())
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('ideas.create') ? 'active' : '' }}" href="{{ route('ideas.create') }}">
-                                        <i class="fas fa-plus-circle"></i> Submit Idea
-                                    </a>
                                 </li>
                             @endif
                         @endauth
@@ -638,7 +635,6 @@
                 </div>
             </div>
         @endif
-
 
         @yield('content')
     </main>

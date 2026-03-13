@@ -62,14 +62,14 @@
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <a href="{{ route('admin.departments.edit', $department) }}" class="btn btn-outline-primary">
-                                                    <i class="fas fa-edit"></i>
+                                                <a href="{{ route('admin.departments.edit', $department) }}" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-edit fa-fw"></i>
                                                 </a>
                                                 <form method="POST" action="{{ route('admin.departments.destroy', $department) }}" class="d-inline" data-confirm="Are you sure you want to delete this department?">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-outline-danger">
-                                                        <i class="fas fa-trash"></i>
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                        <i class="fas fa-trash fa-fw"></i>
                                                     </button>
                                                 </form>
                                             </div>
