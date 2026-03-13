@@ -22,7 +22,7 @@
 
             <div class="admin-topbar">
                 <div>
-                    <h3 class="mb-1">{{ $lastLoginAt ? 'Welcome back' : 'Welcome' }}, {{ $authUser->name }}</h3>
+                    <h3 class="mb-1">{{ $lastLoginAt ? 'Welcome back' : 'Welcome' }}, <span style="color: #ff1414;">{{ $authUser->name }}</span></h3>                    
                     <p class="admin-topbar-subtitle mb-0">{{ $departmentName }} · {{ $roleLabel }}</p>
                     <small class="text-muted d-block">
                         @if(!$lastLoginAt)

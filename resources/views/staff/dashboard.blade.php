@@ -55,9 +55,9 @@
 
             <div class="staff-topbar">
                 <div>
-                    <h3 class="mb-1"><i class="bi bi-speedometer2"></i> My Dashboard</h3>
-                    <p class="text-muted mb-0">{{ auth()->user()?->last_login_at ? 'Welcome back' : 'Welcome' }},
-                        {{ auth()->user()?->name ?? 'User' }}</p>
+                    <h3 class="mb-1"><i class="bi bi-speedometer2"></i> My Dashboard - <span style="color: #3f05fc;">{{ auth()->user()?->name ?? 'User' }}</span></h3>
+                    <p>{{ auth()->user()?->department?->name ?? 'Your' }} Department · Staff Member</p>
+
                     <small class="text-muted d-block">
                         @if(!auth()->user()?->last_login_at)
                             Welcome! This appears to be your first login.

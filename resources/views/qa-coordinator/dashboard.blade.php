@@ -12,7 +12,7 @@
 <!-- Topbar -->
 <div class="qa-topbar reveal" style="--delay: 0s;">
     <div>
-        <h3>{{ $lastLoginAt ? 'Welcome back' : 'Welcome' }}, {{ $authUser->name }}</h3>
+        <h3 class="mb-1">{{ $lastLoginAt ? 'Welcome back' : 'Welcome' }}, <span style="color: #fca905;">{{ $authUser->name }}</span></h3>        
         <p>{{ $departmentName }} Department · QA Coordinator</p>
         <small class="text-muted d-block">
             @if(!$lastLoginAt)
