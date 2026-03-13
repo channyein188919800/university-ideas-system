@@ -17,48 +17,9 @@
                 align-items: flex-start;
                 justify-content: center;
                 padding: 2.5rem 1.5rem 3rem;
-                background: radial-gradient(circle at 15% 15%, rgba(214,158,46,.08) 0%, transparent 55%),
-                            radial-gradient(circle at 85% 80%, rgba(44,82,130,.12) 0%, transparent 60%),
-                            linear-gradient(180deg, #0c1222 0%, #1a2744 55%, #0f172a 100%);
+                background: #f8fafc; /* Light grey/white background */
                 position: relative;
                 overflow: hidden;
-            }
-
-            /* floating orbs */
-            .uc-orb {
-                position: fixed;
-                border-radius: 50%;
-                filter: blur(80px);
-                pointer-events: none;
-                z-index: 0;
-                animation: uc-pulse 9s ease-in-out infinite alternate;
-            }
-            .uc-orb-1 { width:480px;height:480px;background:radial-gradient(circle,rgba(214,158,46,.4),transparent 70%);top:-140px;left:-100px;animation-delay:0s; }
-            .uc-orb-2 { width:360px;height:360px;background:radial-gradient(circle,rgba(56,161,105,.3),transparent 70%);bottom:-80px;right:-60px;animation-delay:4s; }
-            .uc-orb-3 { width:280px;height:280px;background:radial-gradient(circle,rgba(99,102,241,.25),transparent 70%);top:40%;left:55%;transform:translate(-50%,-50%);animation-delay:2s; }
-            @keyframes uc-pulse { 0%{opacity:.3;transform:scale(1)} 100%{opacity:.5;transform:scale(1.12)} }
-
-            /* floating particles */
-            .uc-particle {
-                position: fixed;
-                width: 4px; height: 4px;
-                background: rgba(214,158,46,.7);
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: 0;
-                animation: uc-float 14s infinite ease-in-out;
-            }
-            .uc-particle:nth-child(1){left:8%;top:18%;animation-delay:0s;animation-duration:12s;}
-            .uc-particle:nth-child(2){left:22%;top:74%;animation-delay:2s;animation-duration:15s;}
-            .uc-particle:nth-child(3){left:65%;top:38%;animation-delay:4s;animation-duration:16s;}
-            .uc-particle:nth-child(4){left:82%;top:62%;animation-delay:1s;animation-duration:13s;}
-            .uc-particle:nth-child(5){left:44%;top:85%;animation-delay:3s;animation-duration:14s;}
-            .uc-particle:nth-child(6){left:76%;top:14%;animation-delay:0.5s;animation-duration:11s;}
-            @keyframes uc-float {
-                0%,100%{transform:translateY(0)translateX(0);opacity:.7}
-                25%{transform:translateY(-90px)translateX(40px);opacity:1}
-                50%{transform:translateY(-160px)translateX(-25px);opacity:.4}
-                75%{transform:translateY(-110px)translateX(60px);opacity:.9}
             }
 
             /* ── Card ────────────────────────────────────────────────── */
@@ -68,15 +29,15 @@
                 width: 100%;
                 max-width: 860px;
                 border-radius: 1.75rem;
-                background: linear-gradient(145deg, rgba(255,255,255,.97) 0%, rgba(241,245,249,.97) 100%);
-                border: 1px solid rgba(255,255,255,.12);
-                box-shadow: 0 28px 60px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.06) inset;
-                animation: uc-card-in .9s ease-out forwards;
+                background: #ffffff;
+                border: 1px solid rgba(0,0,0,0.06);
+                box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+                animation: uc-card-in .6s ease-out forwards;
                 opacity: 0;
-                transform: translateY(36px) scale(0.97);
+                transform: translateY(20px);
                 overflow: hidden;
             }
-            @keyframes uc-card-in { to{ opacity:1; transform:translateY(0) scale(1); } }
+            @keyframes uc-card-in { to{ opacity:1; transform:translateY(0); } }
 
             /* card top accent bar */
             .uc-card-bar {
@@ -98,16 +59,16 @@
             .uc-header-icon {
                 width: 56px; height: 56px;
                 border-radius: 1rem;
-                background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+                background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
                 display: flex; align-items: center; justify-content: center;
                 color: #d69e2e;
                 font-size: 1.5rem;
                 flex-shrink: 0;
-                box-shadow: 0 8px 24px rgba(15,23,42,.35);
+                box-shadow: 0 8px 24px rgba(30, 58, 95, 0.2);
             }
             .uc-header-text h2 {
                 font-size: 1.7rem; font-weight: 800;
-                color: #0f172a; margin: 0; letter-spacing: -.02em;
+                color: #1e3a5f; margin: 0; letter-spacing: -.02em;
             }
             .uc-header-text p { margin: 0; color: #64748b; font-size:.9rem; }
 
@@ -174,18 +135,6 @@
                 border-color: #ef4444;
                 box-shadow: 0 0 0 3px rgba(239,68,68,.1);
             }
-
-            /* input bottom highlight sweep */
-            .uc-highlight {
-                position: absolute;
-                bottom: 0; left: 50%;
-                width: 0; height: 2px;
-                background: linear-gradient(90deg,transparent,#d69e2e,transparent);
-                transition: all .4s;
-                transform: translateX(-50%);
-                border-radius: 0 0 1rem 1rem;
-            }
-            .uc-input:focus ~ .uc-highlight { width: 80%; }
 
             /* password toggle */
             .uc-eye {
@@ -270,12 +219,12 @@
             }
             .uc-role-btn input:checked + .uc-role-label {
                 border-color: #d69e2e;
-                background: linear-gradient(135deg, rgba(214,158,46,.08), rgba(214,158,46,.03));
+                background: rgba(214,158,46,.05);
                 color: #0f172a;
                 box-shadow: 0 0 0 3px rgba(214,158,46,.12);
             }
             .uc-role-btn input:checked + .uc-role-label .role-icon {
-                background: linear-gradient(135deg,#0f172a,#1e3a5f);
+                background: linear-gradient(135deg,#1e3a5f,#2c5282);
                 color: #d69e2e;
             }
             .uc-role-label:hover { border-color: #d69e2e; }
@@ -339,8 +288,8 @@
             .uc-perm-badge {
                 display: inline-flex; align-items: center; gap: .3rem;
                 padding: .25rem .7rem;
-                background: rgba(15,23,42,.06);
-                border: 1px solid rgba(15,23,42,.1);
+                background: rgba(30,58,95,.06);
+                border: 1px solid rgba(30,58,95,.1);
                 border-radius: 999px;
                 font-size: .77rem; color: #334155; font-weight: 600;
             }
@@ -379,53 +328,35 @@
                 text-decoration: none;
                 transition: all .25s;
             }
-            .uc-btn-cancel:hover { border-color: #94a3b8; color: #0f172a; transform: translateX(-2px); }
+            .uc-btn-cancel:hover { border-color: #94a3b8; color: #1e3a5f; transform: translateX(-2px); }
             .uc-btn-submit {
                 display: inline-flex; align-items: center; gap: .55rem;
                 padding: .85rem 2.2rem;
                 border: none; border-radius: 1rem;
-                background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
-                background-size: 200% 200%;
+                background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
                 color: #fff;
                 font-weight: 700; font-size: 1rem;
                 cursor: pointer;
                 position: relative; overflow: hidden;
                 transition: all .35s;
-                box-shadow: 0 8px 24px rgba(15,23,42,.3);
+                box-shadow: 0 8px 24px rgba(30,58,95,.3);
             }
-            .uc-btn-submit::before {
-                content: '';
-                position: absolute; inset: 0;
-                background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,.18) 50%, transparent 100%);
-                transform: translateX(-110%);
-                transition: transform .55s ease;
-            }
-            .uc-btn-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(15,23,42,.4); background-position: 100% 0; }
-            .uc-btn-submit:hover::before { transform: translateX(110%); }
+            .uc-btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(30,58,95,.4); }
             .uc-btn-submit:active { transform: scale(.97); }
-            /* click ripple */
-            .uc-btn-submit .ripple {
-                position: absolute; border-radius: 50%;
-                background: rgba(255,255,255,.3);
-                transform: scale(0);
-                animation: uc-ripple .6s linear;
-                pointer-events: none;
-            }
-            @keyframes uc-ripple { to { transform: scale(4); opacity: 0; } }
 
             /* ── Back link ───────────────────────────────────────────── */
             .uc-back {
                 display: inline-flex; align-items: center; gap: .4rem;
-                color: rgba(255,255,255,.6);
+                color: #64748b;
                 text-decoration: none; font-size: .88rem; font-weight: 600;
                 margin-bottom: 1.4rem;
-                border: 1px solid rgba(255,255,255,.14);
-                background: rgba(255,255,255,.06);
+                border: 1px solid #e2e8f0;
+                background: #fff;
                 padding: .4rem 1rem; border-radius: 999px;
                 transition: all .25s;
                 position: relative; z-index: 2;
             }
-            .uc-back:hover { color: #fff; border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.12); transform: translateX(-3px); }
+            .uc-back:hover { color: #1e3a5f; border-color: #d69e2e; transform: translateX(-3px); }
 
             /* animation helpers */
             @keyframes uc-slide-up {
@@ -442,18 +373,7 @@
             }
         </style>
 
-        {{-- Ambient background --}}
         <div class="uc-stage">
-            <div class="uc-orb uc-orb-1"></div>
-            <div class="uc-orb uc-orb-2"></div>
-            <div class="uc-orb uc-orb-3"></div>
-            <div class="uc-particle"></div>
-            <div class="uc-particle"></div>
-            <div class="uc-particle"></div>
-            <div class="uc-particle"></div>
-            <div class="uc-particle"></div>
-            <div class="uc-particle"></div>
-
             <div style="position:relative;z-index:2;width:100%;max-width:860px;">
                 {{-- Back link --}}
                 <a href="{{ route('admin.users.index') }}" class="uc-back">
@@ -497,8 +417,10 @@
                                             <input type="text" id="name" name="name"
                                                 value="{{ old('name') }}"
                                                 class="uc-input @error('name') is-invalid @enderror"
-                                                placeholder="Enter full name" required>
-                                            <div class="uc-highlight"></div>
+                                                placeholder="Enter full name" 
+                                                required
+                                                oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                                oninput="this.setCustomValidity('')">
                                         </div>
                                         @error('name')
                                             <div class="uc-error"><i class="bi bi-exclamation-circle-fill"></i>{{ $message }}</div>
@@ -515,8 +437,10 @@
                                             <input type="email" id="email" name="email"
                                                 value="{{ old('email') }}"
                                                 class="uc-input @error('email') is-invalid @enderror"
-                                                placeholder="name@university.edu" required>
-                                            <div class="uc-highlight"></div>
+                                                placeholder="name@university.edu" 
+                                                required
+                                                oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                                oninput="this.setCustomValidity('')">
                                         </div>
                                         @error('email')
                                             <div class="uc-error"><i class="bi bi-exclamation-circle-fill"></i>{{ $message }}</div>
@@ -536,8 +460,9 @@
                                     <input type="password" id="password" name="password"
                                         class="uc-input @error('password') is-invalid @enderror"
                                         placeholder="Enter password"
-                                        required autocomplete="new-password">
-                                    <div class="uc-highlight"></div>
+                                        required autocomplete="new-password"
+                                        oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                        oninput="this.setCustomValidity('')" required>
                                     <button type="button" class="uc-eye" id="ucTogglePwd" title="Toggle password">
                                         <i class="bi bi-eye" id="ucEyeIcon"></i>
                                     </button>
@@ -577,7 +502,10 @@
                                     @foreach($roles as $role)
                                     <label class="uc-role-btn">
                                         <input type="radio" name="role" value="{{ $role }}"
-                                            {{ old('role', 'staff') === $role ? 'checked' : '' }}>
+                                            {{ old('role', 'staff') === $role ? 'checked' : '' }} 
+                                            required
+                                            oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                            oninput="this.setCustomValidity('')">
                                         <span class="uc-role-label">
                                             <span class="role-icon"><i class="bi {{ $roleIcons[$role]['icon'] }}"></i></span>
                                             {{ $roleIcons[$role]['label'] }}
@@ -759,19 +687,6 @@ document.addEventListener('DOMContentLoaded', function () {
         uploadBox.addEventListener(e, function(ev){ ev.preventDefault(); uploadBox.classList.remove('drag-over'); });
     });
 
-    /* ── Submit button ripple ────────────────────────────── */
-    var submitBtn = document.getElementById('ucSubmitBtn');
-    submitBtn && submitBtn.addEventListener('click', function (e) {
-        var rect   = submitBtn.getBoundingClientRect();
-        var ripple = document.createElement('span');
-        var size   = Math.max(rect.width, rect.height);
-        ripple.className = 'ripple';
-        ripple.style.cssText = 'width:'+size+'px;height:'+size+'px;left:'+(e.clientX-rect.left-size/2)+'px;top:'+(e.clientY-rect.top-size/2)+'px;';
-        submitBtn.appendChild(ripple);
-        ripple.addEventListener('animationend', function(){ ripple.remove(); });
-    });
-
 });
 </script>
 @endpush
-

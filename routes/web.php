@@ -24,6 +24,7 @@ use App\Http\Controllers\QaManager\BacklogController as QaManagerBacklogControll
 use App\Http\Controllers\QaManager\ReportController as QaManagerReportController;
 use App\Http\Controllers\QaCoordinator\DashboardController as QaCoordinatorDashboardController;
 use App\Http\Controllers\Staff\DashboardController as StaffDashboardController;
+use App\Http\Controllers\Staff\AccountController as StaffAccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -184,6 +185,8 @@ Route::middleware(['auth', 'terms', 'role:staff'])
     ->group(function () {
 
         Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/account', [StaffAccountController::class, 'edit'])->name('account.edit');
+        Route::put('/account', [StaffAccountController::class, 'update'])->name('account.update');
 
     });
 

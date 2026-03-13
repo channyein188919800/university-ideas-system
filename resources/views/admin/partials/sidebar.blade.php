@@ -59,7 +59,7 @@
         <p class="admin-nav-title">Account</p>
         <a href="{{ route('admin.users.edit', auth()->user()->id) }}" class="admin-nav-link {{ request()->routeIs('admin.users.edit') && optional(request()->route('user'))->id == auth()->user()->id ? 'active' : '' }}">
             <i class="bi bi-person-gear"></i>
-            <span>Edit Account Info</span>
+            <span>Profile Edit</span>
         </a>
         <a href="{{ route('home') }}" class="admin-nav-link">
             <i class="bi bi-house-door"></i>

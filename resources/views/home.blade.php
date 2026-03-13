@@ -354,6 +354,10 @@
         border-radius: 3px;
     }
 
+    footer {
+        display: none;
+    }
+
 </style>
 
 <!-- Hero Section -->
