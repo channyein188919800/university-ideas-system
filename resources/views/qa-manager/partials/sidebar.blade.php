@@ -1,27 +1,29 @@
 <aside class="qa-sidebar" id="qaSidebar">
-    <div class="qa-brand">
-        <span class="qa-brand-icon"><i class="bi bi-shield-check"></i></span>
-        <div>
-            <h5 class="mb-0">QA Manager</h5>
-            <small>System Administration</small>
-        </div>
+    <div class="qa-brand" style="justify-content:center;padding:0.5rem 0 0.8rem;">
+        <img src="{{ asset('images/logo1_no_bg.png') }}"
+             alt="University Ideas"
+             style="width:130px;max-height:90px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));">
     </div>
 
-    <!-- MAIN NAVIGATION -->
+    <!-- OVERVIEW -->
     <div class="qa-nav-group">
-        <p class="qa-nav-title">Main</p>
+        <p class="qa-nav-title">Overview</p>
 
-        <!-- Dashboard -->
         <a href="{{ route('qa-manager.dashboard') }}"
             class="qa-nav-link {{ request()->routeIs('qa-manager.dashboard') ? 'active' : '' }}">
             <i class="bi bi-speedometer2"></i>
             <span>Dashboard</span>
         </a>
+
+        <a href="{{ route('ideas.index') }}" class="qa-nav-link">
+            <i class="bi bi-lightbulb"></i>
+            <span>All Ideas</span>
+        </a>
     </div>
 
-    <!-- MANAGEMENT -->
+    <!-- ADMINISTRATION -->
     <div class="qa-nav-group">
-        <p class="qa-nav-title">Management</p>
+        <p class="qa-nav-title">Administration</p>
 
         <!-- Categories -->
         <a href="{{ route('qa-manager.categories.index') }}"
@@ -36,10 +38,22 @@
             <span>Departments</span>
         </a>
 
+        <a href="{{ route('qa-manager.departments.create') }}"
+            class="qa-nav-link {{ request()->routeIs('qa-manager.departments.create') ? 'active' : '' }}">
+            <i class="bi bi-building-add"></i>
+            <span>Add Department</span>
+        </a>
+
         <a href="{{ route('qa-manager.staff.index') }}"
             class="qa-nav-link {{ request()->routeIs('qa-manager.staff.*') ? 'active' : '' }}">
             <i class="bi bi-people"></i>
             <span>Manage Users</span>
+        </a>
+
+        <a href="{{ route('qa-manager.staff.create') }}"
+            class="qa-nav-link {{ request()->routeIs('qa-manager.staff.create') ? 'active' : '' }}">
+            <i class="bi bi-person-plus"></i>
+            <span>Add User</span>
         </a>
 
         <a href="{{ route('qa-manager.backlog.index') }}"
@@ -75,27 +89,19 @@
         <a href="{{ route('qa-manager.audit-logs.index') }}"
             class="qa-nav-link {{ request()->routeIs('qa-manager.audit-logs.*') ? 'active' : '' }}">
             <i class="bi bi-journal-text"></i>
-            <span>Audit Logs</span>
+            <span>System Audit Logs</span>
         </a>
-    </div>
 
-    <div class="qa-nav-group">
-        <p class="qa-nav-title">System</p>
         <a href="{{ route('qa-manager.settings.index') }}"
             class="qa-nav-link {{ request()->routeIs('qa-manager.settings.*') ? 'active' : '' }}">
-            <i class="bi bi-gear"></i>
-            <span>Academic Settings</span>
+            <i class="bi bi-sliders"></i>
+            <span>System Settings</span>
         </a>
     </div>
 
-    <!-- IDEAS (Quick Links) -->
+    <!-- QUICK VIEWS -->
     <div class="qa-nav-group">
         <p class="qa-nav-title">Quick Views</p>
-
-        <a href="{{ route('ideas.index') }}" class="qa-nav-link">
-            <i class="bi bi-lightbulb"></i>
-            <span>All Ideas</span>
-        </a>
 
         <a href="{{ route('ideas.index', ['sort' => 'popular']) }}" class="qa-nav-link">
             <i class="bi bi-fire"></i>
@@ -111,6 +117,12 @@
     <!-- ACCOUNT -->
     <div class="qa-nav-group mt-auto">
         <p class="qa-nav-title">Account</p>
+
+        <a href="{{ route('qa-manager.profile.edit') }}"
+            class="qa-nav-link {{ request()->routeIs('qa-manager.profile.*') ? 'active' : '' }}">
+            <i class="bi bi-person-gear"></i>
+            <span>My Profile</span>
+        </a>
 
         <a href="{{ route('home') }}" class="qa-nav-link">
             <i class="bi bi-house-door"></i>

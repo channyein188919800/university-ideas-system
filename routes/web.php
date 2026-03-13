@@ -149,6 +149,10 @@ Route::middleware(['auth', 'terms', 'role:qa_manager'])
         Route::get('/audit-logs/export', [QaManagerAuditLogController::class, 'export'])->name('audit-logs.export');
         Route::get('/university-backlog', [QaManagerBacklogController::class, 'index'])->name('backlog.index');
 
+        // Profile
+        Route::get('/profile', [\App\Http\Controllers\QaManager\ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [\App\Http\Controllers\QaManager\ProfileController::class, 'update'])->name('profile.update');
+
         // Reports
         Route::get('/reports/statistics', [QaManagerReportController::class, 'statistics'])->name('reports.statistics');
         Route::get('/reports/exceptions', [QaManagerReportController::class, 'exceptionReports'])->name('reports.exceptions');
@@ -218,6 +222,10 @@ Route::middleware(['auth', 'terms', 'role:qa_coordinator'])
         Route::get('/notifications', [QaCoordinatorDashboardController::class, 'notifications'])->name('notifications');
         Route::post('/notifications/{id}/read', [QaCoordinatorDashboardController::class, 'markAsRead'])->name('notifications.read');
         Route::post('/notifications/read-all', [QaCoordinatorDashboardController::class, 'markAllAsRead'])->name('notifications.read-all');
+
+        // Profile
+        Route::get('/profile', [\App\Http\Controllers\QaCoordinator\ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [\App\Http\Controllers\QaCoordinator\ProfileController::class, 'update'])->name('profile.update');
 
         // Staff management
         Route::get('/staff', [QaCoordinatorDashboardController::class, 'staffList'])->name('staff.index');

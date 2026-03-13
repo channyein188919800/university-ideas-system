@@ -3,15 +3,28 @@
 @section('title', 'QA Coordinator Dashboard - ' . (auth()->user()->department->name ?? 'Dashboard'))
 
 @section('content')
+@php
+    $authUser = auth()->user();
+    $departmentName = $authUser->department->name ?? 'No Department';
+    $lastLoginAt = $authUser->last_login_at;
+@endphp
+
 <!-- Topbar -->
 <div class="qa-topbar reveal" style="--delay: 0s;">
     <div>
-        <h3>Welcome back, {{ auth()->user()->name }}</h3>
-        <p>{{ auth()->user()->department->name ?? 'No Department' }} Department · QA Coordinator</p>
+        <h3>{{ $lastLoginAt ? 'Welcome back' : 'Welcome' }}, {{ $authUser->name }}</h3>
+        <p>{{ $departmentName }} Department · QA Coordinator</p>
+        <small class="text-muted d-block">
+            @if(!$lastLoginAt)
+                Welcome! This appears to be your first login.
+            @else
+                Last login: {{ $lastLoginAt->format('M d, Y h:i A') }}
+            @endif
+        </small>
     </div>
     <div class="d-flex gap-2">
         <span class="dept-badge">
-            <i class="bi bi-building me-1"></i> {{ auth()->user()->department->name ?? 'No Department' }}
+            <i class="bi bi-building me-1"></i> {{ $departmentName }}
         </span>
         @if(isset($ideaClosureDate) && $ideaClosureDate)
             @if(now()->lt($ideaClosureDate))
@@ -55,7 +68,7 @@
     </div>
     <div class="col-xl-3 col-md-6">
         <div class="qa-stat-card reveal" style="--delay: 0.2s;">
-            <div class="stat-icon participation"><i class="bi bi-graph-up"></i></div>
+            <div class="stat-icon participation"><i class="bi bi-graph-up-arrow"></i></div>
             <h4>{{ $stats['participation_rate'] ?? 0 }}%</h4>
             <p>Participation Rate</p>
             <div class="progress progress-sm mt-2">
