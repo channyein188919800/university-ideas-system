@@ -3,12 +3,28 @@
 @section('title', 'QA Manager Dashboard - University Ideas System')
 
 @section('content')
+@php
+    $authUser = auth()->user();
+    $departmentName = $authUser->department->name ?? 'No Department Assigned';
+    $lastLoginAt = $authUser->last_login_at;
+@endphp
+
 <!-- Topbar -->
 <div class="qa-topbar">
     <div>
-        <h3><i class="bi bi-speedometer2"></i> Dashboard</h3>
-        <p>Quality assurance oversight and reporting</p>
+        <h3 class="mb-1">{{ $lastLoginAt ? 'Welcome back' : 'Welcome' }}, {{ $authUser->name }}</h3>
+        <p class="mb-0">{{ $departmentName }} · QA Manager</p>
+        <small class="text-muted d-block">
+            @if(!$lastLoginAt)
+                Welcome! This appears to be your first login.
+            @else
+                Last login: {{ $lastLoginAt->format('M d, Y h:i A') }}
+            @endif
+        </small>
     </div>
+    <a href="{{ route('qa-manager.audit-logs.index') }}" class="btn btn-outline-primary">
+        <i class="bi bi-journal-text"></i> View Audit Logs
+    </a>
 </div>
 
 <!-- Stats Row -->
@@ -17,11 +33,24 @@
         <div class="qa-stat-card">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
+                    <p>Total Users</p>
+                    <h4>{{ $stats['total_users'] }}</h4>
+                </div>
+                <div class="stat-icon users">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="qa-stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
                     <p>Total Ideas</p>
                     <h4>{{ $stats['total_ideas'] }}</h4>
                 </div>
                 <div class="stat-icon ideas">
-                    <i class="bi bi-lightbulb"></i>
+                    <i class="bi bi-lightbulb-fill"></i>
                 </div>
             </div>
         </div>
@@ -34,20 +63,7 @@
                     <h4>{{ $stats['total_comments'] }}</h4>
                 </div>
                 <div class="stat-icon comments">
-                    <i class="bi bi-chat-dots"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-3">
-        <div class="qa-stat-card">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <p>Total Users</p>
-                    <h4>{{ $stats['total_users'] }}</h4>
-                </div>
-                <div class="stat-icon users">
-                    <i class="bi bi-people"></i>
+                    <i class="bi bi-chat-left-text-fill"></i>
                 </div>
             </div>
         </div>
@@ -60,7 +76,7 @@
                     <h4>{{ $stats['total_departments'] }}</h4>
                 </div>
                 <div class="stat-icon participation">
-                    <i class="bi bi-building"></i>
+                    <i class="bi bi-buildings-fill"></i>
                 </div>
             </div>
         </div>
@@ -70,7 +86,7 @@
 <!-- System Status -->
 <div class="qa-card">
     <div class="qa-card-header">
-        <h5><i class="bi bi-calendar-alt"></i> System Status</h5>
+        <h5><i class="bi bi-calendar-event"></i> System Status</h5>
     </div>
     <div class="qa-card-body">
         <div class="row">
@@ -113,7 +129,7 @@
 <!-- Department Statistics -->
 <div class="qa-card">
     <div class="qa-card-header">
-        <h5><i class="bi bi-building"></i> Department Statistics</h5>
+        <h5><i class="bi bi-bar-chart-fill"></i> Department Statistics</h5>
     </div>
     <div class="qa-card-body p-0">
         <div class="table-responsive">

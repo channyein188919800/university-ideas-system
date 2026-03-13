@@ -1,75 +1,141 @@
 @extends('layouts.qa-manager')
 
-@section('title', 'Edit Staff Account - University Ideas System')
+@section('title', 'Edit User - University Ideas System')
 
 @section('content')
-<div class="qa-topbar">
-    <div>
-        <h3><i class="bi bi-person-gear"></i> Edit Staff Account</h3>
-        <p>Update role, department, and account status</p>
-    </div>
-    <a href="{{ route('qa-manager.staff.index') }}" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left me-1"></i> Back
-    </a>
-</div>
+<div class="container-fluid py-2">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2><i class="fas fa-user-edit"></i> Edit User</h2>
+                    <p class="text-muted mb-0">Update user account details</p>
+                </div>
+                <a href="{{ route('qa-manager.staff.index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
 
-<div class="qa-card">
-    <div class="qa-card-body">
-        <form method="POST" action="{{ route('qa-manager.staff.update', $staff) }}" class="row g-3">
-            @csrf
-            @method('PUT')
-            <div class="col-md-6">
-                <label class="form-label">Name</label>
-                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $staff->name) }}" required>
-                @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            <div class="card">
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ route('qa-manager.staff.update', $staff) }}">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">
+                                    <i class="fas fa-user"></i> Full Name <span class="text-danger">*</span>
+                                </label>
+                                <input type="text"
+                                       class="form-control @error('name') is-invalid @enderror"
+                                       id="name"
+                                       name="name"
+                                       value="{{ old('name', $staff->name) }}"
+                                       required>
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i> Email <span class="text-danger">*</span>
+                                </label>
+                                <input type="email"
+                                       class="form-control @error('email') is-invalid @enderror"
+                                       id="email"
+                                       name="email"
+                                       value="{{ old('email', $staff->email) }}"
+                                       required>
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock"></i> Password
+                                </label>
+                                <input type="password"
+                                       class="form-control @error('password') is-invalid @enderror"
+                                       id="password"
+                                       name="password">
+                                <div class="form-text">Leave blank to keep current password</div>
+                                @error('password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="role" class="form-label">
+                                    <i class="fas fa-user-tag"></i> Role <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select @error('role') is-invalid @enderror"
+                                        id="role"
+                                        name="role"
+                                        required>
+                                    @foreach($roles as $role)
+                                        <option value="{{ $role }}" {{ old('role', $staff->role) == $role ? 'selected' : '' }}>
+                                            {{ ucwords(str_replace('_', ' ', $role)) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('role')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="department_id" class="form-label">
+                                <i class="fas fa-building"></i> Department
+                            </label>
+                            <select class="form-select @error('department_id') is-invalid @enderror"
+                                    id="department_id"
+                                    name="department_id">
+                                <option value="">-- Select Department --</option>
+                                @foreach($departments as $department)
+                                    <option value="{{ $department->id }}" {{ old('department_id', $staff->department_id) == $department->id ? 'selected' : '' }}>
+                                        {{ $department->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('department_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="status" class="form-label">
+                                <i class="fas fa-toggle-on"></i> Status <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select @error('status') is-invalid @enderror"
+                                    id="status"
+                                    name="status"
+                                    required>
+                                <option value="active" {{ old('status', $staff->status) === 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="disabled" {{ old('status', $staff->status) === 'disabled' ? 'selected' : '' }}>Disabled</option>
+                            </select>
+                            @error('status')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ route('qa-manager.staff.index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update User
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $staff->email) }}" required>
-                @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">New Password (optional)</label>
-                <input type="password" name="password" class="form-control @error('password') is-invalid @enderror">
-                @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Role</label>
-                <select name="role" class="form-select @error('role') is-invalid @enderror" required>
-                    @foreach($roles as $role)
-                        <option value="{{ $role }}" {{ old('role', $staff->role) === $role ? 'selected' : '' }}>
-                            {{ str_replace('_', ' ', ucfirst($role)) }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('role')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Department</label>
-                <select name="department_id" class="form-select @error('department_id') is-invalid @enderror">
-                    <option value="">No Department</option>
-                    @foreach($departments as $department)
-                        <option value="{{ $department->id }}" {{ (int) old('department_id', $staff->department_id) === $department->id ? 'selected' : '' }}>
-                            {{ $department->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('department_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Status</label>
-                <select name="status" class="form-select @error('status') is-invalid @enderror" required>
-                    <option value="active" {{ old('status', $staff->status) === 'active' ? 'selected' : '' }}>Active</option>
-                    <option value="disabled" {{ old('status', $staff->status) === 'disabled' ? 'selected' : '' }}>Disabled</option>
-                </select>
-                @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle me-1"></i> Update Account
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 @endsection

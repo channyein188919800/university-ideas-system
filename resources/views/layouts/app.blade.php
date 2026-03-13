@@ -546,9 +546,6 @@
                         @auth
                             @if(auth()->user()->canSubmitIdea())
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('ideas.create') ? 'active' : '' }}" href="{{ route('ideas.create') }}">
-                                        <i class="fas fa-plus-circle"></i> Submit Idea
-                                    </a>
                                 </li>
                             @endif
                         @endauth
@@ -633,15 +630,6 @@
             <div class="container mt-3">
                 <div class="alert alert-info alert-dismissible fade show">
                     <i class="fas fa-info-circle"></i> {{ session('info') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            </div>
-        @endif
-
-        @if(session('login_notice'))
-            <div class="container mt-3">
-                <div class="alert alert-info alert-dismissible fade show">
-                    <i class="fas fa-shield-alt"></i> {{ session('login_notice') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             </div>
