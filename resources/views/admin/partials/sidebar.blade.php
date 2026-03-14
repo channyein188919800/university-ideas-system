@@ -43,7 +43,7 @@
         </a>
         <a href="{{ route('admin.settings.index') }}" class="admin-nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
             <i class="bi bi-sliders"></i>
-            <span>System Settings</span>
+            <span>Closure Dates</span>
         </a>
         <a href="{{ route('admin.audit-logs.index') }}" class="admin-nav-link {{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}">
             <i class="bi bi-journal-text"></i>
