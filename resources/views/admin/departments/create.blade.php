@@ -10,14 +10,9 @@
         <div class="container-fluid py-2">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h2><i class="fas fa-plus-circle"></i> Add Department</h2>
-                            <p class="text-muted mb-0">Create a new department</p>
-                        </div>
-                        <a href="{{ route('admin.departments.index') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left"></i> Back
-                        </a>
+                    <div class="mb-4">
+                        <h2><i class="fas fa-plus-circle"></i> Add Department</h2>
+                        <p class="text-muted mb-0">Create a new department</p>
                     </div>
 
                     <div class="card">
@@ -95,10 +90,7 @@
                                     </div>
                                 </div>
                                 
-                                <div class="d-flex justify-content-between">
-                                    <a href="{{ route('admin.departments.index') }}" class="btn btn-outline-secondary">
-                                        <i class="fas fa-times"></i> Cancel
-                                    </a>
+                                <div class="d-flex justify-content-end">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-save"></i> Create Department
                                     </button>

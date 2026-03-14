@@ -18,6 +18,36 @@
         box-shadow: 0 16px 40px rgba(12, 25, 52, 0.28);
         z-index: 1100;
         transition: transform 0.25s ease;
+        
+        /* Scrollable sidebar */
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    /* Custom scrollbar */
+    .admin-sidebar::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .admin-sidebar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .admin-sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+    }
+
+    .admin-sidebar::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Firefox scrollbar */
+    .admin-sidebar {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
     }
 
     .admin-brand {
@@ -45,6 +75,43 @@
         justify-content: center;
         font-size: 1.2rem;
         color: #8ab5ff;
+    }
+
+    /* === WHITE SYSTEM ADMINISTRATION TITLE === */
+    .admin-section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.9rem 0.8rem;
+        margin: 0.2rem 0 0.5rem 0;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .admin-section-title i {
+        font-size: 1.2rem;
+        color: #ffffff;
+        opacity: 0.9;
+    }
+
+    .admin-section-title span {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        color: #ffffff;
+    }
+
+    /* Hover effect for the title */
+    .admin-section-title:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
     }
 
     .admin-nav-title {
@@ -97,6 +164,7 @@
         width: 42px;
         height: 42px;
         box-shadow: 0 10px 26px rgba(12, 25, 52, 0.3);
+        display: none; /* Hidden by default, shown in mobile */
     }
 
     .admin-backdrop {
@@ -112,12 +180,20 @@
         display: none !important;
     }
 
+    /* Mobile Responsive */
     @media (max-width: 991.98px) {
+        .admin-menu-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .admin-sidebar {
             position: fixed;
             inset: 0 auto 0 0;
             transform: translateX(-105%);
             height: 100vh;
+            z-index: 1201;
         }
 
         .admin-sidebar.open {
@@ -131,6 +207,22 @@
 
         .admin-backdrop.open {
             display: block;
+        }
+    }
+
+    /* Small screen adjustments */
+    @media (max-width: 575.98px) {
+        .admin-sidebar {
+            width: 260px;
+        }
+        
+        .admin-section-title {
+            padding: 0.8rem 0.6rem;
+            font-size: 0.85rem;
+        }
+        
+        .admin-section-title i {
+            font-size: 1rem;
         }
     }
 </style>

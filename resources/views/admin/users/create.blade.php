@@ -310,25 +310,13 @@
             .uc-submit-row {
                 display: flex;
                 align-items: center;
-                justify-content: space-between;
+                justify-content: flex-end;
                 gap: 1rem;
                 margin-top: 1.8rem;
                 padding-top: 1.4rem;
                 border-top: 1px solid #f1f5f9;
                 animation: uc-slide-up .6s ease-out .5s both;
             }
-            .uc-btn-cancel {
-                display: inline-flex; align-items: center; gap: .5rem;
-                padding: .8rem 1.5rem;
-                border: 2px solid #e2e8f0;
-                border-radius: 1rem;
-                background: #fff;
-                color: #64748b;
-                font-weight: 600; font-size: .95rem;
-                text-decoration: none;
-                transition: all .25s;
-            }
-            .uc-btn-cancel:hover { border-color: #94a3b8; color: #1e3a5f; transform: translateX(-2px); }
             .uc-btn-submit {
                 display: inline-flex; align-items: center; gap: .55rem;
                 padding: .85rem 2.2rem;
@@ -344,20 +332,6 @@
             .uc-btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(30,58,95,.4); }
             .uc-btn-submit:active { transform: scale(.97); }
 
-            /* ── Back link ───────────────────────────────────────────── */
-            .uc-back {
-                display: inline-flex; align-items: center; gap: .4rem;
-                color: #64748b;
-                text-decoration: none; font-size: .88rem; font-weight: 600;
-                margin-bottom: 1.4rem;
-                border: 1px solid #e2e8f0;
-                background: #fff;
-                padding: .4rem 1rem; border-radius: 999px;
-                transition: all .25s;
-                position: relative; z-index: 2;
-            }
-            .uc-back:hover { color: #1e3a5f; border-color: #d69e2e; transform: translateX(-3px); }
-
             /* animation helpers */
             @keyframes uc-slide-up {
                 from { opacity:0; transform:translateY(14px); }
@@ -368,18 +342,13 @@
             @media (max-width: 600px) {
                 .uc-card-body { padding: 1.5rem 1.2rem; }
                 .uc-role-grid { grid-template-columns: 1fr; }
-                .uc-submit-row { flex-direction: column-reverse; }
-                .uc-btn-cancel, .uc-btn-submit { width:100%; justify-content:center; }
+                .uc-submit-row { justify-content: center; }
+                .uc-btn-submit { width:100%; justify-content:center; }
             }
         </style>
 
         <div class="uc-stage">
             <div style="position:relative;z-index:2;width:100%;max-width:860px;">
-                {{-- Back link --}}
-                <a href="{{ route('admin.users.index') }}" class="uc-back">
-                    <i class="bi bi-arrow-left-short"></i> Back to Users
-                </a>
-
                 {{-- Main card --}}
                 <div class="uc-card">
                     <div class="uc-card-bar"></div>
@@ -566,9 +535,6 @@
 
                             {{-- ── Actions ── --}}
                             <div class="uc-submit-row">
-                                <a href="{{ route('admin.users.index') }}" class="uc-btn-cancel">
-                                    <i class="bi bi-x-lg"></i> Cancel
-                                </a>
                                 <button type="submit" class="uc-btn-submit" id="ucSubmitBtn">
                                     <i class="bi bi-person-plus-fill"></i> Create User
                                 </button>

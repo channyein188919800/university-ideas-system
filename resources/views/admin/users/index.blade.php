@@ -23,6 +23,19 @@
                 </div>
             </div>
 
+      
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
+                <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <span id="toastMessage">User deleted successfully!</span>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -76,6 +89,7 @@
                                                     <i class="fas fa-edit fa-fw"></i>
                                                 </a>
                                                 @if($user->id !== auth()->id())
+                                                    
                                                     <form method="POST" action="{{ route('admin.users.destroy', $user) }}" class="d-inline" data-confirm="Are you sure you want to delete this user?">
                                                         @csrf
                                                         @method('DELETE')
@@ -110,3 +124,44 @@
 @endsection
 
 @include('admin.partials.sidebar-assets')
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+ 
+        @if(session('success'))
+            showToast('{{ session('success') }}');
+        @endif
+    });
+
+    function showToast(message) {
+        const toast = document.getElementById('successToast');
+        const messageSpan = document.getElementById('toastMessage');
+        
+        if (toast && messageSpan) {
+            messageSpan.textContent = message;
+            toast.style.display = 'block';
+            
+            const bsToast = new bootstrap.Toast(toast, {
+                animation: true,
+                autohide: true,
+                delay: 5000
+            });
+            bsToast.show();
+            
+            toast.addEventListener('hidden.bs.toast', function () {
+                toast.style.display = 'none';
+            });
+        }
+    }
+</script>
+@endpush
+
+@push('styles')
+<style>
+   
+    .alert-success {
+        display: none !important;
+    }
+</style>
+@endpush

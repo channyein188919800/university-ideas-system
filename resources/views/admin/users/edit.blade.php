@@ -10,14 +10,9 @@
         <div class="container-fluid py-2">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h2><i class="fas fa-user-edit"></i> Edit User</h2>
-                            <p class="text-muted mb-0">Update user account details</p>
-                        </div>
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left"></i> Back
-                        </a>
+                    <div class="mb-4">
+                        <h2><i class="fas fa-user-edit"></i> Edit User</h2>
+                        <p class="text-muted mb-0">Update user account details</p>
                     </div>
 
                     <div class="card">
@@ -112,10 +107,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="d-flex justify-content-between">
-                                    <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
-                                        <i class="fas fa-times"></i> Cancel
-                                    </a>
+                                <div class="d-flex justify-content-end">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-save"></i> Update User
                                     </button>
