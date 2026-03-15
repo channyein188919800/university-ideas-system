@@ -11,8 +11,8 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="mb-4">
-                        <h2><i class="fas fa-user-edit"></i> Edit User</h2>
-                        <p class="text-muted mb-0">Update user account details</p>
+                        <h2><i class="fas fa-user-edit"></i> My Profile</h2>
+                        <p class="text-muted mb-0">Update account details</p>
                     </div>
 
                     <div class="card">
@@ -109,7 +109,7 @@
 
                                 <div class="d-flex justify-content-end">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save"></i> Update User
+                                        <i class="fas fa-save"></i> Update 
                                     </button>
                                 </div>
                             </form>

@@ -48,7 +48,7 @@
         
         /* Navbar Styles */
         .navbar {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(180deg, #0f1f3a 0%, #15294a 100%);
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
@@ -526,8 +526,9 @@
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('home') }}">
-                    <i class="fas fa-lightbulb"></i>
-                    University Ideas
+                    <img src="{{ asset('images/logo_no_bg.png') }}"
+             alt="University Ideas"
+             style="width:50px;max-height:60px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));"> University Ideas
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
