@@ -8,7 +8,7 @@
     <div class="admin-brand" style="justify-content:center;padding:0.5rem 0 0.8rem;">
         <img src="{{ asset('images/logo1_no_bg.png') }}"
              alt="University Ideas"
-             style="width:130px;max-height:90px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));">
+             style="width:210px;max-height:110px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));">
     </div>
 
     <div class="admin-nav-group">
