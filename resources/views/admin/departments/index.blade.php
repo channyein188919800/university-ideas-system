@@ -8,15 +8,23 @@
 
     <section class="admin-main">
         <div class="container-fluid py-2">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
+            <div class="d-flex justify-content-between align-items-center mb-4 admin-users-header">
+                <div class="admin-header-left">
                     <h2><i class="fas fa-building"></i> Manage Departments</h2>
                     <p class="text-muted mb-0">View and manage university departments</p>
+                    <div class="toast-container admin-users-toast">
+                        <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
+                            <div class="d-flex">
+                                <div class="toast-body">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    <span id="toastMessage">Department updated successfully!</span>
+                                </div>
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('admin.audit-logs.index') }}" class="btn btn-outline-primary">
-                        <i class="bi bi-journal-text"></i> Audit Logs
-                    </a>
                     <a href="{{ route('admin.departments.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Add Department
                     </a>
@@ -98,3 +106,75 @@
 @endsection
 
 @include('admin.partials.sidebar-assets')
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('success'))
+            showToast('{{ session('success') }}');
+        @endif
+    });
+
+    function showToast(message) {
+        const toast = document.getElementById('successToast');
+        const messageSpan = document.getElementById('toastMessage');
+
+        if (toast && messageSpan) {
+            messageSpan.textContent = message;
+            toast.style.display = 'block';
+
+            const bsToast = new bootstrap.Toast(toast, {
+                animation: true,
+                autohide: true,
+                delay: 5000
+            });
+            bsToast.show();
+
+            toast.addEventListener('hidden.bs.toast', function () {
+                toast.style.display = 'none';
+            });
+        }
+    }
+</script>
+@endpush
+
+@push('styles')
+<style>
+    .admin-users-header {
+        position: relative;
+    }
+    .admin-header-left {
+        position: relative;
+        padding-right: 420px;
+    }
+    .admin-users-toast {
+        position: absolute;
+        top: -2px;
+        left: 240px;
+        transform: none;
+        z-index: 30;
+        pointer-events: none;
+        display: block;
+    }
+    .admin-users-toast .toast {
+        pointer-events: auto;
+        max-width: 460px;
+    }
+    @media (max-width: 992px) {
+        .admin-header-left {
+            padding-right: 0;
+        }
+        .admin-users-toast {
+            position: relative;
+            left: 0;
+            top: 6px;
+            transform: none;
+            margin-top: 0.75rem;
+            display: block;
+        }
+    }
+    .alert-success {
+        display: none !important;
+    }
+</style>
+@endpush

@@ -8,7 +8,7 @@
 
     <section class="admin-main">
         <div class="container-fluid py-2">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 admin-users-header">
                 <div>
                     <h2><i class="fas fa-users"></i> Manage Users</h2>
                     <p class="text-muted mb-0">View and manage system users</p>
@@ -21,17 +21,15 @@
                         <i class="fas fa-plus"></i> Add User
                     </a>
                 </div>
-            </div>
-
-      
-            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
-                <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
-                    <div class="d-flex">
-                        <div class="toast-body">
-                            <i class="fas fa-check-circle me-2"></i>
-                            <span id="toastMessage">User deleted successfully!</span>
+                <div class="toast-container admin-users-toast">
+                    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <span id="toastMessage">User deleted successfully!</span>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                         </div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                 </div>
             </div>
@@ -159,7 +157,31 @@
 
 @push('styles')
 <style>
-   
+    .admin-users-header {
+        position: relative;
+    }
+    .admin-users-toast {
+        position: absolute;
+        top: -6px;
+        left: auto;
+        right: 140px;
+        transform: none;
+        z-index: 30;
+        pointer-events: none;
+        display: block;
+    }
+    .admin-users-toast .toast {
+        pointer-events: auto;
+        max-width: 460px;
+    }
+    @media (max-width: 992px) {
+        .admin-users-toast {
+            position: static;
+            transform: none;
+            margin-top: 0.75rem;
+            display: block;
+        }
+    }
     .alert-success {
         display: none !important;
     }

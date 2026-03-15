@@ -12,10 +12,21 @@
              style="width:130px;max-height:90px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));">
     </div>
 
-    <!-- === ADD THIS SECTION TITLE === -->
-    <div class="admin-section-title">
-        <i class="bi bi-shield-lock-fill"></i>
-        <span>System Administration</span>
+    <!-- Admin profile -->
+    <div class="admin-profile">
+        <div class="admin-profile-avatar">
+            @if(auth()->user()->profile_image_url)
+                <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }} profile photo">
+            @else
+                <span>{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+            @endif
+        </div>
+        <div class="admin-profile-meta">
+            <div class="admin-profile-name">{{ auth()->user()->name }}</div>
+            <div class="admin-profile-role">
+                {{ \Illuminate\Support\Str::title(str_replace('_', ' ', auth()->user()->role)) }}
+            </div>
+        </div>
     </div>
 
     <div class="admin-nav-group">
