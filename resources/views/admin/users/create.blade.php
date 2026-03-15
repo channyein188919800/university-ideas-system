@@ -446,6 +446,7 @@
                                     <span class="uc-hint" id="hint-upper"><i class="bi bi-circle"></i> Uppercase</span>
                                     <span class="uc-hint" id="hint-lower"><i class="bi bi-circle"></i> Lowercase</span>
                                     <span class="uc-hint" id="hint-symbol"><i class="bi bi-circle"></i> Symbol</span>
+                                    <span class="uc-hint" id="hint-number"><i class="bi bi-circle"></i> Number</span>
                                 </div>
 
                                 @error('password')
@@ -562,6 +563,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var hintUpper  = document.getElementById('hint-upper');
     var hintLower  = document.getElementById('hint-lower');
     var hintSymbol = document.getElementById('hint-symbol');
+    var hintNumber = document.getElementById('hint-number');
 
     function setHint(el, ok) {
         var icon = el.querySelector('.bi');
@@ -580,14 +582,16 @@ document.addEventListener('DOMContentLoaded', function () {
         var hasUpper  = /[A-Z]/.test(v);
         var hasLower  = /[a-z]/.test(v);
         var hasSymbol = /[^A-Za-z0-9]/.test(v);
+        var hasNumber = /[0-9]/.test(v);
 
         setHint(hintLen,    hasLen);
         setHint(hintUpper,  hasUpper);
         setHint(hintLower,  hasLower);
         setHint(hintSymbol, hasSymbol);
+        setHint(hintNumber, hasNumber);
 
-        var score = [hasLen, hasUpper, hasLower, hasSymbol].filter(Boolean).length;
-        var pct   = (score / 4) * 100;
+        var score = [hasLen, hasUpper, hasLower, hasSymbol, hasNumber].filter(Boolean).length;
+        var pct   = (score / 5) * 100;
         var color = score <= 1 ? '#ef4444' : score === 2 ? '#f59e0b' : score === 3 ? '#3b82f6' : '#22c55e';
         fillBar.style.width     = pct + '%';
         fillBar.style.background = color;

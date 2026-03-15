@@ -528,7 +528,7 @@
                 <a class="navbar-brand" href="{{ route('home') }}">
                     <img src="{{ asset('images/logo_no_bg.png') }}"
              alt="University Ideas"
-             style="width:50px;max-height:60px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));"> University Ideas
+             style="width:50px;max-height:60px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));"> DMK University
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>

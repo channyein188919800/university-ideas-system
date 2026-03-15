@@ -11,8 +11,8 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="mb-4 admin-users-header">
-                        <h2><i class="fas fa-plus-circle"></i> Add Department</h2>
-                        <p class="text-muted mb-0">Create a new department</p>
+                        <h2><i class="bi bi-building-add"></i> Add Department</h2>
+                        <p class="text-muted mb-0">Create a new department and assign QA coordinator</p>
                         <div class="toast-container admin-users-toast">
                             <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
                                 <div class="d-flex">

@@ -35,7 +35,8 @@ class UserController extends Controller
                 'required',
                 Password::min(8)
                     ->mixedCase()
-                    ->symbols(),
+                    ->symbols()
+                    ->numbers(),
             ],
             'role'         => 'required|in:admin,qa_manager,qa_coordinator,staff',
             'department_id'=> 'nullable|exists:departments,id',

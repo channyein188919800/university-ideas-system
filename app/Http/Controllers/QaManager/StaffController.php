@@ -8,6 +8,9 @@ use App\Models\User;
 use App\Support\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\Password;
+
 
 class StaffController extends Controller
 {
@@ -42,12 +45,18 @@ class StaffController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
-            'role' => 'required|in:staff,qa_coordinator',
-            'department_id' => 'nullable|exists:departments,id',
-            'status' => 'required|in:active,disabled',
+            'name'         => 'required|string|max:255',
+            'email'        => 'required|email|unique:users',
+            'password'     => [
+                'required',
+                Password::min(8)
+                    ->mixedCase()
+                    ->symbols()
+                    ->numbers(),
+            ],
+            'role'         => 'required|in:admin,qa_manager,qa_coordinator,staff',
+            'department_id'=> 'nullable|exists:departments,id',
+            'profile_image'=> 'nullable|image|max:2048',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
