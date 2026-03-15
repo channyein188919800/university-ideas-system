@@ -11,8 +11,8 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="mb-4">
-                        <h2><i class="fas fa-plus-circle"></i> Add Department</h2>
-                        <p class="text-muted mb-0">Create a new department</p>
+                        <h2><i class="bi bi-building-add"></i> Add Department</h2>
+                        <p class="text-muted mb-0">Create a new department and assign QA coordinator</p>
                     </div>
 
                     <div class="card">
