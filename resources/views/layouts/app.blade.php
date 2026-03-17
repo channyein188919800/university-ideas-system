@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description" content="University Ideas System - Empowering staff to contribute ideas for institutional improvement">
     <title>@yield('title', 'University Ideas System')</title>
     
     <!-- Bootstrap CSS -->
@@ -82,8 +83,8 @@
         }
 
         .profile-avatar {
-            width: 34px;
-            height: 34px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid rgba(255,255,255,0.28);
@@ -92,8 +93,8 @@
         }
 
         .profile-avatar-fallback {
-            width: 34px;
-            height: 34px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
@@ -101,14 +102,21 @@
             border: 2px solid rgba(255,255,255,0.28);
             background: rgba(255,255,255,0.13);
             color: white;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            font-weight: 600;
             flex-shrink: 0;
         }
 
         .user-dropdown-toggle {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 0.5rem;
+        }
+        
+        .user-dropdown-toggle .profile-avatar,
+        .user-dropdown-toggle .profile-avatar-fallback {
+            width: 40px;
+            height: 40px;
         }
         
         /* Card Styles */
@@ -516,21 +524,39 @@
                 gap: 0.75rem;
             }
         }
+
+        /* Accessibility */
+        .visually-hidden-focusable:not(:focus) {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0,0,0,0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
     </style>
     
     @stack('styles')
 </head>
 <body>
     @unless(!empty($hideNavFooter))
+        <!-- Skip to content link for screen readers -->
+        <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+
         <!-- Navigation -->
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('home') }}">
                     <img src="{{ asset('images/logo_no_bg.png') }}"
-             alt="University Ideas"
-             style="width:50px;max-height:60px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));"> DMK University
+                        alt="University Ideas"
+                        loading="lazy"
+                        width="50" height="60"
+                        style="width:50px;max-height:60px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));"> DMK University
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
@@ -542,15 +568,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('ideas.index') ? 'active' : '' }}" href="{{ route('ideas.index') }}">
-                                <i class="fas fa-ideas"></i> All Ideas
+                                <i class="fas fa-lightbulb"></i> All Ideas
                             </a>
                         </li>
-                        @auth
-                            @if(auth()->user()->canSubmitIdea())
-                                <li class="nav-item">
-                                </li>
-                            @endif
-                        @endauth
                     </ul>
                     <ul class="navbar-nav">
                         @guest
@@ -561,17 +581,36 @@
                             </li>
                         @else
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle user-dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <a class="nav-link dropdown-toggle user-dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     @if(auth()->user()->profile_image_url)
-                                        <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }}" class="profile-avatar">
+                                        <img src="{{ auth()->user()->profile_image_url }}" 
+                                            alt="{{ auth()->user()->name }}" 
+                                            class="profile-avatar"
+                                            onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';">
                                     @else
                                         <span class="profile-avatar-fallback">
-                                            <i class="bi bi-person-fill"></i>
+                                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                                         </span>
                                     @endif
-                                    <span>{{ auth()->user()->name }}</span>
+                                    <div class="d-none d-lg-block" style="line-height: 1.2;">
+                                        <div>{{ auth()->user()->name }}</div>
+                                        <small style="font-size: 0.7rem; opacity: 0.8; display: block;">
+                                            @if(auth()->user()->isAdmin())
+                                                Administrator
+                                            @elseif(auth()->user()->isQaManager())
+                                                QA Manager
+                                            @elseif(auth()->user()->isQaCoordinator())
+                                                QA Coordinator
+                                            @else
+                                                Staff Member
+                                            @endif
+                                        </small>
+                                    </div>
+                                    <div class="d-lg-none">
+                                        {{ auth()->user()->name }}
+                                    </div>
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end">
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                     @if(auth()->user()->isAdmin())
                                         <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}"><i class="fas fa-cog"></i> Admin Panel</a></li>
                                     @elseif(auth()->user()->isQaManager())
@@ -600,39 +639,39 @@
     @endunless
 
     <!-- Main Content -->
-    <main class="flex-grow-1">
+    <main class="flex-grow-1" id="main-content" role="main">
         @if(session('success'))
             <div class="container mt-3">
-                <div class="alert alert-success alert-dismissible fade show">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <i class="fas fa-check-circle"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>
         @endif
 
         @if(session('error'))
             <div class="container mt-3">
-                <div class="alert alert-danger alert-dismissible fade show">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>
         @endif
 
         @if(session('warning'))
             <div class="container mt-3">
-                <div class="alert alert-warning alert-dismissible fade show">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     <i class="fas fa-exclamation-triangle"></i> {{ session('warning') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>
         @endif
 
         @if(session('info'))
             <div class="container mt-3">
-                <div class="alert alert-info alert-dismissible fade show">
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
                     <i class="fas fa-info-circle"></i> {{ session('info') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>
         @endif
@@ -658,19 +697,24 @@
         </footer>
     @endunless
 
+    <!-- Confirm Action Modal -->
     <div class="modal fade" id="confirmActionModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Confirm Action</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" id="confirmModalTitle">Confirm Action</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="confirmActionMessage">
                     Are you sure you want to proceed?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmActionButton">Confirm</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmActionButton">
+                        <i class="fas fa-check"></i> Confirm
+                    </button>
                 </div>
             </div>
         </div>
@@ -681,6 +725,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Confirm modal functionality
             const confirmModalEl = document.getElementById('confirmActionModal');
             const confirmMessageEl = document.getElementById('confirmActionMessage');
             const confirmButton = document.getElementById('confirmActionButton');
@@ -701,10 +746,19 @@
                     if (pendingForm) {
                         pendingForm.submit();
                         pendingForm = null;
+                        const modal = bootstrap.Modal.getInstance(confirmModalEl);
+                        if (modal) modal.hide();
                     }
                 });
             }
 
+            // Auto-dismiss alerts after 5 seconds
+            setTimeout(function() {
+                document.querySelectorAll('.alert-dismissible').forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
         });
     </script>
     
