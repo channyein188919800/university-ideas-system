@@ -5,362 +5,32 @@
 @section('content')
 <style>
     :root {
-        --brand-navy: #0f172a;
-        --brand-blue: #1e3a5f;
-        --brand-gold: #d69e2e;
-        --paper: #f8fafc;
-        --panel: #ffffff;
-        --line: #e2e8f0;
-        --muted: #64748b;
-        --text: #0f172a;
+        --primary-color: #1e3a5f;    /* Navy Blue */
+        --secondary-color: #2c5282;  /* Lighter Navy */
+        --accent-color: #d69e2e;     /* Gold */
+        --body-bg: #f0f4f8;
+        --card-bg: #ffffff;
+        --text-muted: #718096;
     }
 
     body {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        background:
-            radial-gradient(circle at 0% 0%, rgba(214, 158, 46, 0.12), transparent 35%),
-            radial-gradient(circle at 100% 100%, rgba(30, 58, 95, 0.12), transparent 40%),
-            var(--paper);
-        min-height: 100vh;
+        background-color: var(--body-bg);
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        color: #2d3748;
+        margin: 0;
+        padding: 0;
     }
 
     h1, h2, h3, h4, h5, h6 {
-        font-family: 'Merriweather', serif;
-        color: var(--text);
+        font-family: "Merriweather", serif;
+        color: var(--primary-color);
     }
 
-    .ideas-shell {
-        padding: 1.75rem 0 3rem;
-    }
-
-    .ideas-hero {
-        border-radius: 1.25rem;
-        padding: 1.4rem 1.5rem;
-        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-        border: 1px solid var(--line);
-        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.07);
-        margin-bottom: 1rem;
-    }
-
-    .hero-kicker {
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.07em;
-        color: var(--brand-blue);
-        text-transform: uppercase;
-        margin-bottom: 0.3rem;
-    }
-
-    .hero-title {
-        margin: 0;
-        font-size: 1.75rem;
-    }
-
-    .hero-copy {
-        color: var(--muted);
-        margin: 0.45rem 0 0;
-        font-size: 0.95rem;
-    }
-
-    .hero-stats {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-    }
-
-    .hero-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        font-size: 0.8rem;
-        padding: 0.35rem 0.7rem;
-        border-radius: 999px;
-        border: 1px solid #cbd5e1;
-        color: #334155;
-        background: #fff;
-        font-weight: 600;
-    }
-
-    .hero-chip strong {
-        color: var(--brand-blue);
-    }
-
-    .btn-submit {
-        border: 0;
-        border-radius: 0.8rem;
-        padding: 0.62rem 1.1rem;
-        font-weight: 700;
-        color: #fff;
-        background: linear-gradient(135deg, var(--brand-navy), var(--brand-blue));
-        box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2);
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .btn-submit:hover {
-        color: #fff;
-        transform: translateY(-1px);
-        box-shadow: 0 14px 24px rgba(15, 23, 42, 0.25);
-    }
-
-    .filter-card {
-        border-radius: 1.15rem;
-        background: var(--panel);
-        border: 1px solid var(--line);
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-        padding: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .filter-card label {
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        color: #475569;
-        text-transform: uppercase;
-        margin-bottom: 0.35rem;
-    }
-
-    .filter-card .form-select {
-        border-radius: 0.72rem;
-        border: 1px solid #cbd5e1;
-        color: #0f172a;
-        background: #fff;
-        font-size: 0.92rem;
-    }
-
-    .filter-card .form-select:focus {
-        border-color: var(--brand-gold);
-        box-shadow: 0 0 0 0.2rem rgba(214, 158, 46, 0.15);
-    }
-
-    .btn-reset {
-        border-radius: 0.72rem;
-        border: 1px solid #cbd5e1;
-        background: #fff;
-        color: #334155;
-        text-decoration: none;
-        font-weight: 600;
-        padding: 0.55rem 0.9rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.4rem;
-        width: 100%;
-        transition: all 0.2s ease;
-    }
-
-    .btn-reset:hover {
-        background: #f8fafc;
-        border-color: #94a3b8;
-        color: #0f172a;
-    }
-
-    .idea-item {
-        border: 1px solid var(--line);
-        border-radius: 1.1rem;
-        background: #fff;
-        box-shadow: 0 8px 26px rgba(15, 23, 42, 0.07);
-        padding: 1.15rem;
-        margin-bottom: 0.9rem;
-        cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    }
-
-    .idea-item:hover {
-        transform: translateY(-2px);
-        border-color: #cbd5e1;
-        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.1);
-    }
-
-    .idea-title-row {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-        flex-wrap: wrap;
-        margin-bottom: 0.5rem;
-    }
-
-    .idea-title {
-        margin: 0;
-        font-size: 1.08rem;
-        font-weight: 700;
-    }
-
-    .idea-title a {
-        color: #0f172a;
-        text-decoration: none;
-    }
-
-    .idea-title a:hover {
-        color: var(--brand-blue);
-    }
-
-    .badge-anon {
-        border-radius: 999px;
-        font-size: 0.72rem;
-        font-weight: 700;
-        padding: 0.22rem 0.65rem;
-        background: rgba(15, 23, 42, 0.06);
-        color: #334155;
-        border: 1px solid #cbd5e1;
-    }
-
-    .idea-meta {
-        display: flex;
-        gap: 0.7rem;
-        align-items: center;
-        flex-wrap: wrap;
-        font-size: 0.81rem;
-        color: #64748b;
-        margin-bottom: 0.6rem;
-    }
-
-    .idea-meta i {
-        color: var(--brand-blue);
-    }
-
-    .idea-desc {
-        color: #334155;
-        line-height: 1.58;
-        font-size: 0.92rem;
-        margin-bottom: 0.7rem;
-    }
-
-    .tag-wrap {
-        display: flex;
-        gap: 0.38rem;
-        flex-wrap: wrap;
-    }
-
-    .tag {
-        display: inline-flex;
-        align-items: center;
-        border-radius: 999px;
-        padding: 0.22rem 0.68rem;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        color: #334155;
-        font-size: 0.73rem;
-        font-weight: 700;
-    }
-
-    .author-panel {
-        border: 1px solid #e2e8f0;
-        border-radius: 1rem;
-        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-        padding: 0.75rem;
-    }
-
-    .author-head {
-        display: flex;
-        align-items: center;
-        gap: 0.55rem;
-    }
-
-    .author-avatar {
-        width: 2.15rem;
-        height: 2.15rem;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #0f172a, #1e3a5f);
-        color: #fff;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.8rem;
-        font-weight: 800;
-        flex-shrink: 0;
-    }
-
-    .author-name {
-        margin: 0;
-        font-size: 0.88rem;
-        color: #0f172a;
-        font-weight: 700;
-        line-height: 1.25;
-    }
-
-    .author-email {
-        margin: 0.08rem 0 0;
-        font-size: 0.76rem;
-        color: #64748b;
-        word-break: break-word;
-    }
-
-    .author-role {
-        display: inline-flex;
-        margin-top: 0.4rem;
-        border-radius: 999px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-        text-transform: capitalize;
-        color: #0f172a;
-        background: rgba(214, 158, 46, 0.14);
-        border: 1px solid rgba(214, 158, 46, 0.35);
-        padding: 0.2rem 0.58rem;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.38rem;
-        margin-top: 0.75rem;
-    }
-
-    .stat-chip {
-        border: 1px solid #e2e8f0;
-        background: #fff;
-        border-radius: 0.7rem;
-        padding: 0.34rem 0.45rem;
-        font-size: 0.77rem;
-        font-weight: 700;
-        color: #334155;
-        display: flex;
-        align-items: center;
-        gap: 0.28rem;
-    }
-
-    .stat-chip i { color: var(--brand-blue); }
-
-    .score-chip {
-        margin-top: 0.5rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.32rem;
-        border-radius: 999px;
-        padding: 0.22rem 0.72rem;
-        font-size: 0.74rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, rgba(214, 158, 46, 0.2), rgba(214, 158, 46, 0.1));
-        color: #7c4a03;
-        border: 1px solid rgba(214, 158, 46, 0.4);
-    }
-
-    .empty-state {
-        border: 1px dashed #cbd5e1;
-        border-radius: 1rem;
-        background: #fff;
-        padding: 2.5rem 1.3rem;
-        text-align: center;
-        color: #64748b;
-    }
-
-    .empty-state i {
-        font-size: 2.5rem;
-        color: #94a3b8;
-        margin-bottom: 0.7rem;
-        display: block;
-    }
-
+    /* --- Animations --- */
     .fade-in-up {
         opacity: 0;
-        transform: translateY(14px);
-        transition: opacity 0.45s ease, transform 0.45s ease;
+        transform: translateY(20px);
+        transition: all 0.6s ease-out;
     }
 
     .fade-in-up.visible {
@@ -368,80 +38,232 @@
         transform: translateY(0);
     }
 
-    .fade-in-delay-1 { transition-delay: 0.06s; }
-    .fade-in-delay-2 { transition-delay: 0.12s; }
-
-    .pagination .page-link {
-        border-radius: 0.6rem !important;
-        color: #334155;
-        border-color: #cbd5e1;
-        margin: 0 0.12rem;
+    /* --- Hero Section --- */
+    .ideas-hero {
+        background: linear-gradient(rgba(30, 58, 95, 0.9), rgba(30, 58, 95, 0.95)), 
+                    url('https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg');
+        background-size: cover;
+        background-position: center;
+        border-radius: 1.25rem;
+        padding: 3rem 1.5rem 5.5rem 1.5rem;
+        color: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
-    .pagination .page-link:hover {
-        background: #f8fafc;
-        color: #0f172a;
-        border-color: #94a3b8;
+    @media (min-width: 768px) {
+        .ideas-hero { padding: 4rem 2.5rem 6.5rem 2.5rem; }
     }
 
-    .pagination .page-item.active .page-link {
-        background: linear-gradient(135deg, var(--brand-navy), var(--brand-blue));
-        border-color: transparent;
-        color: #fff;
+    .hero-title span { color: var(--accent-color); }
+    .hero-kicker { color: var(--accent-color); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; display: block; font-size: 0.8rem; }
+
+    /* --- Responsive Filter Card --- */
+    .filter-card {
+        background: white;
+        border-radius: 1.15rem;
+        border: none;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        padding: 1.5rem;
+        margin-top: -3.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+        border-top: 5px solid var(--accent-color);
     }
 
-    @media (max-width: 767.98px) {
-        .ideas-shell {
-            padding-top: 1rem;
-        }
+    .filter-card label {
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--primary-color);
+        margin-bottom: 0.6rem;
+        display: flex;
+        align-items: center;
+    }
 
-        .ideas-hero {
-            padding: 1rem;
-        }
+    /* Fix for the Overflowing Select Menu */
+    .form-select {
+        border-radius: 0.6rem;
+        border: 1px solid #e2e8f0;
+        padding: 0.75rem;
+        font-size: 0.9rem;
+        width: 100%; 
+        max-width: 100%; /* Prevents horizontal overflow seen in your screenshot */
+        background-color: #fff;
+        cursor: pointer;
+    }
 
-        .hero-title {
-            font-size: 1.35rem;
-        }
+    /* --- Idea Items --- */
+    .idea-item {
+        background: white;
+        border-radius: 1.25rem;
+        border: 1px solid rgba(0,0,0,0.04);
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.02);
+    }
 
-        .idea-item {
-            padding: 0.95rem;
+    .idea-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 35px rgba(30, 58, 95, 0.08);
+    }
+
+    .idea-content-area { padding: 1.5rem; }
+    
+    .idea-title a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 1.2rem;
+    }
+
+    .idea-meta {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .tag {
+        background: rgba(30, 58, 95, 0.04);
+        color: var(--secondary-color);
+        padding: 0.35rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        border: 1px solid rgba(30, 58, 95, 0.08);
+        text-decoration: none;
+    }
+
+    /* --- Author Panel (Responsive Stacking) --- */
+    .author-panel {
+        background: #fcfdfe;
+        border-top: 1px solid #f1f5f9;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    @media (min-width: 992px) {
+        .author-panel {
+            border-top: none;
+            border-left: 1px solid #f1f5f9;
+            padding: 2rem;
         }
+    }
+
+    .author-avatar {
+        width: 44px;
+        height: 44px;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        border: 2px solid var(--accent-color);
+    }
+
+    .author-name { color: var(--primary-color); font-weight: 700; margin: 0; font-size: 0.95rem; }
+    .author-role { 
+        font-size: 0.65rem; 
+        text-transform: uppercase; 
+        background: var(--accent-color); 
+        color: white; 
+        padding: 0.15rem 0.5rem; 
+        border-radius: 4px; 
+        font-weight: 700;
+    }
+
+    /* --- Stats & Scores --- */
+    .stat-chip {
+        background: white;
+        border: 1px solid #f1f5f9;
+        border-radius: 8px;
+        padding: 0.5rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.3rem;
+    }
+
+    .score-chip {
+        display: block;
+        text-align: center;
+        background: var(--primary-color);
+        color: white;
+        padding: 0.6rem;
+        border-radius: 8px;
+        font-weight: 700;
+        margin-top: 1rem;
+        font-size: 0.85rem;
+    }
+
+    /* --- Buttons --- */
+    .btn-gold {
+        background: var(--accent-color);
+        color: white;
+        font-weight: 700;
+        border-radius: 50px;
+        padding: 0.6rem 1.5rem;
+        border: none;
+        width: 100%; 
+    }
+
+    @media (min-width: 768px) {
+        .btn-gold { width: auto; }
+    }
+
+    .btn-reset {
+        background: #f1f5f9;
+        color: var(--secondary-color);
+        font-weight: 700;
+        border-radius: 0.6rem;
+        padding: 0.75rem;
+        text-align: center;
+        display: block;
+        text-decoration: none;
     }
 </style>
 
-<div class="ideas-shell">
+<div class="ideas-shell py-4">
     <div class="container">
         <div class="ideas-hero fade-in-up">
-            <div class="row g-3 align-items-center">
+            <div class="row align-items-center">
                 <div class="col-lg-8">
-                    <p class="hero-kicker">Community Hub</p>
-                    <h1 class="hero-title">Explore Approved Ideas</h1>
-                    <p class="hero-copy">
-                        Browse submissions across departments with a clearer contributor panel and light reading layout.
-                    </p>
+                    <span class="hero-kicker">Knowledge Base</span>
+                    <h1 class="hero-title text-white mb-2">Explore <span>University</span> Ideas</h1>
+                    <p class="opacity-75 mb-0 d-none d-md-block">Discover community contributions from across all departments.</p>
                 </div>
-                <div class="col-lg-4">
-                    <div class="hero-stats mb-2">
-                        <span class="hero-chip"><i class="bi bi-lightbulb"></i> Ideas: <strong>{{ $ideas->total() }}</strong></span>
-                        <span class="hero-chip"><i class="bi bi-funnel"></i> Filtered: <strong>{{ $ideas->count() }}</strong></span>
-                    </div>
-                    @auth
-                        @if(auth()->user()->canSubmitIdea())
-                            <div class="text-lg-end">
-                                <a href="{{ route('ideas.create') }}" class="btn-submit">
-                                    <i class="bi bi-plus-circle-fill"></i> Submit Idea
+                <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                    <div class="d-flex flex-column align-items-lg-end gap-3">
+                        <div>
+                            <span class="badge bg-white text-primary px-3 py-2 rounded-pill shadow-sm">
+                                <i class="bi bi-lightbulb-fill text-warning me-1"></i> Ideas: {{ $ideas->total() }}
+                            </span>
+                        </div>
+                        @auth
+                            @if(auth()->user()->canSubmitIdea())
+                                <a href="{{ route('ideas.create') }}" class="btn btn-gold shadow-sm">
+                                    <i class="bi bi-plus-circle me-1"></i> Submit Idea
                                 </a>
-                            </div>
-                        @endif
-                    @endauth
+                            @endif
+                        @endauth
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="filter-card fade-in-up fade-in-delay-1">
-            <form method="GET" action="{{ route('ideas.index') }}" class="row g-3 align-items-end">
-                <div class="col-md-4">
-                    <label><i class="bi bi-funnel-fill me-1"></i> Category</label>
+        <div class="filter-card fade-in-up">
+            <form method="GET" action="{{ route('ideas.index') }}" class="row g-3">
+                <div class="col-12 col-md-4">
+                    <label><i class="bi bi-tag-fill me-2 text-warning"></i> Category</label>
                     <select name="category" class="form-select" onchange="this.form.submit()">
                         <option value="">All Categories</option>
                         @foreach($categories as $category)
@@ -451,150 +273,114 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-4">
-                    <label><i class="bi bi-sort-down me-1"></i> Sort By</label>
+                <div class="col-12 col-md-4">
+                    <label><i class="bi bi-sort-up me-2 text-warning"></i> Sort By</label>
                     <select name="sort" class="form-select" onchange="this.form.submit()">
-                        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest</option>
-                        <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Most Popular</option>
+                        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Most Recent</option>
+                        <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Trending Now</option>
                         <option value="views" {{ request('sort') == 'views' ? 'selected' : '' }}>Most Viewed</option>
                     </select>
                 </div>
-                <div class="col-md-4">
-                    <label class="d-block" style="visibility:hidden;">Reset</label>
+                <div class="col-12 col-md-4">
+                    <label class="d-none d-md-block" style="visibility: hidden;">Reset</label>
                     <a href="{{ route('ideas.index') }}" class="btn-reset">
-                        <i class="bi bi-arrow-counterclockwise"></i> Reset Filters
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filters
                     </a>
                 </div>
             </form>
         </div>
 
-        @forelse($ideas as $idea)
-            @php
-                $authorName = $idea->is_anonymous ? 'Anonymous Contributor' : ($idea->user?->name ?? 'Unknown User');
-                $authorEmail = $idea->is_anonymous ? 'Identity hidden by submitter' : ($idea->user?->email ?? 'Email unavailable');
-                $roleLabel = $idea->is_anonymous ? 'Anonymous' : str_replace('_', ' ', ($idea->user?->role ?? 'staff'));
-                $initials = collect(explode(' ', trim($authorName)))->filter()->map(fn ($part) => strtoupper(substr($part, 0, 1)))->take(2)->implode('');
-                $initials = $initials ?: 'UI';
-            @endphp
+        <div class="idea-list-container">
+            @forelse($ideas as $idea)
+                @php
+                    $authorName = $idea->is_anonymous ? 'Anonymous Contributor' : ($idea->user?->name ?? 'Unknown User');
+                    $roleLabel = $idea->is_anonymous ? 'Member' : str_replace('_', ' ', ($idea->user?->role ?? 'staff'));
+                    $initials = collect(explode(' ', trim($authorName)))->filter()->map(fn ($part) => strtoupper(substr($part, 0, 1)))->take(2)->implode('');
+                @endphp
 
-            <article class="idea-item fade-in-up" data-href="{{ route('ideas.show', $idea) }}">
-                <div class="row g-3">
-                    <div class="col-lg-8">
-                        <div class="idea-title-row">
-                            <h5 class="idea-title mb-0">
-                                <a href="{{ route('ideas.show', $idea) }}">{{ $idea->title }}</a>
-                            </h5>
-                            @if($idea->hidden)
-                                <span class="badge text-bg-dark"><i class="bi bi-eye-slash me-1"></i>Hidden</span>
-                            @endif
-                            @if($idea->is_anonymous)
-                                <span class="badge-anon"><i class="bi bi-incognito me-1"></i> Anonymous</span>
-                            @endif
-                        </div>
+                <article class="idea-item fade-in-up" data-href="{{ route('ideas.show', $idea) }}">
+                    <div class="row g-0">
+                        <div class="col-lg-8">
+                            <div class="idea-content-area">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <h5 class="idea-title mb-0">
+                                        <a href="{{ route('ideas.show', $idea) }}">{{ $idea->title }}</a>
+                                    </h5>
+                                    @if($idea->is_anonymous)
+                                        <span class="badge-anon"><i class="bi bi-incognito"></i></span>
+                                    @endif
+                                </div>
 
-                        <div class="idea-meta">
-                            <span><i class="bi bi-building me-1"></i>{{ $idea->department->name }}</span>
-                            <span><i class="bi bi-calendar3 me-1"></i>{{ $idea->created_at->format('M d, Y') }}</span>
-                            <span><i class="bi bi-clock-history me-1"></i>{{ $idea->created_at->diffForHumans() }}</span>
-                        </div>
+                                <div class="idea-meta">
+                                    <span><i class="bi bi-building"></i> {{ $idea->department->name }}</span>
+                                    <span><i class="bi bi-calendar3"></i> {{ $idea->created_at->format('M d, Y') }}</span>
+                                </div>
 
-                        <p class="idea-desc">{{ Str::limit($idea->description, 240) }}</p>
+                                <p class="text-secondary small mb-3">
+                                    {{ Str::limit($idea->description, 180) }}
+                                </p>
 
-                        <div class="tag-wrap">
-                            @foreach($idea->categories as $category)
-                                <span class="tag">{{ $category->name }}</span>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4">
-                        <div class="author-panel h-100">
-                            <div class="author-head">
-                                <span class="author-avatar">{{ $initials }}</span>
-                                <div>
-                                    <p class="author-name">{{ $authorName }}</p>
-                                    <p class="author-email">{{ $authorEmail }}</p>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    @foreach($idea->categories as $category)
+                                        <span class="tag">{{ $category->name }}</span>
+                                    @endforeach
                                 </div>
                             </div>
-                            <span class="author-role">{{ $roleLabel }}</span>
+                        </div>
 
-                            <div class="stats-grid">
-                                <span class="stat-chip"><i class="bi bi-hand-thumbs-up-fill"></i> {{ $idea->thumbs_up_count }}</span>
-                                <span class="stat-chip"><i class="bi bi-hand-thumbs-down-fill"></i> {{ $idea->thumbs_down_count }}</span>
-                                <span class="stat-chip"><i class="bi bi-eye-fill"></i> {{ $idea->views_count }}</span>
-                                <span class="stat-chip"><i class="bi bi-chat-text-fill"></i> {{ $idea->comments_count }}</span>
+                        <div class="col-lg-4">
+                            <div class="author-panel h-100">
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div class="author-avatar">{{ $initials }}</div>
+                                    <div>
+                                        <p class="author-name">{{ $authorName }}</p>
+                                        <span class="author-role">{{ $roleLabel }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="row g-2">
+                                    <div class="col-6"><div class="stat-chip"><i class="bi bi-hand-thumbs-up"></i> {{ $idea->thumbs_up_count }}</div></div>
+                                    <div class="col-6"><div class="stat-chip"><i class="bi bi-hand-thumbs-down"></i> {{ $idea->thumbs_down_count }}</div></div>
+                                    <div class="col-6"><div class="stat-chip"><i class="bi bi-eye"></i> {{ $idea->views_count }}</div></div>
+                                    <div class="col-6"><div class="stat-chip"><i class="bi bi-chat-dots"></i> {{ $idea->comments_count }}</div></div>
+                                </div>
+
+                                <div class="score-chip">Score: {{ $idea->popularity_score }}</div>
                             </div>
-
-                            <span class="score-chip">
-                                <i class="bi bi-star-fill"></i>
-                                Score {{ $idea->popularity_score > 0 ? '+' : '' }}{{ $idea->popularity_score }}
-                            </span>
-
-                            @auth
-                                @if(auth()->user()->isQaManager())
-                                    <form method="POST" action="{{ route('qa-manager.ideas.toggle-hidden', $idea) }}" class="mt-2">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="btn btn-sm {{ $idea->hidden ? 'btn-success' : 'btn-outline-danger' }}">
-                                            <i class="bi {{ $idea->hidden ? 'bi-eye' : 'bi-eye-slash' }} me-1"></i>
-                                            {{ $idea->hidden ? 'Unhide' : 'Hide' }}
-                                        </button>
-                                    </form>
-                                @endif
-                            @endauth
                         </div>
                     </div>
+                </article>
+            @empty
+                <div class="text-center py-5 bg-white rounded-4 shadow-sm fade-in-up">
+                    <i class="bi bi-inbox fs-1 text-muted"></i>
+                    <h5 class="mt-3">No ideas found.</h5>
                 </div>
-            </article>
-        @empty
-            <div class="empty-state fade-in-up">
-                <i class="bi bi-inbox"></i>
-                <h5 class="mb-2">No ideas found</h5>
-                <p class="mb-3">Try changing filters or be the first to submit a new idea.</p>
-                @auth
-                    @if(auth()->user()->canSubmitIdea())
-                        <a href="{{ route('ideas.create') }}" class="btn-submit">
-                            <i class="bi bi-plus-circle-fill"></i> Submit Idea
-                        </a>
-                    @endif
-                @endauth
-            </div>
-        @endforelse
+            @endforelse
+        </div>
 
         <div class="mt-4 d-flex justify-content-center">
-            {{ $ideas->withQueryString()->links() }}
+            {{ $ideas->links() }}
         </div>
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var els = document.querySelectorAll('.fade-in-up');
-        if ('IntersectionObserver' in window) {
-            var observer = new IntersectionObserver(function (entries) {
-                entries.forEach(function (entry) {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            els.forEach(function (el) {
-                observer.observe(el);
-            });
-        } else {
-            els.forEach(function (el) {
-                el.classList.add('visible');
-            });
-        }
-
-        document.querySelectorAll('.idea-item[data-href]').forEach(function (card) {
-            card.addEventListener('click', function (e) {
-                if (e.target.closest('a, button, select')) {
-                    return;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
                 }
-                window.location.href = card.dataset.href;
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+
+        document.querySelectorAll('.idea-item[data-href]').forEach(card => {
+            card.addEventListener('click', function (e) {
+                if (!e.target.closest('a, button, select')) {
+                    window.location.href = card.dataset.href;
+                }
             });
         });
     });
