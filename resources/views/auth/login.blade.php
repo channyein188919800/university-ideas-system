@@ -565,6 +565,29 @@
         animation: fade-slide-up 0.5s ease-out;
     }
 
+    /* Lockout Alert Styles */
+    .alert-danger {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #dc2626;
+        padding: 1rem;
+        border-radius: 1rem;
+        margin-bottom: 1.5rem;
+        animation: fade-slide-up 0.5s ease-out;
+        font-weight: 500;
+    }
+
+    .countdown-number {
+        font-weight: 700;
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.5rem;
+        display: inline-block;
+        min-width: 2.5rem;
+        text-align: center;
+    }
+
     /* Keyframe Animations */
     @keyframes spin {
         to { transform: rotate(360deg); }
@@ -766,6 +789,13 @@
                 </div>
             @endif
 
+            @if($errors->has('email') && str_contains($errors->first('email'), 'Too many login attempts'))
+                <div class="alert alert-danger">
+                    <i class="bi bi-shield-lock-fill me-2"></i>
+                    Too many login attempts. Please try again in <span class="countdown-number" id="countdown">60</span> seconds.
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('login') }}" id="loginForm">
                 @csrf
 
@@ -781,15 +811,18 @@
                             placeholder="name@university.edu"
                             autocomplete="email"
                             required
-                            autofocus>
+                            autofocus
+                            @if($errors->has('email') && str_contains($errors->first('email'), 'Too many login attempts')) disabled @endif>
                         <i class="bi bi-envelope-fill"></i>
                         <div class="input-highlight"></div>
                     </div>
                     @error('email')
-                        <div class="field-error">
-                            <i class="bi bi-exclamation-circle-fill"></i>
-                            {{ $message }}
-                        </div>
+                        @if(!str_contains($message, 'Too many login attempts'))
+                            <div class="field-error">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                {{ $message }}
+                            </div>
+                        @endif
                     @enderror
                 </div>
 
@@ -803,9 +836,10 @@
                             class="login-input @error('password') is-invalid @enderror"
                             placeholder="Enter your password"
                             autocomplete="current-password"
-                            required>
+                            required
+                            @if($errors->has('email') && str_contains($errors->first('email'), 'Too many login attempts')) disabled @endif>
                         <i class="bi bi-shield-lock-fill"></i>
-                        <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password visibility">
+                        <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password visibility" @if($errors->has('email') && str_contains($errors->first('email'), 'Too many login attempts')) disabled @endif>
                             <i class="bi bi-eye-fill" id="togglePasswordIcon"></i>
                         </button>
                         <div class="input-highlight"></div>
@@ -820,14 +854,14 @@
 
                 <div class="login-row">
                     <label class="checkbox-container">
-                        <input type="checkbox" id="remember" name="remember">
+                        <input type="checkbox" id="remember" name="remember" @if($errors->has('email') && str_contains($errors->first('email'), 'Too many login attempts')) disabled @endif>
                         <span class="checkmark"></span>
                         Remember me
                     </label>
                     <a href="{{ route('password.request') }}" class="hint-link">Forgot password?</a>
                 </div>
 
-                <button type="submit" id="loginButton" class="login-btn">
+                <button type="submit" id="loginButton" class="login-btn" @if($errors->has('email') && str_contains($errors->first('email'), 'Too many login attempts')) disabled @endif>
                     <i class="bi bi-box-arrow-in-right btn-icon"></i>
                     Sign In
                 </button>
@@ -859,20 +893,22 @@
     const passwordInput = document.getElementById('password');
     const togglePasswordIcon = document.getElementById('togglePasswordIcon');
 
-    togglePassword.addEventListener('click', function() {
-        const isPassword = passwordInput.type === 'password';
-        passwordInput.type = isPassword ? 'text' : 'password';
-        togglePasswordIcon.className = isPassword ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill';
-        
-        // Add animation
-        this.style.transform = 'translateY(-50%) scale(1.2)';
-        setTimeout(() => {
-            this.style.transform = 'translateY(-50%) scale(1)';
-        }, 150);
-    });
+    if (togglePassword && !togglePassword.disabled) {
+        togglePassword.addEventListener('click', function() {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            togglePasswordIcon.className = isPassword ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill';
+            
+            // Add animation
+            this.style.transform = 'translateY(-50%) scale(1.2)';
+            setTimeout(() => {
+                this.style.transform = 'translateY(-50%) scale(1)';
+            }, 150);
+        });
+    }
 
     // Input Focus Animation
-    const inputs = document.querySelectorAll('.login-input');
+    const inputs = document.querySelectorAll('.login-input:not([disabled])');
     inputs.forEach(input => {
         input.addEventListener('focus', function() {
             this.parentElement.style.transform = 'scale(1.02)';
@@ -882,31 +918,33 @@
         });
     });
 
-    // Button Ripple Effect
+    // Button Ripple Effect (only if button is not disabled)
     const loginBtn = document.getElementById('loginButton');
-    loginBtn.addEventListener('click', function(e) {
-        const ripple = document.createElement('span');
-        const rect = this.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - size / 2;
-        const y = e.clientY - rect.top - size / 2;
-        
-        ripple.style.cssText = `
-            position: absolute;
-            width: ${size}px;
-            height: ${size}px;
-            left: ${x}px;
-            top: ${y}px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 50%;
-            transform: scale(0);
-            animation: ripple 0.6s ease-out;
-            pointer-events: none;
-        `;
-        
-        this.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 600);
-    });
+    if (loginBtn && !loginBtn.disabled) {
+        loginBtn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+                background: rgba(255,255,255,0.3);
+                border-radius: 50%;
+                transform: scale(0);
+                animation: ripple 0.6s ease-out;
+                pointer-events: none;
+            `;
+            
+            this.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+    }
 
     // Add ripple animation
     const style = document.createElement('style');
@@ -920,15 +958,33 @@
     `;
     document.head.appendChild(style);
 
-    // Form submission loading state
-    document.getElementById('loginForm').addEventListener('submit', function() {
-        const btn = document.getElementById('loginButton');
-        btn.innerHTML = '<i class="bi bi-arrow-repeat spin-icon"></i> Signing in...';
-        btn.style.pointerEvents = 'none';
+    // Countdown Timer for Lockout
+    @if($errors->has('email') && str_contains($errors->first('email'), 'Too many login attempts'))
+        let countdownElement = document.getElementById('countdown');
+        let timeLeft = 60;
         
-        const spinStyle = document.createElement('style');
-        spinStyle.textContent = `.spin-icon { animation: spin 1s linear infinite; }`;
-        document.head.appendChild(spinStyle);
+        const countdownInterval = setInterval(function() {
+            timeLeft--;
+            countdownElement.textContent = timeLeft;
+            
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                window.location.reload();
+            }
+        }, 1000);
+    @endif
+
+    // Form submission loading state (only if not locked out)
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        @if(!$errors->has('email') || !str_contains($errors->first('email'), 'Too many login attempts'))
+            const btn = document.getElementById('loginButton');
+            btn.innerHTML = '<i class="bi bi-arrow-repeat spin-icon"></i> Signing in...';
+            btn.style.pointerEvents = 'none';
+            
+            const spinStyle = document.createElement('style');
+            spinStyle.textContent = `.spin-icon { animation: spin 1s linear infinite; }`;
+            document.head.appendChild(spinStyle);
+        @endif
     });
 </script>
 @endpush
