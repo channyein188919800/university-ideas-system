@@ -640,6 +640,7 @@
 
     <!-- Main Content -->
     <main class="flex-grow-1" id="main-content" role="main">
+        @unless(!empty($hideNavFooter))
         @if(session('success'))
             <div class="container mt-3">
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -648,7 +649,9 @@
                 </div>
             </div>
         @endif
+        @endunless
 
+        @unless(!empty($hideNavFooter))
         @if(session('error'))
             <div class="container mt-3">
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -657,7 +660,9 @@
                 </div>
             </div>
         @endif
+        @endunless
 
+        @unless(!empty($hideNavFooter))
         @if(session('warning'))
             <div class="container mt-3">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -666,7 +671,9 @@
                 </div>
             </div>
         @endif
+        @endunless
 
+        @unless(!empty($hideNavFooter))
         @if(session('info'))
             <div class="container mt-3">
                 <div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -675,6 +682,7 @@
                 </div>
             </div>
         @endif
+        @endunless
 
         @yield('content')
     </main>

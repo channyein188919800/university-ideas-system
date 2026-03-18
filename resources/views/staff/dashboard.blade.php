@@ -55,6 +55,11 @@
 
             <div class="admin-nav-group">
                 <p class="admin-nav-title">Account</p>
+                <a href="{{ route('staff.account.edit') }}"
+                    class="admin-nav-link {{ request()->routeIs('staff.account.edit') ? 'active' : '' }}">
+                    <i class="bi bi-person-gear"></i>
+                    <span>My Profile</span>
+                </a>
                 <a href="{{ route('home') }}" class="admin-nav-link">
                     <i class="bi bi-house-door"></i>
                     <span>Main Site</span>
