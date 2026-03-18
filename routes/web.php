@@ -139,6 +139,17 @@ Route::middleware(['auth', 'terms', 'role:qa_manager'])
         Route::patch('/comments/{comment}/toggle-hidden', [CommentController::class, 'toggleHidden'])->name('comments.toggle-hidden');
         Route::patch('/users/{user}/toggle-status', [QaManagerDashboardController::class, 'toggleUserStatus'])->name('users.toggle-status');
 
+         // Ideas view routes (new)
+        Route::get('/ideas', [App\Http\Controllers\QaManager\IdeaController::class, 'index'])->name('ideas.index');
+        Route::patch('/ideas/{idea}/toggle-hidden', [App\Http\Controllers\QaManager\IdeaController::class, 'toggleHidden'])->name('ideas.toggle-hidden');
+
+        // Hidden content routes (new)
+        Route::get('/hidden', [App\Http\Controllers\QaManager\HiddenContentController::class, 'index'])->name('hidden.index');
+        Route::patch('/hidden/ideas/{idea}/unhide', [App\Http\Controllers\QaManager\HiddenContentController::class, 'unhideIdea'])->name('hidden.unhide-idea');
+        Route::patch('/hidden/comments/{comment}/unhide', [App\Http\Controllers\QaManager\HiddenContentController::class, 'unhideComment'])->name('hidden.unhide-comment');
+        Route::post('/hidden/ideas/bulk-unhide', [App\Http\Controllers\QaManager\HiddenContentController::class, 'bulkUnhideIdeas'])->name('hidden.bulk-unhide-ideas');
+        Route::post('/hidden/comments/bulk-unhide', [App\Http\Controllers\QaManager\HiddenContentController::class, 'bulkUnhideComments'])->name('hidden.bulk-unhide-comments');
+        
         // Category Management
         Route::resource('categories', CategoryController::class)->except(['show']);
 
@@ -239,4 +250,6 @@ Route::middleware(['auth', 'terms', 'role:qa_coordinator'])
         Route::get('/popular-ideas', [QaCoordinatorIdeaController::class, 'popularIdeas'])->name('popular.ideas');
         Route::get('/latest-ideas', [QaCoordinatorIdeaController::class, 'latestIdeas'])->name('latest.ideas');
 
+        // Toggle idea visibility (Hide/Unhide)
+        Route::patch('/ideas/{idea}/toggle-hidden', [App\Http\Controllers\QaCoordinator\IdeaController::class, 'toggleHidden'])->name('ideas.toggle-hidden');
     });

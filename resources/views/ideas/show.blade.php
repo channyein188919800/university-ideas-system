@@ -299,6 +299,7 @@
     .comment-item.hidden-comment {
         opacity: 0.6;
         background: #fef5f5;
+        display: none; /* Completely hide hidden comments from regular users */
     }
 
     .comment-avatar {
@@ -333,7 +334,143 @@
         color: #742a2a;
         margin-left: 0.5rem;
     }
+    
+    /* QA Manager sees hidden comments with different styling */
+    .qa-manager .comment-item.hidden-comment {
+        display: block;
+        opacity: 0.6;
+        background: #fef5f5;
+        border-left: 4px solid var(--danger-red);
+    }
+
+    /* Custom Confirmation Modal */
+    .confirmation-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        backdrop-filter: blur(4px);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .confirmation-modal.show {
+        display: flex;
+    }
+
+    .confirmation-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 1.5rem;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        animation: slideUp 0.3s ease;
+    }
+
+    .confirmation-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .confirmation-icon.warning {
+        color: var(--warning-orange);
+    }
+
+    .confirmation-icon.success {
+        color: var(--success-green);
+    }
+
+    .confirmation-icon.danger {
+        color: var(--danger-red);
+    }
+
+    .confirmation-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-navy);
+        margin-bottom: 0.5rem;
+    }
+
+    .confirmation-message {
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+    }
+
+    .confirmation-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .confirmation-btn {
+        padding: 0.6rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .confirmation-btn-cancel {
+        background: #f1f5f9;
+        color: var(--text-muted);
+    }
+
+    .confirmation-btn-cancel:hover {
+        background: #e2e8f0;
+    }
+
+    .confirmation-btn-confirm {
+        background: var(--danger-red);
+        color: white;
+    }
+
+    .confirmation-btn-confirm:hover {
+        background: #c53030;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+    }
+
+    .confirmation-btn-confirm.success {
+        background: var(--success-green);
+    }
+
+    .confirmation-btn-confirm.success:hover {
+        background: #2f855a;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
 </style>
+
+<!-- Custom Confirmation Modal -->
+<div id="confirmationModal" class="confirmation-modal">
+    <div class="confirmation-content">
+        <div class="confirmation-icon" id="modalIcon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3 class="confirmation-title" id="modalTitle">Confirm Action</h3>
+        <p class="confirmation-message" id="modalMessage">Are you sure you want to perform this action?</p>
+        <div class="confirmation-buttons">
+            <button class="confirmation-btn confirmation-btn-cancel" id="modalCancel">Cancel</button>
+            <button class="confirmation-btn confirmation-btn-confirm" id="modalConfirm">Confirm</button>
+        </div>
+    </div>
+</div>
 
 <div class="page-container">
     <nav aria-label="breadcrumb" class="mb-4">
@@ -431,9 +568,9 @@
                     @endif
                 @endauth
 
-                <div class="comment-list" id="commentList">
+                <div class="comment-list {{ auth()->user() && auth()->user()->isQaManager() ? 'qa-manager' : '' }}" id="commentList">
                     @forelse($comments as $index => $comment)
-                        <div class="comment-item {{ $index > 0 ? 'hidden-comments' : '' }} {{ $comment->hidden ? 'hidden-comment' : '' }}" id="comment-{{ $comment->id }}">
+                        <div class="comment-item {{ $index > 0 ? 'hidden-comments' : '' }} {{ $comment->hidden ? 'hidden-comment' : '' }}" id="comment-{{ $comment->id }}" data-comment-id="{{ $comment->id }}" data-hidden="{{ $comment->hidden ? 'true' : 'false' }}">
                             <div class="d-flex gap-3">
                                 <div class="comment-avatar">
                                     @if($comment->is_anonymous) 
@@ -456,10 +593,10 @@
                                             <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
                                             @auth
                                                 @if(auth()->user()->isQaManager())
-                                                    <form method="POST" action="{{ route('qa-manager.comments.toggle-hidden', $comment) }}" class="d-inline">
+                                                    <form method="POST" action="{{ route('qa-manager.comments.toggle-hidden', $comment) }}" class="d-inline comment-toggle-form" data-comment-id="{{ $comment->id }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="submit" class="btn btn-sm {{ $comment->hidden ? 'btn-success' : 'btn-outline-danger' }}" title="{{ $comment->hidden ? 'Unhide comment' : 'Hide comment' }}">
+                                                        <button type="button" class="btn btn-sm toggle-comment-btn {{ $comment->hidden ? 'btn-success' : 'btn-outline-danger' }}" title="{{ $comment->hidden ? 'Unhide comment' : 'Hide comment' }}">
                                                             <i class="fas {{ $comment->hidden ? 'fa-eye' : 'fa-eye-slash' }}"></i>
                                                         </button>
                                                     </form>
@@ -505,16 +642,16 @@
                         
                         <div class="visibility-toggle">
                             <span class="fw-bold">Current Status:</span>
-                            <span class="status-badge {{ $idea->hidden ? 'hidden' : 'visible' }}">
+                            <span class="status-badge {{ $idea->hidden ? 'hidden' : 'visible' }}" id="ideaStatusBadge">
                                 <i class="fas {{ $idea->hidden ? 'fa-eye-slash' : 'fa-eye' }} me-1"></i>
                                 {{ $idea->hidden ? 'Hidden' : 'Visible' }}
                             </span>
                         </div>
 
-                        <form method="POST" action="{{ route('qa-manager.ideas.toggle-hidden', $idea) }}" class="mb-3">
+                        <form method="POST" action="{{ route('qa-manager.ideas.toggle-hidden', $idea) }}" class="mb-3" id="toggleIdeaForm">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" class="btn-qa {{ $idea->hidden ? 'btn-qa-unhide' : 'btn-qa-hide' }}">
+                            <button type="button" class="btn-qa {{ $idea->hidden ? 'btn-qa-unhide' : 'btn-qa-hide' }}" id="toggleIdeaBtn">
                                 <i class="fas {{ $idea->hidden ? 'fa-eye' : 'fa-eye-slash' }} me-2"></i>
                                 {{ $idea->hidden ? 'Unhide this Idea' : 'Hide this Idea' }}
                             </button>
@@ -545,7 +682,7 @@
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Comments Hidden:</span>
-                            <span class="fw-bold">{{ $idea->comments()->where('hidden', true)->count() }}</span>
+                            <span class="fw-bold" id="hiddenCommentsCount">{{ $idea->comments()->where('hidden', true)->count() }}</span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>Last Reported:</span>
@@ -605,6 +742,65 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Confirmation Modal elements
+        const modal = document.getElementById('confirmationModal');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalCancel = document.getElementById('modalCancel');
+        const modalConfirm = document.getElementById('modalConfirm');
+        
+        let currentAction = null;
+        let currentForm = null;
+
+        // Function to show confirmation modal
+        function showConfirmation(options) {
+            modalIcon.innerHTML = `<i class="fas fa-${options.icon || 'exclamation-triangle'}"></i>`;
+            modalIcon.className = `confirmation-icon ${options.iconClass || 'warning'}`;
+            modalTitle.textContent = options.title || 'Confirm Action';
+            modalMessage.textContent = options.message || 'Are you sure you want to perform this action?';
+            
+            if (options.confirmClass) {
+                modalConfirm.className = `confirmation-btn confirmation-btn-confirm ${options.confirmClass}`;
+            } else {
+                modalConfirm.className = 'confirmation-btn confirmation-btn-confirm';
+            }
+            
+            modalConfirm.textContent = options.confirmText || 'Confirm';
+            
+            currentAction = options.action;
+            currentForm = options.form;
+            
+            modal.classList.add('show');
+        }
+
+        // Hide modal
+        function hideModal() {
+            modal.classList.remove('show');
+            currentAction = null;
+            currentForm = null;
+        }
+
+        // Cancel button
+        modalCancel.addEventListener('click', hideModal);
+
+        // Confirm button
+        modalConfirm.addEventListener('click', function() {
+            if (currentAction === 'toggle-idea' && currentForm) {
+                submitIdeaForm(currentForm);
+            } else if (currentAction === 'toggle-comment' && currentForm) {
+                toggleCommentVisibility(currentForm);
+            }
+            hideModal();
+        });
+
+        // Click outside to close
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+
         // Toggle Comments Logic
         const toggleBtn = document.getElementById('toggleCommentsBtn');
         const hiddenComments = document.querySelectorAll('.hidden-comments');
@@ -618,53 +814,243 @@
             });
         }
 
-        // QA Manager Comment Toggle - AJAX for better UX
-        document.querySelectorAll('[data-toggle-comment]').forEach(btn => {
+        // QA Manager Idea Toggle with Confirmation
+        const toggleIdeaBtn = document.getElementById('toggleIdeaBtn');
+        const toggleIdeaForm = document.getElementById('toggleIdeaForm');
+        
+        if (toggleIdeaBtn && toggleIdeaForm) {
+            toggleIdeaBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const isHidden = {{ $idea->hidden ? 'true' : 'false' }};
+                const action = isHidden ? 'unhide' : 'hide';
+                
+                showConfirmation({
+                    icon: isHidden ? 'eye' : 'eye-slash',
+                    iconClass: isHidden ? 'success' : 'danger',
+                    title: isHidden ? 'Unhide Idea' : 'Hide Idea',
+                    message: isHidden 
+                        ? 'Are you sure you want to unhide this idea? It will become visible to all users.'
+                        : 'Are you sure you want to hide this idea? It will only be visible to QA managers and administrators.',
+                    confirmText: isHidden ? 'Yes, Unhide' : 'Yes, Hide',
+                    confirmClass: isHidden ? 'success' : '',
+                    action: 'toggle-idea',
+                    form: toggleIdeaForm
+                });
+            });
+        }
+
+        // Function to submit idea form
+        function submitIdeaForm(form) {
+            fetch(form.action, {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    const message = data.hidden ? 'Idea hidden successfully' : 'Idea unhidden successfully';
+                    
+                    // Update UI without reload
+                    updateIdeaVisibility(data);
+                    
+                    // Optional: Show a temporary success notification
+                    const notification = document.createElement('div');
+                    notification.className = `alert alert-${data.hidden ? 'warning' : 'success'} position-fixed top-0 start-50 translate-middle-x mt-3`;
+                    notification.style.zIndex = '10000';
+                    notification.innerHTML = `<i class="fas fa-${data.hidden ? 'eye-slash' : 'eye'} me-2"></i>${message}`;
+                    document.body.appendChild(notification);
+                    
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Optionally reload on error
+                window.location.reload();
+            });
+        }
+
+        // Function to update idea visibility in UI
+        function updateIdeaVisibility(data) {
+            // Update status badge
+            const statusBadge = document.getElementById('ideaStatusBadge');
+            if (statusBadge) {
+                statusBadge.className = `status-badge ${data.hidden ? 'hidden' : 'visible'}`;
+                statusBadge.innerHTML = `<i class="fas fa-${data.hidden ? 'eye-slash' : 'eye'} me-1"></i>${data.hidden ? 'Hidden' : 'Visible'}`;
+            }
+
+            // Update button
+            const toggleBtn = document.getElementById('toggleIdeaBtn');
+            if (toggleBtn) {
+                toggleBtn.className = `btn-qa ${data.hidden ? 'btn-qa-unhide' : 'btn-qa-hide'}`;
+                toggleBtn.innerHTML = `<i class="fas fa-${data.hidden ? 'eye' : 'eye-slash'} me-2"></i>${data.hidden ? 'Unhide this Idea' : 'Hide this Idea'}`;
+            }
+
+            // Update hidden overlay
+            const ideaCard = document.querySelector('.idea-master-card');
+            const existingOverlay = ideaCard.querySelector('.hidden-overlay');
+            
+            if (data.hidden && !existingOverlay) {
+                const overlay = document.createElement('div');
+                overlay.className = 'hidden-overlay';
+                overlay.innerHTML = '<i class="fas fa-eye-slash"></i> HIDDEN IDEA - Only visible to staff';
+                ideaCard.insertBefore(overlay, ideaCard.firstChild);
+            } else if (!data.hidden && existingOverlay) {
+                existingOverlay.remove();
+            }
+
+            // Update hidden classes on idea sections
+            const sections = document.querySelectorAll('.idea-header-zone, .idea-body-zone, .idea-interaction-zone');
+            sections.forEach(section => {
+                if (data.hidden) {
+                    section.classList.add('hidden-idea');
+                } else {
+                    section.classList.remove('hidden-idea');
+                }
+            });
+
+            // Update warning alert
+            const hiddenWarning = document.querySelector('.hidden-warning');
+            if (data.hidden && !hiddenWarning) {
+                const qaControls = document.querySelector('.qa-controls-card');
+                const warning = document.createElement('div');
+                warning.className = 'hidden-warning mt-3';
+                warning.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>This idea is currently hidden from regular users.</span>';
+                qaControls.querySelector('.btn-qa').after(warning);
+            } else if (!data.hidden && hiddenWarning) {
+                hiddenWarning.remove();
+            }
+
+            // Update alert banner
+            const alertBanner = document.querySelector('.alert-warning');
+            if (data.hidden && !alertBanner) {
+                const newAlert = document.createElement('div');
+                newAlert.className = 'alert alert-warning mb-4 fade-in-up';
+                newAlert.style.cssText = 'background: #fff3cd; border: 1px solid #ffeeba; border-radius: 1rem;';
+                newAlert.innerHTML = '<i class="fas fa-eye-slash me-2"></i><strong>This idea is currently hidden</strong> - It is only visible to administrators and QA managers.';
+                document.querySelector('.breadcrumb').after(newAlert);
+            } else if (!data.hidden && alertBanner) {
+                alertBanner.remove();
+            }
+        }
+
+        // QA Manager Comment Toggle with Confirmation
+        document.querySelectorAll('.toggle-comment-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const form = this.closest('form');
-                const commentId = form.action.split('/').pop();
-                const commentDiv = document.getElementById(`comment-${commentId}`);
+                const commentItem = form.closest('.comment-item');
+                const isHidden = commentItem.dataset.hidden === 'true';
                 
-                fetch(form.action, {
-                    method: 'PATCH',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json',
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Update button appearance
-                        const btn = form.querySelector('button');
-                        if (data.hidden) {
-                            btn.classList.remove('btn-outline-danger');
-                            btn.classList.add('btn-success');
-                            btn.innerHTML = '<i class="fas fa-eye"></i>';
-                            btn.title = 'Unhide comment';
-                            commentDiv.classList.add('hidden-comment');
-                        } else {
-                            btn.classList.remove('btn-success');
-                            btn.classList.add('btn-outline-danger');
-                            btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
-                            btn.title = 'Hide comment';
-                            commentDiv.classList.remove('hidden-comment');
-                        }
-                        
-                        // Update hidden badge
-                        const nameDiv = commentDiv.querySelector('.text-primary');
-                        const existingBadge = nameDiv.querySelector('.moderation-badge');
-                        if (data.hidden && !existingBadge) {
-                            nameDiv.innerHTML += '<span class="moderation-badge"><i class="fas fa-eye-slash me-1"></i>Hidden</span>';
-                        } else if (!data.hidden && existingBadge) {
-                            existingBadge.remove();
-                        }
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+                showConfirmation({
+                    icon: isHidden ? 'eye' : 'eye-slash',
+                    iconClass: isHidden ? 'success' : 'danger',
+                    title: isHidden ? 'Unhide Comment' : 'Hide Comment',
+                    message: isHidden 
+                        ? 'Are you sure you want to unhide this comment? It will become visible to all users.'
+                        : 'Are you sure you want to hide this comment? It will be removed from public view.',
+                    confirmText: isHidden ? 'Yes, Unhide' : 'Yes, Hide',
+                    confirmClass: isHidden ? 'success' : '',
+                    action: 'toggle-comment',
+                    form: form
+                });
             });
         });
+
+        // Function to toggle comment visibility via AJAX
+        function toggleCommentVisibility(form) {
+            const commentId = form.dataset.commentId;
+            const commentItem = document.getElementById(`comment-${commentId}`);
+            const toggleBtn = form.querySelector('button');
+            
+            fetch(form.action, {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update comment item dataset
+                    commentItem.dataset.hidden = data.hidden ? 'true' : 'false';
+                    
+                    // Update button appearance
+                    if (data.hidden) {
+                        toggleBtn.classList.remove('btn-outline-danger');
+                        toggleBtn.classList.add('btn-success');
+                        toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
+                        toggleBtn.title = 'Unhide comment';
+                        commentItem.classList.add('hidden-comment');
+                        
+                        // Add hidden badge if not exists
+                        const nameDiv = commentItem.querySelector('.text-primary');
+                        if (!nameDiv.querySelector('.moderation-badge')) {
+                            const badge = document.createElement('span');
+                            badge.className = 'moderation-badge';
+                            badge.innerHTML = '<i class="fas fa-eye-slash me-1"></i>Hidden';
+                            nameDiv.appendChild(badge);
+                        }
+                    } else {
+                        toggleBtn.classList.remove('btn-success');
+                        toggleBtn.classList.add('btn-outline-danger');
+                        toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                        toggleBtn.title = 'Hide comment';
+                        commentItem.classList.remove('hidden-comment');
+                        
+                        // Remove hidden badge
+                        const badge = commentItem.querySelector('.moderation-badge');
+                        if (badge) {
+                            badge.remove();
+                        }
+                    }
+                    
+                    // Update hidden comments count
+                    const hiddenCountElement = document.getElementById('hiddenCommentsCount');
+                    if (hiddenCountElement) {
+                        let count = parseInt(hiddenCountElement.textContent);
+                        count = data.hidden ? count + 1 : count - 1;
+                        hiddenCountElement.textContent = count;
+                    }
+
+                    // Show success notification
+                    const message = data.hidden ? 'Comment hidden successfully' : 'Comment unhidden successfully';
+                    const notification = document.createElement('div');
+                    notification.className = `alert alert-${data.hidden ? 'warning' : 'success'} position-fixed top-0 start-50 translate-middle-x mt-3`;
+                    notification.style.zIndex = '10000';
+                    notification.innerHTML = `<i class="fas fa-${data.hidden ? 'eye-slash' : 'eye'} me-2"></i>${message}`;
+                    document.body.appendChild(notification);
+                    
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Optionally reload on error
+                window.location.reload();
+            });
+        }
 
         // Animations
         const observer = new IntersectionObserver((entries) => {
@@ -679,30 +1065,6 @@
             el.style.animationPlayState = 'paused';
             observer.observe(el);
         });
-
-        // Real-time visibility feedback
-        const visibilityForm = document.querySelector('form[action*="toggle-hidden"]');
-        if (visibilityForm) {
-            visibilityForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                fetch(this.action, {
-                    method: 'PATCH',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json',
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Reload page to reflect visibility changes
-                        window.location.reload();
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            });
-        }
     });
 </script>
 @endsection

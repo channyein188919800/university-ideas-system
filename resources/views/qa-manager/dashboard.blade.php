@@ -3,17 +3,18 @@
 @section('title', 'QA Manager Dashboard - University Ideas System')
 
 @section('content')
-@php
+<!-- @php
     $authUser = auth()->user();
     $departmentName = $authUser->department->name ?? 'No Department Assigned';
     $lastLoginAt = $authUser->last_login_at;
-@endphp
+@endphp -->
 
 <!-- Topbar -->
 <div class="qa-topbar">
     <div>
         <h3 class="mb-1">{{ $lastLoginAt ? 'Welcome back' : 'Welcome' }}, <span style="color: #0b53fb;">{{ $authUser->name }}</span></h3>        
-        <p class="mb-0">{{ $departmentName }} · QA Manager</p>
+        <!-- <p class="mb-0">{{ $departmentName }} · QA Manager</p> -->
+        <p class="mb-0"> QA Manager</p>
         <small class="text-muted d-block">
             @if(!$lastLoginAt)
                 Welcome! This appears to be your first login.
