@@ -250,8 +250,25 @@
         align-items: center;
     }
 
+    .content-card .card-header h5 {
+        color: #ffffff;
+        font-weight: 700;
+    }
+
     .content-card .card-header i {
-        color: var(--accent-color);
+        color: #ffffff;
+        opacity: 0.95;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .content-card .card-header .btn-outline-light {
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.75);
+    }
+    .content-card .card-header .btn-outline-light:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.9);
     }
 
     .content-card .card-body {

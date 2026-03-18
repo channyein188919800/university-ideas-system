@@ -84,7 +84,7 @@
                                 <p>Departments</p>
                                 <h4>{{ $stats['total_departments'] }}</h4>
                             </div>
-                            <div class="stat-icon participation">
+                            <div class="stat-icon departments">
                                 <i class="bi bi-buildings-fill"></i>
                             </div>
                         </div>
@@ -550,7 +550,7 @@
                     background: linear-gradient(135deg, #3577ff, #5ea8ff);
                 }
 
-                .stat-icon.participation {
+                .stat-icon.departments {
                     background: linear-gradient(135deg, #7946fd, #9f75ff);
                 }
 
