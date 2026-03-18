@@ -82,8 +82,6 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.5rem;
-            margin-bottom: 0.75rem;
         }
 
         .qa-brand h5 {
@@ -222,7 +220,7 @@
         .stat-icon.ideas { background: linear-gradient(135deg, #00a58b, #35d1b2); }
         .stat-icon.comments { background: linear-gradient(135deg, #e58f07, #f8bc5e); }
         .stat-icon.users { background: linear-gradient(135deg, #3577ff, #5ea8ff); }
-        .stat-icon.participation { background: linear-gradient(135deg, #7946fd, #9f75ff); }
+        .stat-icon.departments { background: linear-gradient(135deg, #7946fd, #9f75ff); }
 
         /* Cards - Exactly copied from admin */
         .qa-card {

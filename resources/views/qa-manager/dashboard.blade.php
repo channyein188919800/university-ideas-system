@@ -75,7 +75,7 @@
                     <p>Departments</p>
                     <h4>{{ $stats['total_departments'] }}</h4>
                 </div>
-                <div class="stat-icon participation">
+                <div class="stat-icon departments">
                     <i class="bi bi-buildings-fill"></i>
                 </div>
             </div>

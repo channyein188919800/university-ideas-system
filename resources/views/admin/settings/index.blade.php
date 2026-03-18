@@ -11,7 +11,7 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="mb-4">
-                        <h2><i class="fas fa-cog"></i> System Settings</h2>
+                        <h2><i class="fas fa-cog"></i> Closure Dates</h2>
                         <p class="text-muted mb-0">Configure system closure dates and academic year</p>
                     </div>
 

@@ -15,9 +15,7 @@
                 align-items: flex-start;
                 justify-content: center;
                 padding: 2.5rem 1.5rem 3rem;
-                background: radial-gradient(circle at 15% 15%, rgba(214,158,46,.08) 0%, transparent 55%),
-                            radial-gradient(circle at 85% 80%, rgba(44,82,130,.12) 0%, transparent 60%),
-                            linear-gradient(180deg, #0c1222 0%, #1a2744 55%, #0f172a 100%);
+                background: #f8fafc; /* Light grey/white background */
                 position: relative;
                 overflow: hidden;
             }
@@ -453,11 +451,6 @@
             <div class="uc-particle"></div>
 
             <div style="position:relative;z-index:2;width:100%;max-width:860px;">
-                {{-- Back link --}}
-                <a href="{{ route('qa-manager.staff.index') }}" class="uc-back">
-                    <i class="bi bi-arrow-left-short"></i> Back to Users
-                </a>
-
                 {{-- Main card --}}
                 <div class="uc-card">
                     <div class="uc-card-bar"></div>
@@ -533,7 +526,7 @@
                                     <i class="bi bi-shield-lock"></i>
                                     <input type="password" id="password" name="password"
                                         class="uc-input @error('password') is-invalid @enderror"
-                                        placeholder="Min 8 chars · 1 uppercase · 1 lowercase · 1 symbol"
+                                        placeholder="Enter Password"
                                         required autocomplete="new-password">
                                     <div class="uc-highlight"></div>
                                     <button type="button" class="uc-eye" id="ucTogglePwd" title="Toggle password">
@@ -550,6 +543,7 @@
                                     <span class="uc-hint" id="hint-upper"><i class="bi bi-circle"></i> Uppercase</span>
                                     <span class="uc-hint" id="hint-lower"><i class="bi bi-circle"></i> Lowercase</span>
                                     <span class="uc-hint" id="hint-symbol"><i class="bi bi-circle"></i> Symbol</span>
+                                    <span class="uc-hint" id="hint-number"><i class="bi bi-circle"></i> Number</span>
                                 </div>
 
                                 @error('password')
@@ -658,6 +652,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var hintUpper  = document.getElementById('hint-upper');
     var hintLower  = document.getElementById('hint-lower');
     var hintSymbol = document.getElementById('hint-symbol');
+    var hintNumber = document.getElementById('hint-number');
+
 
     function setHint(el, ok) {
         var icon = el.querySelector('.bi');
@@ -676,14 +672,17 @@ document.addEventListener('DOMContentLoaded', function () {
         var hasUpper  = /[A-Z]/.test(v);
         var hasLower  = /[a-z]/.test(v);
         var hasSymbol = /[^A-Za-z0-9]/.test(v);
+        var hasNumber = /[0-9]/.test(v);
+
 
         setHint(hintLen,    hasLen);
         setHint(hintUpper,  hasUpper);
         setHint(hintLower,  hasLower);
         setHint(hintSymbol, hasSymbol);
+        setHint(hintNumber, hasNumber);
 
-        var score = [hasLen, hasUpper, hasLower, hasSymbol].filter(Boolean).length;
-        var pct   = (score / 4) * 100;
+        var score = [hasLen, hasUpper, hasLower, hasSymbol, hasNumber].filter(Boolean).length;
+        var pct   = (score / 5) * 100;
         var color = score <= 1 ? '#ef4444' : score === 2 ? '#f59e0b' : score === 3 ? '#3b82f6' : '#22c55e';
         fillBar.style.width     = pct + '%';
         fillBar.style.background = color;

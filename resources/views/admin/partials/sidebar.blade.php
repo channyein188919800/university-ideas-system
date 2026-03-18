@@ -7,7 +7,7 @@
 <aside class="admin-sidebar" id="adminSidebar">
     <!-- Logo -->
     <div class="admin-brand" style="justify-content:center;padding:0.5rem 0 0.8rem;">
-        <img src="{{ asset('images/logo1_no_bg.png') }}"
+        <img src="{{ asset('images/logo_sidebar.png') }}"
              alt="University Ideas"
              style="width:210px;max-height:110px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));">
     </div>
@@ -47,17 +47,9 @@
             <i class="bi bi-people"></i>
             <span>Manage Users</span>
         </a>
-        <a href="{{ route('admin.users.create') }}" class="admin-nav-link {{ request()->routeIs('admin.users.create') ? 'active' : '' }}">
-            <i class="bi bi-person-plus"></i>
-            <span>Add User</span>
-        </a>
         <a href="{{ route('admin.departments.index') }}" class="admin-nav-link {{ request()->routeIs('admin.departments.index') ? 'active' : '' }}">
             <i class="bi bi-building"></i>
             <span>Departments</span>
-        </a>
-        <a href="{{ route('admin.departments.create') }}" class="admin-nav-link {{ request()->routeIs('admin.departments.create') ? 'active' : '' }}">
-            <i class="bi bi-building-add"></i>
-            <span>Add Department</span>
         </a>
         <a href="{{ route('admin.settings.index') }}" class="admin-nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
             <i class="bi bi-sliders"></i>
