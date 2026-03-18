@@ -78,26 +78,24 @@
             <table class="qa-ideas-table">
                 <thead>
                     <tr>
-                        <th width="5%">
-                            <input type="checkbox" id="selectAllIdeas" onchange="toggleAllIdeas(this)">
-                        </th>
-                        <th width="25%">Idea Title</th>
-                        <th width="15%">Author</th>
-                        <th width="12%">Department</th>
-                        <th width="12%">Status</th>
-                        <th width="12%">Hidden Date</th>
-                        <th width="10%">Actions</th>
+                        <th class="checkbox-col"><input type="checkbox" id="selectAllIdeas" onchange="toggleAllIdeas(this)"></th>
+                        <th class="title-col">Idea Title</th>
+                        <th class="author-col">Author</th>
+                        <th class="dept-col">Department</th>
+                        <th class="status-col">Status</th>
+                        <th class="date-col">Hidden Date</th>
+                        <th class="action-col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($hiddenIdeas as $idea)
                         <tr>
-                            <td>
+                            <td class="checkbox-cell">
                                 <input type="checkbox" name="idea_ids[]" value="{{ $idea->id }}" class="idea-checkbox">
                             </td>
                             <td class="qa-title-cell" data-label="Idea Title">
                                 <strong>{{ $idea->title }}</strong>
-                                <div class="qa-meta-info">
+                                <div class="qa-meta-info desktop-only">
                                     <span class="badge bg-light text-dark">
                                         <i class="bi bi-eye"></i> {{ $idea->views_count }}
                                     </span>
@@ -111,8 +109,19 @@
                                         <i class="bi bi-calendar3"></i> {{ $idea->created_at->format('M d, Y') }}
                                     </span>
                                 </div>
+                                <!-- Mobile meta info -->
+                                <div class="mobile-meta">
+                                    <div class="mobile-meta-row">
+                                        <span class="mobile-author">{{ $idea->is_anonymous ? 'Anonymous' : $idea->user->name }}</span>
+                                        <span class="mobile-status status-{{ $idea->status }}">{{ ucfirst(str_replace('_', ' ', $idea->status)) }}</span>
+                                    </div>
+                                    <div class="mobile-meta-row">
+                                        <span class="mobile-dept">{{ $idea->department->name ?? 'N/A' }}</span>
+                                        <span class="mobile-date"><i class="bi bi-calendar3"></i> {{ $idea->updated_at->format('M d, Y') }}</span>
+                                    </div>
+                                </div>
                             </td>
-                            <td data-label="Author">
+                            <td class="author-cell" data-label="Author">
                                 @if($idea->is_anonymous)
                                     <span class="qa-anonymous-badge">Anonymous</span>
                                 @else
@@ -121,15 +130,15 @@
                                     </div>
                                 @endif
                             </td>
-                            <td data-label="Department">{{ $idea->department->name ?? 'N/A' }}</td>
-                            <td data-label="Status">
+                            <td class="dept-cell" data-label="Department">{{ $idea->department->name ?? 'N/A' }}</td>
+                            <td class="status-cell" data-label="Status">
                                 <span class="qa-status-badge status-{{ $idea->status }}">
                                     {{ ucfirst(str_replace('_', ' ', $idea->status)) }}
                                 </span>
                             </td>
-                            <td data-label="Hidden Date">{{ $idea->updated_at->format('M d, Y') }}</td>
-                            <td data-label="Actions" class="actions-cell">
-                                <div class="action-dropdown">
+                            <td class="date-cell" data-label="Hidden Date">{{ $idea->updated_at->format('M d, Y') }}</td>
+                            <td class="actions-cell" data-label="Actions">
+                                <div class="action-dropdown desktop-only">
                                     <button class="action-dropdown-toggle" onclick="toggleDropdown({{ $idea->id }})">
                                         <i class="bi bi-three-dots-vertical"></i>
                                     </button>
@@ -145,6 +154,19 @@
                                             </button>
                                         </form>
                                     </div>
+                                </div>
+                                <!-- Mobile action buttons -->
+                                <div class="mobile-actions">
+                                    <a href="{{ route('ideas.show', $idea) }}" class="mobile-action-btn view-btn" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <form method="POST" action="{{ route('qa-manager.hidden.unhide-idea', $idea) }}" class="d-inline mobile-action-form">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="mobile-action-btn unhide-btn" title="Unhide Idea" onclick="return confirm('Unhide this idea?')">
+                                            <i class="bi bi-eye-slash"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -187,21 +209,19 @@
             <table class="qa-ideas-table">
                 <thead>
                     <tr>
-                        <th width="5%">
-                            <input type="checkbox" id="selectAllComments" onchange="toggleAllComments(this)">
-                        </th>
-                        <th width="25%">Comment</th>
-                        <th width="20%">On Idea</th>
-                        <th width="15%">Author</th>
-                        <th width="12%">Department</th>
-                        <th width="12%">Hidden Date</th>
-                        <th width="11%">Actions</th>
+                        <th class="checkbox-col"><input type="checkbox" id="selectAllComments" onchange="toggleAllComments(this)"></th>
+                        <th class="comment-col">Comment</th>
+                        <th class="idea-col">On Idea</th>
+                        <th class="author-col">Author</th>
+                        <th class="dept-col">Department</th>
+                        <th class="date-col">Hidden Date</th>
+                        <th class="action-col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($hiddenComments as $comment)
                         <tr>
-                            <td>
+                            <td class="checkbox-cell">
                                 <input type="checkbox" name="comment_ids[]" value="{{ $comment->id }}" class="comment-checkbox">
                             </td>
                             <td class="qa-description-cell" data-label="Comment">
@@ -209,17 +229,27 @@
                                     {{ Str::limit($comment->content, 80) }}
                                 </div>
                             </td>
-                            <td data-label="On Idea">
+                            <td class="idea-cell" data-label="On Idea">
                                 <a href="{{ route('ideas.show', $comment->idea) }}" class="text-decoration-none">
                                     {{ Str::limit($comment->idea->title, 40) }}
                                 </a>
-                                <div class="qa-meta-info">
+                                <div class="qa-meta-info desktop-only">
                                     <span class="badge bg-light text-muted">
                                         <i class="bi bi-calendar3"></i> {{ $comment->created_at->format('M d, Y') }}
                                     </span>
                                 </div>
+                                <!-- Mobile meta for comment -->
+                                <div class="mobile-meta">
+                                    <div class="mobile-meta-row">
+                                        <span class="mobile-author">{{ $comment->is_anonymous ? 'Anonymous' : $comment->user->name }}</span>
+                                        <span class="mobile-date"><i class="bi bi-calendar3"></i> {{ $comment->updated_at->format('M d, Y') }}</span>
+                                    </div>
+                                    <div class="mobile-meta-row">
+                                        <span class="mobile-dept">{{ $comment->idea->department->name ?? 'N/A' }}</span>
+                                    </div>
+                                </div>
                             </td>
-                            <td data-label="Author">
+                            <td class="author-cell" data-label="Author">
                                 @if($comment->is_anonymous)
                                     <span class="qa-anonymous-badge">Anonymous</span>
                                 @else
@@ -228,10 +258,10 @@
                                     </div>
                                 @endif
                             </td>
-                            <td data-label="Department">{{ $comment->idea->department->name ?? 'N/A' }}</td>
-                            <td data-label="Hidden Date">{{ $comment->updated_at->format('M d, Y') }}</td>
-                            <td data-label="Actions" class="actions-cell">
-                                <div class="action-dropdown">
+                            <td class="dept-cell" data-label="Department">{{ $comment->idea->department->name ?? 'N/A' }}</td>
+                            <td class="date-cell" data-label="Hidden Date">{{ $comment->updated_at->format('M d, Y') }}</td>
+                            <td class="actions-cell" data-label="Actions">
+                                <div class="action-dropdown desktop-only">
                                     <button class="action-dropdown-toggle" onclick="toggleDropdown('comment-{{ $comment->id }}')">
                                         <i class="bi bi-three-dots-vertical"></i>
                                     </button>
@@ -247,6 +277,19 @@
                                             </button>
                                         </form>
                                     </div>
+                                </div>
+                                <!-- Mobile action buttons -->
+                                <div class="mobile-actions">
+                                    <a href="{{ route('ideas.show', $comment->idea) }}#comment-{{ $comment->id }}" class="mobile-action-btn view-btn" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <form method="POST" action="{{ route('qa-manager.hidden.unhide-comment', $comment) }}" class="d-inline mobile-action-form">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="mobile-action-btn unhide-btn" title="Unhide Comment" onclick="return confirm('Unhide this comment?')">
+                                            <i class="bi bi-eye-slash"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -315,6 +358,7 @@
 
 .qa-main-content {
     flex: 1;
+    padding: 2rem;
     transition: margin-left 0.3s ease;
 }
 
@@ -325,6 +369,7 @@
     padding: 1.5rem 2rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
 }
 
 .qa-header-title {
@@ -366,6 +411,7 @@
     padding: 1.25rem 1.5rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
     border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
 }
 
 .qa-search-wrapper {
@@ -463,6 +509,7 @@
     border: 1px solid var(--border-color);
     position: relative;
     z-index: 1;
+    margin-bottom: 2rem;
 }
 
 .qa-table-header {
@@ -528,6 +575,17 @@
 .qa-ideas-table tr:hover td {
     background: #fafcff;
 }
+
+/* Column Classes for better control */
+.checkbox-col { width: 5%; }
+.title-col { width: 25%; }
+.comment-col { width: 25%; }
+.idea-col { width: 20%; }
+.author-col { width: 15%; }
+.dept-col { width: 12%; }
+.status-col { width: 12%; }
+.date-col { width: 12%; }
+.action-col { width: 10%; }
 
 /* Title Cell */
 .qa-title-cell {
@@ -608,7 +666,7 @@
     border: 1px solid rgba(49, 130, 206, 0.2);
 }
 
-/* Action Dropdown - Fixed */
+/* Action Dropdown */
 .actions-cell {
     position: relative;
 }
@@ -681,6 +739,20 @@
 
 .action-dropdown-item.text-success:hover {
     background: rgba(56, 161, 105, 0.1);
+}
+
+/* Desktop Only */
+.desktop-only {
+    display: flex;
+}
+
+/* Mobile Meta - Hidden by default */
+.mobile-meta {
+    display: none;
+}
+
+.mobile-actions {
+    display: none;
 }
 
 /* Table Footer */
@@ -776,6 +848,268 @@
     .qa-ideas-table {
         display: block;
         overflow-x: auto;
+    }
+}
+
+/* Mobile View */
+@media (max-width: 768px) {
+    .qa-main-content {
+        padding: 1rem;
+    }
+    
+    .qa-header-section {
+        padding: 1.25rem;
+    }
+    
+    .qa-header-title {
+        font-size: 1.5rem;
+    }
+    
+    .qa-header-title i {
+        font-size: 1.7rem;
+    }
+    
+    .qa-filter-bar {
+        padding: 1rem;
+    }
+    
+    .qa-filter-bar form {
+        gap: 0.75rem;
+    }
+    
+    .qa-search-wrapper {
+        width: 100%;
+    }
+    
+    .qa-filter-select {
+        width: 100%;
+    }
+    
+    .qa-btn-filter, .qa-btn-clear {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .qa-table-header {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: flex-start;
+    }
+    
+    .qa-btn-unhide-all {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Hide table headers */
+    .qa-ideas-table thead {
+        display: none;
+    }
+    
+    /* Convert table to cards */
+    .qa-ideas-table,
+    .qa-ideas-table tbody,
+    .qa-ideas-table tr,
+    .qa-ideas-table td {
+        display: block;
+    }
+    
+    .qa-ideas-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .qa-ideas-table td {
+        padding: 0.5rem 0;
+        border: none;
+    }
+    
+    .qa-ideas-table td:last-child {
+        border-bottom: none;
+    }
+    
+    /* Hide all columns except title and action on mobile */
+    .checkbox-cell,
+    .author-cell,
+    .dept-cell,
+    .status-cell,
+    .date-cell,
+    .idea-cell .desktop-only,
+    .qa-meta-info {
+        display: none !important;
+    }
+    
+    /* Desktop-only elements */
+    .desktop-only {
+        display: none !important;
+    }
+    
+    /* Show mobile meta info */
+    .mobile-meta {
+        display: block;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px dashed var(--border-color);
+    }
+    
+    .mobile-meta-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .mobile-author {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .mobile-status {
+        padding: 0.2rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .mobile-status.status-pending {
+        background: rgba(221, 107, 32, 0.1);
+        color: var(--warning-color);
+    }
+    
+    .mobile-status.status-approved {
+        background: rgba(56, 161, 105, 0.1);
+        color: var(--success-color);
+    }
+    
+    .mobile-status.status-rejected {
+        background: rgba(229, 62, 62, 0.1);
+        color: var(--danger-color);
+    }
+    
+    .mobile-status.status-review {
+        background: rgba(49, 130, 206, 0.1);
+        color: var(--info-color);
+    }
+    
+    .mobile-dept {
+        color: var(--text-secondary);
+    }
+    
+    .mobile-date {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+    
+    .mobile-date i {
+        margin-right: 0.25rem;
+    }
+    
+    /* Show mobile action buttons */
+    .mobile-actions {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+        justify-content: flex-start;
+    }
+    
+    .mobile-action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        font-size: 1.1rem;
+    }
+    
+    .mobile-action-btn.view-btn {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .mobile-action-btn.view-btn:hover {
+        background: var(--secondary-color);
+    }
+    
+    .mobile-action-btn.unhide-btn {
+        background: var(--success-color);
+        color: white;
+    }
+    
+    .mobile-action-btn.unhide-btn:hover {
+        background: #2f855a;
+    }
+    
+    .mobile-action-form {
+        display: inline-block;
+    }
+    
+    /* Adjust table footer */
+    .qa-table-footer {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .bulk-actions {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .pagination-wrapper {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .pagination-wrapper .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* Small Mobile View */
+@media (max-width: 480px) {
+    .qa-main-content {
+        padding: 0.75rem;
+    }
+    
+    .qa-header-section {
+        padding: 1rem;
+    }
+    
+    .qa-header-title {
+        font-size: 1.3rem;
+    }
+    
+    .qa-filter-bar {
+        padding: 0.75rem;
+    }
+    
+    .qa-table-header {
+        padding: 1rem;
+    }
+    
+    .qa-ideas-table tr {
+        padding: 0.75rem;
+    }
+    
+    .mobile-meta-row {
+        font-size: 0.8rem;
+    }
+    
+    .mobile-action-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
     }
 }
 </style>
@@ -905,5 +1239,17 @@ function unhideAllComments() {
     document.getElementById('bulkCommentIds').value = JSON.stringify(commentIds);
     document.getElementById('bulkUnhideCommentsForm').submit();
 }
+
+// Handle responsive behavior
+function handleResponsive() {
+    const isMobile = window.innerWidth <= 768;
+    // Any additional responsive logic can go here
+}
+
+// Initial check
+handleResponsive();
+
+// Check on resize
+window.addEventListener('resize', handleResponsive);
 </script>
 @endpush

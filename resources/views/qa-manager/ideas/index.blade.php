@@ -22,7 +22,6 @@
                 @endif
             </h1>
             <p class="qa-header-subtitle">
-                
                 @if($view == 'popular')
                     Most viewed and voted ideas
                 @else
@@ -98,15 +97,15 @@
             <table class="qa-ideas-table">
                 <thead>
                     <tr>
-                        <th width="25%">Idea Title</th>
-                        <th width="15%">Author</th>
-                        <th width="12%">Department</th>
-                        <th width="15%">Categories</th>
+                        <th class="title-col">Idea Title</th>
+                        <th class="author-col">Author</th>
+                        <th class="dept-col">Department</th>
+                        <th class="cat-col">Categories</th>
                         @if($view == 'popular')
-                        <th width="10%">Votes</th>
+                        <th class="votes-col">Votes</th>
                         @endif
-                        <th width="13%">Status</th>
-                        <th width="10%">Actions</th>
+                        <th class="status-col">Status</th>
+                        <th class="action-col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -114,7 +113,7 @@
                         <tr>
                             <td class="qa-title-cell" data-label="Idea Title">
                                 <strong>{{ $idea->title }}</strong>
-                                <div class="qa-meta-info">
+                                <div class="qa-meta-info desktop-only">
                                     <span class="badge bg-light text-dark">
                                         <i class="bi bi-eye"></i> {{ $idea->views_count }}
                                     </span>
@@ -130,8 +129,32 @@
                                         <i class="bi bi-calendar3"></i> {{ $idea->created_at->format('M d, Y') }}
                                     </span>
                                 </div>
+                                <!-- Mobile meta info -->
+                                <div class="mobile-meta">
+                                    <div class="mobile-meta-row">
+                                        <span class="mobile-author">{{ $idea->is_anonymous ? 'Anonymous' : $idea->user->name }}</span>
+                                        <span class="mobile-status status-{{ $idea->status }}">{{ ucfirst(str_replace('_', ' ', $idea->status)) }}</span>
+                                    </div>
+                                    <div class="mobile-meta-row">
+                                        <span class="mobile-dept">{{ $idea->department->name ?? 'N/A' }}</span>
+                                        <span class="mobile-cats">
+                                            @foreach($idea->categories->take(1) as $category)
+                                                {{ $category->name }}
+                                            @endforeach
+                                            @if($idea->categories->count() > 1)
+                                                +{{ $idea->categories->count() - 1 }}
+                                            @endif
+                                        </span>
+                                    </div>
+                                    @if($view == 'popular')
+                                    <div class="mobile-votes">
+                                        <span class="vote-badge up"><i class="bi bi-hand-thumbs-up"></i> {{ $idea->thumbs_up_count }}</span>
+                                        <span class="vote-badge down"><i class="bi bi-hand-thumbs-down"></i> {{ $idea->thumbs_down_count }}</span>
+                                    </div>
+                                    @endif
+                                </div>
                             </td>
-                            <td data-label="Author">
+                            <td class="author-cell" data-label="Author">
                                 @if($idea->is_anonymous)
                                     <span class="qa-anonymous-badge">Anonymous</span>
                                 @else
@@ -140,8 +163,8 @@
                                     </div>
                                 @endif
                             </td>
-                            <td data-label="Department">{{ $idea->department->name ?? 'N/A' }}</td>
-                            <td data-label="Categories">
+                            <td class="dept-cell" data-label="Department">{{ $idea->department->name ?? 'N/A' }}</td>
+                            <td class="cat-cell" data-label="Categories">
                                 @foreach($idea->categories->take(2) as $category)
                                     <span class="badge bg-light text-dark border">{{ $category->name }}</span>
                                 @endforeach
@@ -150,7 +173,7 @@
                                 @endif
                             </td>
                             @if($view == 'popular')
-                            <td data-label="Votes">
+                            <td class="votes-cell" data-label="Votes">
                                 <div class="votes-stacked">
                                     <span class="vote-badge up">
                                         <i class="bi bi-hand-thumbs-up"></i> {{ $idea->thumbs_up_count }}
@@ -161,13 +184,13 @@
                                 </div>
                             </td>
                             @endif
-                            <td data-label="Status">
+                            <td class="status-cell" data-label="Status">
                                 <span class="qa-status-badge status-{{ $idea->status }}">
                                     {{ ucfirst(str_replace('_', ' ', $idea->status)) }}
                                 </span>
                             </td>
-                            <td data-label="Actions">
-                                <div class="action-dropdown">
+                            <td class="action-cell" data-label="Actions">
+                                <div class="action-dropdown desktop-only">
                                     <button class="action-dropdown-toggle" onclick="toggleDropdown({{ $idea->id }})">
                                         <i class="bi bi-three-dots-vertical"></i>
                                     </button>
@@ -183,6 +206,19 @@
                                             </button>
                                         </form>
                                     </div>
+                                </div>
+                                <!-- Mobile action buttons -->
+                                <div class="mobile-actions">
+                                    <a href="{{ route('ideas.show', $idea) }}" class="mobile-action-btn view-btn" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <form method="POST" action="{{ route('qa-manager.ideas.toggle-hidden', $idea) }}" class="d-inline mobile-action-form">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="mobile-action-btn hide-btn" title="Hide Idea" onclick="return confirm('Hide this idea?')">
+                                            <i class="bi bi-eye-slash"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -237,7 +273,6 @@
 
 .qa-main-content {
     flex: 1;
-    /* padding: 2rem; */
     transition: margin-left 0.3s ease;
 }
 
@@ -248,6 +283,7 @@
     padding: 1.5rem 2rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     border: 1px solid var(--border-color);
+    margin: 2rem 2rem 1.5rem 2rem;
 }
 
 .qa-header-title {
@@ -289,6 +325,7 @@
     padding: 1.25rem 1.5rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
     border: 1px solid var(--border-color);
+    margin: 0 2rem 1.5rem 2rem;
 }
 
 .qa-search-wrapper {
@@ -384,6 +421,7 @@
     overflow: hidden;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
     border: 1px solid var(--border-color);
+    margin: 0 2rem 2rem 2rem;
 }
 
 .qa-ideas-table {
@@ -451,19 +489,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-}
-
-.qa-user-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 0.8rem;
 }
 
 .qa-status-badge {
@@ -670,6 +695,20 @@
     font-size: 0.9rem;
 }
 
+/* Desktop Only */
+.desktop-only {
+    display: flex;
+}
+
+/* Mobile Meta - Hidden by default */
+.mobile-meta {
+    display: none;
+}
+
+.mobile-actions {
+    display: none;
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
     .qa-main-content {
@@ -678,13 +717,264 @@
 }
 
 @media (max-width: 992px) {
-    .qa-main-content {
-        padding: 1.5rem;
+    .qa-header-section,
+    .qa-filter-bar,
+    .qa-table-container {
+        margin-left: 1rem;
+        margin-right: 1rem;
     }
     
     .qa-ideas-table {
         display: block;
         overflow-x: auto;
+    }
+}
+
+/* Mobile View */
+@media (max-width: 768px) {
+    .qa-header-section {
+        padding: 1.25rem;
+        margin: 1rem 1rem 1rem 1rem;
+    }
+    
+    .qa-header-title {
+        font-size: 1.5rem;
+    }
+    
+    .qa-header-title i {
+        font-size: 1.7rem;
+    }
+    
+    .qa-filter-bar {
+        padding: 1rem;
+        margin: 0 1rem 1rem 1rem;
+    }
+    
+    .qa-filter-bar form {
+        gap: 0.75rem;
+    }
+    
+    .qa-search-wrapper {
+        width: 100%;
+    }
+    
+    .qa-filter-select {
+        width: 100%;
+    }
+    
+    .qa-btn-filter, .qa-btn-clear {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .qa-table-container {
+        margin: 0 1rem 1rem 1rem;
+    }
+    
+    /* Hide table headers */
+    .qa-ideas-table thead {
+        display: none;
+    }
+    
+    /* Convert table to cards */
+    .qa-ideas-table,
+    .qa-ideas-table tbody,
+    .qa-ideas-table tr,
+    .qa-ideas-table td {
+        display: block;
+    }
+    
+    .qa-ideas-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .qa-ideas-table td {
+        padding: 0;
+        border: none;
+        margin-bottom: 0;
+    }
+    
+    /* Hide all columns except title and action on mobile */
+    .author-cell,
+    .dept-cell,
+    .cat-cell,
+    .votes-cell,
+    .status-cell {
+        display: none !important;
+    }
+    
+    /* Desktop-only elements */
+    .desktop-only {
+        display: none !important;
+    }
+    
+    /* Show mobile meta info */
+    .mobile-meta {
+        display: block;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px dashed var(--border-color);
+    }
+    
+    .mobile-meta-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .mobile-author {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .mobile-status {
+        padding: 0.2rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .mobile-status.status-pending {
+        background: rgba(221, 107, 32, 0.1);
+        color: var(--warning-color);
+    }
+    
+    .mobile-status.status-approved {
+        background: rgba(56, 161, 105, 0.1);
+        color: var(--success-color);
+    }
+    
+    .mobile-status.status-rejected {
+        background: rgba(229, 62, 62, 0.1);
+        color: var(--danger-color);
+    }
+    
+    .mobile-status.status-review {
+        background: rgba(49, 130, 206, 0.1);
+        color: var(--info-color);
+    }
+    
+    .mobile-dept {
+        color: var(--text-secondary);
+    }
+    
+    .mobile-cats {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+    
+    .mobile-votes {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+    }
+    
+    .mobile-votes .vote-badge {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.5rem;
+    }
+    
+    /* Show mobile action buttons */
+    .mobile-actions {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+        justify-content: flex-start;
+    }
+    
+    .mobile-action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    
+    .mobile-action-btn.view-btn {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .mobile-action-btn.view-btn:hover {
+        background: var(--secondary-color);
+    }
+    
+    .mobile-action-btn.hide-btn {
+        background: rgba(221, 107, 32, 0.1);
+        color: var(--warning-color);
+        border: 1px solid rgba(221, 107, 32, 0.2);
+    }
+    
+    .mobile-action-btn.hide-btn:hover {
+        background: rgba(221, 107, 32, 0.2);
+    }
+    
+    .mobile-action-form {
+        display: inline-block;
+    }
+    
+    /* Adjust table footer */
+    .qa-table-footer {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .showing-info {
+        font-size: 0.85rem;
+    }
+    
+    .pagination-wrapper {
+        justify-content: center;
+    }
+    
+    .pagination-wrapper .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* Small Mobile View */
+@media (max-width: 480px) {
+    .qa-header-section {
+        padding: 1rem;
+    }
+    
+    .qa-header-title {
+        font-size: 1.3rem;
+    }
+    
+    .qa-filter-bar {
+        padding: 0.75rem;
+    }
+    
+    .qa-table-container {
+        margin: 0 0.75rem 1rem 0.75rem;
+    }
+    
+    .qa-ideas-table tr {
+        padding: 0.75rem;
+    }
+    
+    .mobile-meta-row {
+        font-size: 0.8rem;
+    }
+    
+    .mobile-action-btn {
+        width: 36px;
+        height: 36px;
     }
 }
 </style>
@@ -712,5 +1002,27 @@ document.addEventListener('click', function(event) {
         });
     }
 });
+
+// Handle responsive behavior
+function handleResponsive() {
+    const isMobile = window.innerWidth <= 768;
+    const tables = document.querySelectorAll('.qa-ideas-table');
+    
+    tables.forEach(table => {
+        if (isMobile) {
+            // Mobile view adjustments
+            table.querySelectorAll('td').forEach(cell => {
+                const label = cell.getAttribute('data-label');
+                // Additional mobile-specific logic if needed
+            });
+        }
+    });
+}
+
+// Initial check
+handleResponsive();
+
+// Check on resize
+window.addEventListener('resize', handleResponsive);
 </script>
 @endpush
