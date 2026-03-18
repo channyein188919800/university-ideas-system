@@ -42,11 +42,7 @@
                     <i class="bi bi-grid-1x2"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="{{ route('ideas.index') }}"
-                    class="admin-nav-link {{ request()->routeIs('ideas.index') ? 'active' : '' }}">
-                    <i class="bi bi-lightbulb"></i>
-                    <span>Browse Ideas</span>
-                </a>
+
                 <a href="{{ route('ideas.index', ['sort' => 'popular']) }}" class="admin-nav-link">
                     <i class="bi bi-fire"></i>
                     <span>Popular Ideas</span>
@@ -218,9 +214,7 @@
                                 <div class="text-center text-muted py-4">
                                     <i class="bi bi-chat-left-text fs-1 mb-3 d-inline-block"></i>
                                     <p>You haven't commented on any ideas yet.</p>
-                                    <a href="{{ route('ideas.index') }}" class="btn btn-primary btn-sm">
-                                        <i class="bi bi-search"></i> Browse Ideas
-                                    </a>
+
                                 </div>
                             @endforelse
                         </div>
@@ -238,7 +232,7 @@
 
         .admin-shell {
             display: flex;
-            min-height: calc(100vh - 72px);
+            min-height: 100vh;
             background: radial-gradient(circle at 0% 0%, #e9f2ff 0%, #f4f7fc 35%, #f8fafc 100%);
             position: relative;
         }
@@ -391,7 +385,7 @@
 
         .admin-menu-toggle {
             position: fixed;
-            top: 84px;
+            top: 12px;
             left: 14px;
             z-index: 1200;
             background: #0f1f3a;
@@ -414,9 +408,9 @@
         @media (max-width: 991.98px) {
             .admin-sidebar {
                 position: fixed;
-                inset: 72px auto 0 0;
+                inset: 0 auto 0 0;
                 transform: translateX(-105%);
-                height: calc(100vh - 72px);
+                height: 100vh;
             }
 
             .admin-sidebar.open {

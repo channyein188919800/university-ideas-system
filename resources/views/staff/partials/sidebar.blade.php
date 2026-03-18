@@ -17,10 +17,7 @@
             <i class="bi bi-grid-1x2"></i>
             <span>Dashboard</span>
         </a>
-        <a href="{{ route('ideas.index') }}" class="admin-nav-link {{ request()->routeIs('ideas.index') ? 'active' : '' }}">
-            <i class="bi bi-lightbulb"></i>
-            <span>Browse Ideas</span>
-        </a>
+
         <a href="{{ route('ideas.index', ['sort' => 'popular']) }}" class="admin-nav-link">
             <i class="bi bi-fire"></i>
             <span>Popular Ideas</span>
