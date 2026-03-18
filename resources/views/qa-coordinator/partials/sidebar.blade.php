@@ -92,18 +92,18 @@
             <span>Dashboard</span>
         </a>
 
-        <a href="{{ route('ideas.index', ['department' => auth()->user()->department_id]) }}" 
-           class="qa-nav-link">
+        <a href="{{ route('qa-coordinator.department.ideas') }}" 
+           class="qa-nav-link {{ request()->routeIs('qa-coordinator.department.ideas') ? 'active' : '' }}">
             <i class="bi bi-lightbulb"></i>
             <span>Department Ideas</span>
         </a>
 
-        <a href="{{ route('ideas.index', ['sort' => 'popular']) }}" class="qa-nav-link">
+        <a href="{{ route('qa-coordinator.popular.ideas') }}" class="qa-nav-link {{ request()->routeIs('qa-coordinator.popular.ideas') ? 'active' : '' }}">
             <i class="bi bi-fire"></i>
             <span>Popular Ideas</span>
         </a>
         
-        <a href="{{ route('ideas.index', ['sort' => 'latest']) }}" class="qa-nav-link">
+        <a href="{{ route('qa-coordinator.latest.ideas') }}" class="qa-nav-link {{ request()->routeIs('qa-coordinator.latest.ideas') ? 'active' : '' }}">
             <i class="bi bi-clock-history"></i>
             <span>Latest Ideas</span>
         </a>

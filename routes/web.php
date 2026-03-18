@@ -23,6 +23,7 @@ use App\Http\Controllers\QaManager\AuditLogController as QaManagerAuditLogContro
 use App\Http\Controllers\QaManager\BacklogController as QaManagerBacklogController;
 use App\Http\Controllers\QaManager\ReportController as QaManagerReportController;
 use App\Http\Controllers\QaCoordinator\DashboardController as QaCoordinatorDashboardController;
+use App\Http\Controllers\QaCoordinator\IdeaController as QaCoordinatorIdeaController; // ADD THIS LINE
 use App\Http\Controllers\Staff\DashboardController as StaffDashboardController;
 use App\Http\Controllers\Staff\AccountController as StaffAccountController;
 
@@ -164,7 +165,7 @@ Route::middleware(['auth', 'terms', 'role:qa_manager'])
 
 /*
 |--------------------------------------------------------------------------
-| QA Coordinator Routes
+| QA Coordinator Routes (First Group)
 |--------------------------------------------------------------------------
 */
 
@@ -196,7 +197,7 @@ Route::middleware(['auth', 'terms', 'role:staff'])
 
 /*
 |--------------------------------------------------------------------------
-| QA Coordinator Routes
+| QA Coordinator Routes (Extended)
 |--------------------------------------------------------------------------
 */
 
@@ -232,5 +233,10 @@ Route::middleware(['auth', 'terms', 'role:qa_coordinator'])
 
         // Staff management
         Route::get('/staff', [QaCoordinatorDashboardController::class, 'staffList'])->name('staff.index');
+
+        // NEW: Idea view routes for QA Coordinator (ADD THESE ROUTES)
+        Route::get('/department-ideas', [QaCoordinatorIdeaController::class, 'departmentIdeas'])->name('department.ideas');
+        Route::get('/popular-ideas', [QaCoordinatorIdeaController::class, 'popularIdeas'])->name('popular.ideas');
+        Route::get('/latest-ideas', [QaCoordinatorIdeaController::class, 'latestIdeas'])->name('latest.ideas');
 
     });
