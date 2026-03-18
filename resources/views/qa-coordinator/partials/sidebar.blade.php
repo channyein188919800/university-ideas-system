@@ -95,7 +95,7 @@
         <a href="{{ route('ideas.index', ['department' => auth()->user()->department_id]) }}" 
            class="qa-nav-link">
             <i class="bi bi-lightbulb"></i>
-            <span>All Ideas</span>
+            <span>Department Ideas</span>
         </a>
 
         <a href="{{ route('ideas.index', ['sort' => 'popular']) }}" class="qa-nav-link">

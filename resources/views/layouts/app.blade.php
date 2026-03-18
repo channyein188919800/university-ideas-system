@@ -614,9 +614,9 @@
                                     @if(auth()->user()->isAdmin())
                                         <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}"><i class="fas fa-cog"></i> Admin Panel</a></li>
                                     @elseif(auth()->user()->isQaManager())
-                                        <li><a class="dropdown-item" href="{{ route('qa-manager.dashboard') }}"><i class="fas fa-chart-line"></i> QA Manager</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('qa-manager.dashboard') }}"><i class="fas fa-chart-line"></i> QA Manager Dashboard</a></li>
                                     @elseif(auth()->user()->isQaCoordinator())
-                                        <li><a class="dropdown-item" href="{{ route('qa-coordinator.dashboard') }}"><i class="fas fa-users-cog"></i> QA Coordinator</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('qa-coordinator.dashboard') }}"><i class="fas fa-users-cog"></i> QA Coordinator Dashboard</a></li>
                                     @else
                                         <li><a class="dropdown-item" href="{{ route('staff.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                                     @endif
