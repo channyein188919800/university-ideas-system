@@ -767,7 +767,7 @@
             <div class="logo-container">
                 <div class="logo-ring"></div>
                 <div class="logo-space">
-                    <img src="{{ asset('images/logo1_no_bg.png') }}" alt="University Logo">
+                    <img src="{{ asset('images/logo_sidebar.png') }}" alt="University Logo">
                 </div>
             </div>
             <p class="brand-copy">
