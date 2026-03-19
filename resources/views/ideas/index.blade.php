@@ -238,8 +238,20 @@
             <div class="row align-items-center">
                 <div class="col-lg-8">
                     <span class="hero-kicker">Knowledge Base</span>
-                    <h1 class="hero-title text-white mb-2">Explore <span>University</span> Ideas</h1>
-                    <p class="opacity-75 mb-0 d-none d-md-block">Discover community contributions from across all departments.</p>
+                    <h1 class="hero-title text-white mb-2">
+                        @if(request('my_ideas'))
+                            My <span>Submitted</span> Ideas
+                        @else
+                            Explore <span>University</span> Ideas
+                        @endif
+                    </h1>
+                    <p class="opacity-75 mb-0 d-none d-md-block">
+                        @if(request('my_ideas'))
+                            View and track all the ideas you have contributed to the platform.
+                        @else
+                            Discover community contributions from across all departments.
+                        @endif
+                    </p>
                 </div>
                 <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
                     <div class="d-flex flex-column align-items-lg-end gap-3">
@@ -312,7 +324,7 @@
                                 </div>
 
                                 <div class="idea-meta">
-                                    <span><i class="bi bi-building"></i> {{ $idea->department->name }}</span>
+                                    <span><i class="bi bi-building"></i> {{ $idea->department?->name ?? 'Unassigned' }}</span>
                                     <span><i class="bi bi-calendar3"></i> {{ $idea->created_at->format('M d, Y') }}</span>
                                 </div>
 

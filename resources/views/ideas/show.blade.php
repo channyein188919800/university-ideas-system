@@ -376,7 +376,7 @@
                     </div>
                     <h1 class="idea-display-title">{{ $idea->title }}</h1>
                     <div class="header-meta-row">
-                        <span><i class="fas fa-university"></i> {{ $idea->department->name }}</span>
+                        <span><i class="fas fa-university"></i> {{ $idea->department?->name ?? 'Unassigned' }}</span>
                         <span><i class="fas fa-user"></i> {{ $idea->author_name }}</span>
                         <span><i class="fas fa-calendar-alt"></i> {{ $idea->created_at->format('M d, Y') }}</span>
                         @if($idea->hidden)

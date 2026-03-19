@@ -11,9 +11,6 @@
                 <h3 class="mb-1"><i class="bi bi-person-gear"></i> My Profile</h3>
                 <p class="text-muted mb-0">Manage your account details, password, and profile photo.</p>
             </div>
-            <a href="{{ route('qa-manager.dashboard') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back to Dashboard
-            </a>
         </div>
 
         @if(session('success'))
@@ -103,21 +100,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Department <span class="text-danger">*</span></label>
-                                    <select name="department_id" id="department_id" class="form-select @error('department_id') is-invalid @enderror" required>
-                                        <option value="">Select Department...</option>
-                                        @foreach($departments as $department)
-                                            <option value="{{ $department->id }}" {{ old('department_id', $user->department_id) == $department->id ? 'selected' : '' }}>
-                                                {{ $department->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('department_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <label class="form-label fw-semibold">Role</label>
                                     <input type="text" class="form-control" value="QA Manager" disabled>
                                 </div>

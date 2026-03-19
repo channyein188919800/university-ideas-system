@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Admin Dashboard - University Ideas System')
 
@@ -9,7 +9,6 @@
         <section class="admin-main">
             @php
                 $authUser = auth()->user();
-                $departmentName = $authUser->department->name ?? 'No Department Assigned';
                 $roleLabel = match ($authUser->role) {
                     'admin' => 'Administrator',
                     'qa_manager' => 'QA Manager',
@@ -23,7 +22,7 @@
             <div class="admin-topbar">
                 <div>
                     <h3 class="mb-1">{{ $lastLoginAt ? 'Welcome back' : 'Welcome' }}, <span style="color: #ff1414;">{{ $authUser->name }}</span></h3>                    
-                    <p class="admin-topbar-subtitle mb-0">{{ $departmentName }} · {{ $roleLabel }}</p>
+                    <p class="admin-topbar-subtitle mb-0">University Wide · {{ $roleLabel }}</p>
                     <small class="text-muted d-block">
                         @if(!$lastLoginAt)
                             Welcome! This appears to be your first login.
@@ -176,7 +175,7 @@
                                         <a href="{{ route('ideas.show', $idea) }}"
                                             class="feed-title">{{ Str::limit($idea->title, 60) }}</a>
                                         <p class="feed-meta mb-0">
-                                            <i class="bi bi-building"></i> {{ $idea->department->name }}
+                                            <i class="bi bi-building"></i> {{ $idea->department?->name ?? 'Unassigned' }}
                                             <span class="mx-2">•</span>
                                             <i class="bi bi-clock"></i> {{ $idea->created_at->diffForHumans() }}
                                         </p>

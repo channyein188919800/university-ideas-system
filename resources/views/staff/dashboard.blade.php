@@ -43,9 +43,9 @@
                     <span>Dashboard</span>
                 </a>
 
-                <a href="{{ route('ideas.index', ['sort' => 'popular']) }}" class="admin-nav-link">
-                    <i class="bi bi-fire"></i>
-                    <span>Popular Ideas</span>
+                <a href="{{ route('ideas.index', ['my_ideas' => 1]) }}" class="admin-nav-link {{ request('my_ideas') ? 'active' : '' }}">
+                    <i class="bi bi-person-lines-fill"></i>
+                    <span>My Ideas</span>
                 </a>
             </div>
 

@@ -73,7 +73,13 @@
                                                     <span class="badge bg-secondary">Staff</span>
                                             @endswitch
                                         </td>
-                                        <td>{{ $user->department?->name ?? 'N/A' }}</td>
+                                        <td>
+                                            @if(in_array($user->role, ['admin', 'qa_manager']))
+                                                <span class="text-muted fw-semibold">University Wide</span>
+                                            @else
+                                                {{ $user->department?->name ?? 'N/A' }}
+                                            @endif
+                                        </td>
                                         <td>
                                             @if($user->terms_accepted)
                                                 <span class="badge bg-success"><i class="fas fa-check"></i> Yes</span>

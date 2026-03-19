@@ -491,7 +491,7 @@
                                 @endif
                             </div>
                             <div class="meta-text mb-2">
-                                <i class="bi bi-building"></i> {{ $idea->department->name }}
+                                <i class="bi bi-building"></i> {{ $idea->department?->name ?? 'Unassigned' }}
                                 <span class="mx-2">•</span>
                                 <i class="bi bi-clock"></i> {{ $idea->created_at->diffForHumans() }}
                             </div>
@@ -526,7 +526,7 @@
                                 @endif
                             </div>
                             <div class="meta-text mb-2">
-                                <i class="bi bi-building"></i> {{ $idea->department->name }}
+                                <i class="bi bi-building"></i> {{ $idea->department?->name ?? 'Unassigned' }}
                             </div>
                             <div class="d-flex gap-2">
                                 <span class="stat-badge info"><i class="bi bi-eye-fill"></i> {{ $idea->views_count }} Views</span>

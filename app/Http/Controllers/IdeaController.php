@@ -32,6 +32,10 @@ class IdeaController extends Controller
         if ($request->has('department')) {
             $query->byDepartment($request->department);
         }
+
+        if ($request->has('my_ideas') && Auth::check()) {
+            $query->where('user_id', Auth::id());
+        }
         
         if ($request->has('sort')) {
             switch ($request->sort) {
