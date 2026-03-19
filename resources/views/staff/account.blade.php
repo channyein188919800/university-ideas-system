@@ -13,9 +13,6 @@
                 <h3 class="mb-1"><i class="bi bi-person-gear"></i> My Profile</h3>
                 <p class="text-muted mb-0">Manage your account details, password, and profile photo.</p>
             </div>
-            <a href="{{ route('staff.dashboard') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back to Dashboard
-            </a>
         </div>
 
         @if(session('success'))

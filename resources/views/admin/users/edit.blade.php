@@ -18,9 +18,11 @@
                     <p class="text-muted mb-0">Update account details and role permissions.</p>
                 @endif
             </div>
-            <a href="{{ auth()->id() == $user->id ? route('admin.dashboard') : route('admin.users.index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back to {{ auth()->id() == $user->id ? 'Dashboard' : 'Users' }}
-            </a>
+            @if(auth()->id() != $user->id)
+                <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Users
+                </a>
+            @endif
         </div>
 
         @if(session('success'))
@@ -116,38 +118,28 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold">Department</label>
-                                    <select class="form-select @error('department_id') is-invalid @enderror"
-                                            name="department_id">
-                                        <option value="">-- None --</option>
-                                        @foreach($departments as $department)
-                                            <option value="{{ $department->id }}" {{ old('department_id', $user->department_id) == $department->id ? 'selected' : '' }}>
-                                                {{ $department->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('department_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Role</label>
-                                    @if(auth()->id() == $user->id)
-                                        <input type="hidden" name="role" value="{{ old('role', $user->role) }}">
-                                        <input type="text" class="form-control"
-                                               value="{{ \Illuminate\Support\Str::title(str_replace('_', ' ', $user->role)) }}" disabled>
+                                    @if(in_array($user->role, ['admin', 'qa_manager']))
+                                        <input type="text" class="form-control" value="University Wide (All Departments)" disabled>
                                     @else
-                                        <select class="form-select @error('role') is-invalid @enderror"
-                                                name="role" required>
-                                            @foreach($roles as $role)
-                                                <option value="{{ $role }}" {{ old('role', $user->role) == $role ? 'selected' : '' }}>
-                                                    {{ ucwords(str_replace('_', ' ', $role)) }}
+                                        <select class="form-select @error('department_id') is-invalid @enderror"
+                                                name="department_id">
+                                            <option value="">-- None --</option>
+                                            @foreach($departments as $department)
+                                                <option value="{{ $department->id }}" {{ old('department_id', $user->department_id) == $department->id ? 'selected' : '' }}>
+                                                    {{ $department->name }}
                                                 </option>
                                             @endforeach
                                         </select>
-                                        @error('role')
+                                        @error('department_id')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     @endif
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Role</label>
+                                    <input type="hidden" name="role" value="{{ $user->role }}">
+                                    <input type="text" class="form-control"
+                                           value="{{ \Illuminate\Support\Str::title(str_replace('_', ' ', $user->role)) }}" disabled>
                                 </div>
                             </div>
                         </div>

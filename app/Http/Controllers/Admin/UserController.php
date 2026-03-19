@@ -77,6 +77,10 @@ class UserController extends Controller
             'profile_image'=> 'nullable|image|max:2048',
         ]);
 
+        if (in_array($validated['role'], ['admin', 'qa_manager'])) {
+            $validated['department_id'] = null;
+        }
+
         if ($request->filled('password')) {
             $validated['password'] = Hash::make($request->password);
         }

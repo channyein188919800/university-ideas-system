@@ -492,10 +492,10 @@
                             </div>
 
                             {{-- Department --}}
-                            <div class="uc-field">
+                            <div class="uc-field" id="deptFieldContainer" style="transition: opacity 0.3s ease;">
                                 <label class="uc-label" for="department_id">Department</label>
                                 <div class="uc-shell">
-                                    <i class="bi bi-building"></i>
+                                    <i class="bi bi-building" id="deptIcon"></i>
                                     <select id="department_id" name="department_id"
                                         class="uc-select @error('department_id') is-invalid @enderror"
                                         style="padding-left:2.85rem;">
@@ -616,9 +616,29 @@ document.addEventListener('DOMContentLoaded', function () {
     var permsBox  = document.getElementById('ucPerms');
     var roleRadios = document.querySelectorAll('input[name="role"]');
 
+    var deptSelect = document.getElementById('department_id');
+    var deptContainer = document.getElementById('deptFieldContainer');
+    var deptIcon = document.getElementById('deptIcon');
+
     function updatePerms() {
         var selected = document.querySelector('input[name="role"]:checked');
         var role = selected ? selected.value : null;
+
+        if (role === 'admin' || role === 'qa_manager') {
+            if (deptSelect) {
+                deptSelect.value = '';
+                deptSelect.disabled = true;
+                if (deptContainer) deptContainer.style.opacity = '0.5';
+                if (deptIcon) deptIcon.className = 'bi bi-lock-fill';
+            }
+        } else {
+            if (deptSelect) {
+                deptSelect.disabled = false;
+                if (deptContainer) deptContainer.style.opacity = '1';
+                if (deptIcon) deptIcon.className = 'bi bi-building';
+            }
+        }
+
         if (!role || !permsMap[role]) { permsBox.classList.remove('visible'); return; }
         permsBox.innerHTML = permsMap[role].map(function(p) {
             return '<span class="uc-perm-badge"><i class="bi ' + p[0] + '"></i>' + p[1] + '</span>';

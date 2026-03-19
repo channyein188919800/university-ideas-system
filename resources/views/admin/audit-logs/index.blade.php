@@ -82,14 +82,9 @@
                                     <tr>
                                         <td>{{ $log->created_at->format('M d, Y - h:i A') }}</td>
                                         <td>
-                                            <div class="d-flex align-items-center gap-2">
-                                                <span class="badge rounded-pill text-bg-light border">
-                                                    {{ strtoupper(substr($log->actor?->name ?? 'SY', 0, 2)) }}
-                                                </span>
-                                                <div>
-                                                    <div class="fw-semibold">{{ $log->actor?->name ?? 'System' }}</div>
-                                                    <small class="text-muted">{{ $log->actor?->email ?? '-' }}</small>
-                                                </div>
+                                            <div>
+                                                <div class="fw-semibold">{{ $log->actor?->name ?? 'System' }}</div>
+                                                <small class="text-muted">{{ $log->actor?->email ?? '-' }}</small>
                                             </div>
                                         </td>
                                         <td>
