@@ -82,7 +82,7 @@
                         <th width="10%" class="votes-col">Votes</th>
                         @endif
                         <th width="15%" class="status-col">Status</th>
-                        <th width="15%" class="action-col">Action</th>
+                        <th width="15%" class="action-col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -137,10 +137,37 @@
                                     {{ ucfirst(str_replace('_', ' ', $idea->status)) }}
                                 </span>
                             </td>
-                            <td class="qa-action-cell" data-label="Action">
-                                <a href="{{ route('ideas.show', $idea) }}" class="qa-btn-view">
-                                    <i class="bi bi-eye me-2"></i>View
-                                </a>
+                            <td class="qa-action-cell" data-label="Actions">
+                                <div class="action-dropdown">
+                                    <button class="action-dropdown-toggle" type="button" onclick="toggleDropdown({{ $idea->id }})">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <div class="action-dropdown-menu" id="dropdown-{{ $idea->id }}">
+                                        <a class="action-dropdown-item" href="{{ route('ideas.show', $idea) }}">
+                                            <i class="bi bi-eye me-2"></i>View Details
+                                        </a>
+                                        <form method="POST" action="{{ route('qa-coordinator.ideas.toggle-hidden', $idea) }}" class="d-inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="action-dropdown-item text-warning" onclick="return confirm('Are you sure you want to hide this idea?')">
+                                                <i class="bi bi-eye-slash me-2"></i>Hide Idea
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- Mobile action buttons -->
+                                <div class="mobile-actions">
+                                    <a href="{{ route('ideas.show', $idea) }}" class="qa-btn-view-mobile">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <form method="POST" action="{{ route('qa-coordinator.ideas.toggle-hidden', $idea) }}" class="d-inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="qa-btn-hide-mobile" onclick="return confirm('Are you sure you want to hide this idea?')">
+                                            <i class="bi bi-eye-slash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -171,11 +198,26 @@
 
 @push('styles')
 <style>
+:root {
+    --primary-color: #1e3a5f;
+    --secondary-color: #2c5282;
+    --accent-color: #d69e2e;
+    --success-color: #38a169;
+    --danger-color: #e53e3e;
+    --warning-color: #dd6b20;
+    --info-color: #3182ce;
+    --light-bg: #f7fafc;
+    --border-color: #e2e8f0;
+    --text-primary: #1a202c;
+    --text-secondary: #4a5568;
+    --text-muted: #718096;
+}
+
 /* Main Layout */
 .qa-coordinator-layout {
     display: flex;
     min-height: 100vh;
-    background: #f4f7fc;
+    background: var(--light-bg);
 }
 
 .qa-main-content {
@@ -190,27 +232,27 @@
     border-radius: 20px;
     padding: 1.5rem 2rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
     margin-bottom: 1.5rem;
 }
 
 .qa-header-title {
-    font-size: 1.25rem;
-    font-weight: 790;
-    color: #0a1a2f;
-    margin: 0 1rem 0.7rem 0;
+    font-size: 1.5rem;
+    font-weight: 770;
+    color: var(--primary-color);
+    margin: 0 0 0.5rem 0;
     display: flex;
     align-items: center;
 }
 
 .qa-header-title i {
-    color: #4361ee;
+    color: var(--accent-color);
     font-size: 2rem;
     padding-right: 0.5rem;
 }
 
 .qa-header-subtitle {
-    color: #5f6c80;
+    color: var(--text-secondary);
     font-size: 1rem;
     margin: 0;
     display: flex;
@@ -222,7 +264,7 @@
     display: inline-block;
     width: 4px;
     height: 4px;
-    background: #4361ee;
+    background: var(--accent-color);
     border-radius: 50%;
     margin-right: 0.75rem;
 }
@@ -233,7 +275,7 @@
     border-radius: 16px;
     padding: 1.25rem 1.5rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
 }
 
 .qa-search-wrapper {
@@ -246,47 +288,48 @@
     left: 14px;
     top: 50%;
     transform: translateY(-50%);
-    color: #8f9eb2;
+    color: var(--text-muted);
     font-size: 1rem;
 }
 
 .qa-search-input {
     width: 100%;
     padding: 0.7rem 1rem 0.7rem 2.8rem;
-    border: 2px solid #e9ecf0;
+    border: 2px solid var(--border-color);
     border-radius: 12px;
     font-size: 0.95rem;
+    color: var(--text-primary);
     transition: all 0.2s ease;
 }
 
 .qa-search-input:focus {
     outline: none;
-    border-color: #4361ee;
-    box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(30, 58, 95, 0.1);
 }
 
 .qa-filter-select {
     padding: 0.7rem 2rem 0.7rem 1rem;
-    border: 2px solid #e9ecf0;
+    border: 2px solid var(--border-color);
     border-radius: 12px;
     font-size: 0.95rem;
-    color: #0a1a2f;
+    color: var(--text-primary);
     background: white;
     cursor: pointer;
     min-width: 160px;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%235f6c80' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23718096' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 1rem center;
 }
 
 .qa-filter-select:focus {
     outline: none;
-    border-color: #4361ee;
+    border-color: var(--primary-color);
 }
 
 .qa-btn-filter {
-    background: #4361ee;
+    background: var(--primary-color);
     color: white;
     border: none;
     padding: 0.7rem 1.8rem;
@@ -300,15 +343,15 @@
 }
 
 .qa-btn-filter:hover {
-    background: #3451d1;
+    background: var(--secondary-color);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
 }
 
 .qa-btn-clear {
     background: #f8f9fa;
-    color: #5f6c80;
-    border: 2px solid #e9ecf0;
+    color: var(--text-secondary);
+    border: 2px solid var(--border-color);
     padding: 0.7rem 1.8rem;
     border-radius: 12px;
     font-weight: 600;
@@ -320,17 +363,17 @@
 }
 
 .qa-btn-clear:hover {
-    background: #e9ecf0;
-    color: #0a1a2f;
+    background: var(--border-color);
+    color: var(--primary-color);
 }
 
 /* Table Styles */
 .qa-table-container {
     background: white;
     border-radius: 20px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
     margin-bottom: 2rem;
 }
 
@@ -342,21 +385,21 @@
 
 .qa-ideas-table th {
     background: #f8fafd;
-    color: #1e2b3c;
+    color: var(--primary-color);
     font-weight: 600;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     padding: 1.25rem 1.5rem;
     text-align: left;
-    border-bottom: 2px solid #eef2f6;
+    border-bottom: 2px solid var(--border-color);
 }
 
 .qa-ideas-table td {
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #eef2f6;
+    border-bottom: 1px solid var(--border-color);
     vertical-align: middle;
-    color: #2a3b4f;
+    color: var(--text-primary);
     word-wrap: break-word;
 }
 
@@ -371,6 +414,7 @@
 /* Title Cell */
 .qa-title-cell {
     font-weight: 500;
+    color: var(--primary-color);
 }
 
 /* Mobile meta - hidden by default */
@@ -380,7 +424,7 @@
 
 /* Description Cell */
 .qa-description-cell {
-    color: #3e4e62;
+    color: var(--text-secondary);
     line-height: 1.5;
     font-size: 0.9rem;
 }
@@ -391,7 +435,7 @@
     padding: 0.4rem 1rem;
     border-radius: 20px;
     font-size: 0.85rem;
-    color: #5f6c80;
+    color: var(--text-secondary);
     display: inline-flex;
     align-items: center;
     font-weight: 500;
@@ -419,13 +463,15 @@
 }
 
 .vote-badge.up {
-    background: #e3f5e9;
-    color: #0b5e2e;
+    background: rgba(56, 161, 105, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(56, 161, 105, 0.2);
 }
 
 .vote-badge.down {
-    background: #fee9e7;
-    color: #b3261e;
+    background: rgba(229, 62, 62, 0.1);
+    color: var(--danger-color);
+    border: 1px solid rgba(229, 62, 62, 0.2);
 }
 
 .vote-badge i {
@@ -443,78 +489,174 @@
 }
 
 .status-pending {
-    background: #fff9e6;
-    color: #b78103;
-    border: 1px solid #ffecb3;
+    background: rgba(221, 107, 32, 0.1);
+    color: var(--warning-color);
+    border: 1px solid rgba(221, 107, 32, 0.2);
 }
 
 .status-approved {
-    background: #e3f5e9;
-    color: #0b5e2e;
-    border: 1px solid #b8e0c5;
+    background: rgba(56, 161, 105, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(56, 161, 105, 0.2);
 }
 
 .status-rejected {
-    background: #fee9e7;
-    color: #b3261e;
-    border: 1px solid #f9c2bd;
+    background: rgba(229, 62, 62, 0.1);
+    color: var(--danger-color);
+    border: 1px solid rgba(229, 62, 62, 0.2);
 }
 
 .status-review {
-    background: #e6edff;
-    color: #1a4cbc;
-    border: 1px solid #b8cdfc;
+    background: rgba(49, 130, 206, 0.1);
+    color: var(--info-color);
+    border: 1px solid rgba(49, 130, 206, 0.2);
 }
 
-/* Action Button */
-.qa-btn-view {
+/* Action Dropdown - Custom implementation */
+.action-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.action-dropdown-toggle {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.action-dropdown-toggle:hover {
+    background: #f0f4fa;
+    color: var(--primary-color);
+}
+
+.action-dropdown-toggle:focus {
+    outline: none;
+}
+
+.action-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+    display: none;
+    min-width: 160px;
+    padding: 0.5rem 0;
+    margin: 0.25rem 0 0;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.action-dropdown-menu.show {
+    display: block;
+}
+
+.action-dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 1.2rem;
+    clear: both;
+    font-weight: 400;
+    color: var(--text-primary);
+    text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.action-dropdown-item:hover {
+    background-color: #f8fafd;
+    color: var(--primary-color);
+}
+
+.action-dropdown-item i {
+    font-size: 1rem;
+}
+
+.action-dropdown-item.text-warning {
+    color: var(--warning-color) !important;
+}
+
+.action-dropdown-item.text-warning:hover {
+    background-color: rgba(221, 107, 32, 0.1);
+}
+
+/* Mobile action buttons - hidden by default */
+.mobile-actions {
+    display: none;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.qa-btn-view-mobile,
+.qa-btn-hide-mobile {
     display: inline-flex;
     align-items: center;
-    background: #4361ee;
-    color: white;
-    padding: 0.6rem 1.2rem;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
     border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.qa-btn-view:hover {
-    background: #3451d1;
+.qa-btn-view-mobile {
+    background: var(--primary-color);
     color: white;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+}
+
+.qa-btn-view-mobile:hover {
+    background: var(--secondary-color);
+}
+
+.qa-btn-hide-mobile {
+    background: rgba(221, 107, 32, 0.1);
+    color: var(--warning-color);
+    border: 1px solid rgba(221, 107, 32, 0.2);
+}
+
+.qa-btn-hide-mobile:hover {
+    background: rgba(221, 107, 32, 0.2);
 }
 
 /* Empty State */
 .qa-empty-state {
     text-align: center;
     padding: 4rem 2rem !important;
-    color: #5f6c80;
+    color: var(--text-secondary);
 }
 
 .qa-empty-icon {
     font-size: 4rem;
     margin-bottom: 1rem;
-    color: #d0d9e8;
+    color: var(--border-color);
 }
 
 .qa-empty-state h3 {
-    color: #0a1a2f;
+    color: var(--primary-color);
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
 }
 
 .qa-empty-state p {
-    color: #5f6c80;
+    color: var(--text-secondary);
     margin-bottom: 1rem;
 }
 
 /* Primary Button */
 .qa-btn-primary {
-    background: #4361ee;
+    background: var(--primary-color);
     color: white;
     border: none;
     padding: 0.8rem 2rem;
@@ -528,10 +670,10 @@
 }
 
 .qa-btn-primary:hover {
-    background: #3451d1;
+    background: var(--secondary-color);
     color: white;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
 }
 
 /* Pagination */
@@ -546,22 +688,23 @@
 }
 
 .qa-pagination-wrapper .page-link {
-    border: 2px solid #e9ecf0;
+    border: 2px solid var(--border-color);
     border-radius: 10px;
     padding: 0.5rem 1rem;
-    color: #4361ee;
+    color: var(--primary-color);
     font-weight: 500;
+    transition: all 0.2s ease;
 }
 
 .qa-pagination-wrapper .page-link:hover {
-    background: #4361ee;
+    background: var(--primary-color);
     color: white;
-    border-color: #4361ee;
+    border-color: var(--primary-color);
 }
 
 .qa-pagination-wrapper .active .page-link {
-    background: #4361ee;
-    border-color: #4361ee;
+    background: var(--primary-color);
+    border-color: var(--primary-color);
     color: white;
 }
 
@@ -639,7 +782,7 @@
     .qa-ideas-table tr {
         display: block;
         margin-bottom: 1rem;
-        border: 1px solid #eef2f6;
+        border: 1px solid var(--border-color);
         border-radius: 12px;
         background: white;
         padding: 1rem;
@@ -659,7 +802,7 @@
     .qa-ideas-table td:before {
         content: attr(data-label);
         font-weight: 600;
-        color: #5f6c80;
+        color: var(--text-secondary);
         display: block;
         font-size: 0.8rem;
         text-transform: uppercase;
@@ -688,12 +831,12 @@
         padding: 0.2rem 0.8rem;
         border-radius: 20px;
         font-size: 0.8rem;
-        color: #5f6c80;
+        color: var(--text-secondary);
     }
     
     .mobile-user {
         font-size: 0.85rem;
-        color: #4361ee;
+        color: var(--primary-color);
     }
     
     .mobile-status {
@@ -704,34 +847,40 @@
     }
     
     .mobile-status.pending {
-        background: #fff9e6;
-        color: #b78103;
+        background: rgba(221, 107, 32, 0.1);
+        color: var(--warning-color);
     }
     
     .mobile-status.approved {
-        background: #e3f5e9;
-        color: #0b5e2e;
+        background: rgba(56, 161, 105, 0.1);
+        color: var(--success-color);
     }
     
     .mobile-status.rejected {
-        background: #fee9e7;
-        color: #b3261e;
+        background: rgba(229, 62, 62, 0.1);
+        color: var(--danger-color);
     }
     
     .mobile-status.under_review {
-        background: #e6edff;
-        color: #1a4cbc;
+        background: rgba(49, 130, 206, 0.1);
+        color: var(--info-color);
     }
     
-    .qa-btn-view {
-        width: 100%;
-        justify-content: center;
+    /* Hide dropdown on mobile, show mobile action buttons */
+    .action-dropdown {
+        display: none;
+    }
+    
+    .mobile-actions {
+        display: flex;
+        justify-content: flex-start;
         margin-top: 0.5rem;
     }
     
-    /* Stacked votes on mobile if they were visible */
-    .votes-stacked {
-        flex-direction: row;
+    .qa-btn-view-mobile,
+    .qa-btn-hide-mobile {
+        width: 40px;
+        height: 40px;
     }
 }
 
@@ -758,4 +907,31 @@
     }
 }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+// Custom dropdown functionality
+function toggleDropdown(id) {
+    // Close all other dropdowns
+    document.querySelectorAll('.action-dropdown-menu').forEach(menu => {
+        if (menu.id !== 'dropdown-' + id) {
+            menu.classList.remove('show');
+        }
+    });
+    
+    // Toggle current dropdown
+    const dropdown = document.getElementById('dropdown-' + id);
+    dropdown.classList.toggle('show');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.action-dropdown')) {
+        document.querySelectorAll('.action-dropdown-menu').forEach(menu => {
+            menu.classList.remove('show');
+        });
+    }
+});
+</script>
 @endpush

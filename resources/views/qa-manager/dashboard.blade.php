@@ -3,10 +3,10 @@
 @section('title', 'QA Manager Dashboard - University Ideas System')
 
 @section('content')
-@php
+<!-- @php
     $authUser = auth()->user();
     $lastLoginAt = $authUser->last_login_at;
-@endphp
+@endphp -->
 
 <!-- Topbar -->
 <div class="qa-topbar">

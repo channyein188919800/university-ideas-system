@@ -66,7 +66,6 @@
              style="width:210px;max-height:110px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));">
     </div>
     
-    
     <!-- Admin profile -->
     <div class="admin-profile">
         <div class="admin-profile-avatar">
@@ -94,18 +93,28 @@
             <span>Dashboard</span>
         </a>
 
-        <a href="{{ route('ideas.index') }}" class="qa-nav-link">
+        <a href="{{ route('qa-manager.ideas.index') }}" class="qa-nav-link {{ request()->routeIs('qa-manager.ideas.index') && request('view') != 'popular' ? 'active' : '' }}">
             <i class="bi bi-lightbulb"></i>
             <span>All Ideas</span>
         </a>
-                <a href="{{ route('ideas.index', ['sort' => 'popular']) }}" class="qa-nav-link">
+        
+        <a href="{{ route('qa-manager.ideas.index', ['view' => 'popular']) }}" class="qa-nav-link {{ request('view') == 'popular' ? 'active' : '' }}">
             <i class="bi bi-fire"></i>
             <span>Popular Ideas</span>
         </a>
-
-        <a href="{{ route('ideas.index', ['sort' => 'latest']) }}" class="qa-nav-link">
-            <i class="bi bi-clock-history"></i>
-            <span>Latest Ideas</span>
+        
+        <!-- Hidden Content Tab - New -->
+        <a href="{{ route('qa-manager.hidden.index') }}" class="qa-nav-link {{ request()->routeIs('qa-manager.hidden.*') ? 'active' : '' }}">
+            <i class="bi bi-eye-slash"></i>
+            <span>Hidden Content</span>
+            @php
+                $hiddenIdeasCount = \App\Models\Idea::where('hidden', true)->count();
+                $hiddenCommentsCount = \App\Models\Comment::where('hidden', true)->count();
+                $totalHidden = $hiddenIdeasCount + $hiddenCommentsCount;
+            @endphp
+            @if($totalHidden > 0)
+                <span class="badge bg-warning ms-auto">{{ $totalHidden }}</span>
+            @endif
         </a>
     </div>
 
@@ -125,7 +134,6 @@
             <i class="bi bi-building"></i>
             <span>Departments</span>
         </a>
-
 
         <a href="{{ route('qa-manager.staff.index') }}"
             class="qa-nav-link {{ request()->routeIs('qa-manager.staff.*') ? 'active' : '' }}">

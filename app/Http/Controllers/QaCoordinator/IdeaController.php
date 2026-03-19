@@ -5,6 +5,7 @@ namespace App\Http\Controllers\QaCoordinator;
 use App\Http\Controllers\Controller;
 use App\Models\Idea;
 use App\Models\User;
+use App\Support\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -104,5 +105,62 @@ class IdeaController extends Controller
         $ideas = $query->orderBy('created_at', 'desc')->paginate(15);
         
         return view('qa-coordinator.ideas-table', compact('ideas'))->with('activeTab', 'latest');
+    }
+
+    /**
+     * Toggle idea visibility (hide/unhide)
+     */
+    public function toggleHidden(Request $request, Idea $idea)
+    {
+        // Check if user is authenticated and is a QA Coordinator
+        if (!Auth::check() || Auth::user()->role !== 'qa_coordinator') {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized access.'
+                ], 403);
+            }
+            abort(403, 'Unauthorized access.');
+        }
+
+        $user = Auth::user();
+
+        // Ensure the idea belongs to the coordinator's department
+        if ($idea->department_id !== $user->department_id) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You can only hide ideas from your own department.'
+                ], 403);
+            }
+            abort(403, 'You can only hide ideas from your own department.');
+        }
+
+        // Toggle the hidden status
+        $idea->hidden = !$idea->hidden;
+        $idea->save();
+
+        // Log the action
+        $action = $idea->hidden ? 'HIDE_IDEA' : 'UNHIDE_IDEA';
+        $actionText = $idea->hidden ? 'hidden' : 'unhidden';
+        
+        AuditLogger::log(
+            $action,
+            "QA Coordinator {$user->name} {$actionText} idea #{$idea->id}: {$idea->title}.",
+            $idea
+        );
+
+        // Return appropriate response
+        $message = "Idea has been {$actionText} successfully.";
+        
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'hidden' => $idea->hidden
+            ]);
+        }
+
+        return redirect()->back()->with('success', $message);
     }
 }
