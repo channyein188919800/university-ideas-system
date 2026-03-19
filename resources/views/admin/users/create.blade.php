@@ -359,7 +359,7 @@
                             <div class="uc-header-icon"><i class="bi bi-person-plus-fill"></i></div>
                             <div class="uc-header-text">
                                 <h2>Create New User</h2>
-                                <p>Add a university staff or admin account</p>
+                                <p>Add DMK University's user account.</p>
                             </div>
                         </div>
 
