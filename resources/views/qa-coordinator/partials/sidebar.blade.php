@@ -98,15 +98,7 @@
             <span>Department Ideas</span>
         </a>
 
-        <a href="{{ route('qa-coordinator.popular.ideas') }}" class="qa-nav-link {{ request()->routeIs('qa-coordinator.popular.ideas') ? 'active' : '' }}">
-            <i class="bi bi-fire"></i>
-            <span>Popular Ideas</span>
-        </a>
-        
-        <a href="{{ route('qa-coordinator.latest.ideas') }}" class="qa-nav-link {{ request()->routeIs('qa-coordinator.latest.ideas') ? 'active' : '' }}">
-            <i class="bi bi-clock-history"></i>
-            <span>Latest Ideas</span>
-        </a>
+
     </div>
 
     <!-- ADMINISTRATION -->
@@ -138,7 +130,7 @@
         <a href="{{ route('qa-coordinator.staff.index') }}" 
            class="qa-nav-link {{ request()->routeIs('qa-coordinator.staff.index') ? 'active' : '' }}">
             <i class="bi bi-people"></i>
-            <span>Manage Users</span>
+            <span>Remind Users</span>
             @php
                 $pendingStaff = \App\Models\User::where('department_id', auth()->user()->department_id)
                     ->where('role', 'staff')
@@ -151,18 +143,7 @@
             @endif
         </a>
         
-        <!-- Notifications -->
-        <a href="{{ route('qa-coordinator.notifications') }}" 
-           class="qa-nav-link {{ request()->routeIs('qa-coordinator.notifications') ? 'active' : '' }}">
-            <i class="bi bi-bell"></i>
-            <span>Notifications</span>
-            @php
-                $unreadCount = auth()->user()->unreadNotifications->count();
-            @endphp
-            @if($unreadCount > 0)
-                <span class="badge bg-danger ms-auto">{{ $unreadCount }}</span>
-            @endif
-        </a>
+   
     </div>
 
     <!-- ACCOUNT -->
