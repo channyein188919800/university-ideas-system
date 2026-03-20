@@ -34,6 +34,92 @@
         padding: 2.5rem 1rem;
     }
 
+    /* Document Attachment Styles */
+    .documents-section {
+        background: #f8fafc;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin: 1.5rem 3rem;
+        border: 1px dashed var(--secondary-navy);
+    }
+
+    .documents-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--secondary-navy);
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .document-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .document-item {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 0.75rem 1.25rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .document-item:hover {
+        border-color: var(--accent-gold);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .document-icon {
+        font-size: 1.5rem;
+        color: var(--secondary-navy);
+    }
+
+    .document-icon.pdf { color: #e53e3e; }
+    .document-icon.docx { color: #2b6cb0; }
+    .document-icon.image { color: #38a169; }
+    .document-icon.txt { color: #718096; }
+
+    .document-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .document-name {
+        font-weight: 600;
+        color: var(--primary-navy);
+        font-size: 0.9rem;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .document-meta {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+    }
+
+    .document-download {
+        color: var(--accent-gold);
+        font-size: 0.9rem;
+        margin-left: auto;
+        padding-left: 0.5rem;
+    }
+
+    .no-documents {
+        color: var(--text-muted);
+        font-style: italic;
+        font-size: 0.9rem;
+        padding: 0.5rem 0;
+    }
+
     /* --- UNIFIED IDEA BLOCK (Realistic & Consistent) --- */
     .idea-master-card {
         background: var(--white);
@@ -526,6 +612,73 @@
                     {!! nl2br(e($idea->description)) !!}
                 </div>
 
+                <!-- Documents Section -->
+                @if($idea->documents && $idea->documents->count() > 0)
+                    <div class="documents-section {{ $idea->hidden ? 'hidden-idea' : '' }}">
+                        <div class="documents-title">
+                            <i class="fas fa-paperclip me-2"></i> Attached Documents ({{ $idea->documents->count() }})
+                        </div>
+                        <div class="document-list">
+                            @foreach($idea->documents as $document)
+                                @php
+                                    $extension = pathinfo($document->original_name, PATHINFO_EXTENSION);
+                                    $iconClass = 'fa-file';
+                                    $iconColor = '';
+                                    
+                                    if (in_array(strtolower($extension), ['pdf'])) {
+                                        $iconClass = 'fa-file-pdf';
+                                        $iconColor = 'pdf';
+                                    } elseif (in_array(strtolower($extension), ['doc', 'docx'])) {
+                                        $iconClass = 'fa-file-word';
+                                        $iconColor = 'docx';
+                                    } elseif (in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'])) {
+                                        $iconClass = 'fa-file-image';
+                                        $iconColor = 'image';
+                                    } elseif (in_array(strtolower($extension), ['txt'])) {
+                                        $iconClass = 'fa-file-alt';
+                                        $iconColor = 'txt';
+                                    } elseif (in_array(strtolower($extension), ['xls', 'xlsx', 'csv'])) {
+                                        $iconClass = 'fa-file-excel';
+                                    } elseif (in_array(strtolower($extension), ['ppt', 'pptx'])) {
+                                        $iconClass = 'fa-file-powerpoint';
+                                    } elseif (in_array(strtolower($extension), ['zip', 'rar', '7z'])) {
+                                        $iconClass = 'fa-file-archive';
+                                    }
+                                    
+                                    $fileSize = $document->file_size;
+                                    if ($fileSize < 1024) {
+                                        $sizeDisplay = $fileSize . ' B';
+                                    } elseif ($fileSize < 1048576) {
+                                        $sizeDisplay = round($fileSize / 1024, 1) . ' KB';
+                                    } else {
+                                        $sizeDisplay = round($fileSize / 1048576, 1) . ' MB';
+                                    }
+                                @endphp
+                                
+                                <a href="{{ Storage::url($document->file_path) }}" 
+                                   class="document-item text-decoration-none" 
+                                   target="_blank"
+                                   download="{{ $document->original_name }}">
+                                    <div class="document-icon {{ $iconColor }}">
+                                        <i class="fas {{ $iconClass }}"></i>
+                                    </div>
+                                    <div class="document-info">
+                                        <span class="document-name" title="{{ $document->original_name }}">
+                                            {{ Str::limit($document->original_name, 30) }}
+                                        </span>
+                                        <span class="document-meta">
+                                            <i class="fas fa-file me-1"></i> {{ strtoupper($extension) }} • {{ $sizeDisplay }}
+                                        </span>
+                                    </div>
+                                    <div class="document-download">
+                                        <i class="fas fa-download"></i>
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
                 <div class="idea-interaction-zone {{ $idea->hidden ? 'hidden-idea' : '' }}">
                     <div class="vote-group">
                         @auth
@@ -548,12 +701,15 @@
                     <div class="d-flex gap-2">
                         <span class="view-count-badge"><i class="fas fa-eye text-info"></i> {{ $idea->views_count }}</span>
                         <span class="view-count-badge"><i class="fas fa-comment text-warning"></i> {{ $idea->comments_count }}</span>
+                        @if($idea->documents && $idea->documents->count() > 0)
+                            <span class="view-count-badge"><i class="fas fa-paperclip text-success"></i> {{ $idea->documents->count() }}</span>
+                        @endif
                     </div>
                 </div>
             </div>
 
             <div class="content-card p-4 anim-fade-up delay-3">
-                <h4 class="fw-bold mb-4"><i class="fas fa-comments text-warning me-2"></i>Discussion</h4>
+                <h4 class="fw-bold mb-4"><i class="fas fa-comments text-warning me-2"></i>Comment</h4>
                 
                 @auth
                     @if(auth()->user()->canComment() && (!$idea->hidden || auth()->user()->isQaManager()))
@@ -683,6 +839,10 @@
                         <div class="d-flex justify-content-between mb-2">
                             <span>Comments Hidden:</span>
                             <span class="fw-bold" id="hiddenCommentsCount">{{ $idea->comments()->where('hidden', true)->count() }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Documents:</span>
+                            <span class="fw-bold">{{ $idea->documents->count() ?? 0 }}</span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>Last Reported:</span>
@@ -912,7 +1072,7 @@
             }
 
             // Update hidden classes on idea sections
-            const sections = document.querySelectorAll('.idea-header-zone, .idea-body-zone, .idea-interaction-zone');
+            const sections = document.querySelectorAll('.idea-header-zone, .idea-body-zone, .idea-interaction-zone, .documents-section');
             sections.forEach(section => {
                 if (data.hidden) {
                     section.classList.add('hidden-idea');
