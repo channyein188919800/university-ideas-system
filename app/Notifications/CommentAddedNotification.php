@@ -7,6 +7,7 @@ use App\Models\Idea;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Str;
 
 class CommentAddedNotification extends Notification
 {
