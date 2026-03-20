@@ -608,8 +608,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* ── Role responsibilities ───────────────────────────── */
     var permsMap = {
-        'admin':          [['bi-person-plus','Create User'],['bi-person-check','Edit Users'],['bi-file-text','Audit Logs'],['bi-gear','System Settings'],['bi-lightbulb','Submit Idea'],['bi-chat-left-text','Comment']],
-        'qa_manager':     [['bi-file-text','Audit Logs'],['bi-lightbulb','Submit Idea'],['bi-chat-left-text','Comment'],['bi-trash','Remove Idea'],['bi-bar-chart','Reports']],
+        'admin':          [['bi-person-plus','Create User'],['bi-person-check','Edit Users'],['bi-file-text','Audit Logs'],['bi-gear','Closure Dates'],['bi-lightbulb','Submit Idea'],['bi-chat-left-text','Comment']],
+        'qa_manager':     [['bi-file-text','Audit Logs'],['bi-lightbulb','Submit Idea'],['bi-trash','Remove Idea'],['bi-chat-left-text','Manage Ideas'],['bi-chat-left-text','Comment'],['bi-bar-chart','Reports']],
         'qa_coordinator': [['bi-lightbulb','Submit Idea'],['bi-chat-left-text','Comment'],['bi-people','Dept. Overview']],
         'staff':          [['bi-lightbulb','Submit Idea'],['bi-chat-left-text','Comment']]
     };

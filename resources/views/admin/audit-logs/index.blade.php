@@ -14,9 +14,6 @@
                     <p class="text-muted mb-0">Track administrator actions and important system events.</p>
                 </div>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> Back
-                    </a>
                     <a href="{{ route('admin.audit-logs.export', request()->query()) }}" class="btn btn-primary">
                         <i class="bi bi-download"></i> Export Logs
                     </a>

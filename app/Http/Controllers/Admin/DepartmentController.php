@@ -39,7 +39,7 @@ class DepartmentController extends Controller
             $department
         );
 
-        return redirect()->route('admin.departments.index')->with('success', 'Department created successfully!');
+        return redirect()->route('admin.departments.index')->with('success', 'Department created, and coordinator assigned successfully!');
     }
 
     public function edit(Department $department)

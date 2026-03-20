@@ -45,6 +45,6 @@ class SettingController extends Controller
                 "Final Closure: {$before['final_closure_date']} -> {$validated['final_closure_date']}."
         );
 
-        return redirect()->route('qa-manager.settings.index')->with('success', 'Settings updated successfully.');
+        return redirect()->route('qa-manager.settings.index')->with('success', 'Closure dates updated successfully.');
     }
 }
