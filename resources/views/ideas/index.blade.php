@@ -5,9 +5,9 @@
 @section('content')
 <style>
     :root {
-        --primary-color: #1e3a5f;    /* Navy Blue */
-        --secondary-color: #2c5282;  /* Lighter Navy */
-        --accent-color: #d69e2e;     /* Gold */
+        --primary-color: #1e3a5f;
+        --secondary-color: #2c5282;
+        --accent-color: #d69e2e;
         --body-bg: #f0f4f8;
         --card-bg: #ffffff;
         --text-muted: #718096;
@@ -26,7 +26,6 @@
         color: var(--primary-color);
     }
 
-    /* --- Animations --- */
     .fade-in-up {
         opacity: 0;
         transform: translateY(20px);
@@ -38,7 +37,6 @@
         transform: translateY(0);
     }
 
-    /* --- Hero Section --- */
     .ideas-hero {
         background: linear-gradient(rgba(30, 58, 95, 0.9), rgba(30, 58, 95, 0.95)), 
                     url('https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg');
@@ -57,7 +55,6 @@
     .hero-title span { color: var(--accent-color); }
     .hero-kicker { color: var(--accent-color); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; display: block; font-size: 0.8rem; }
 
-    /* --- Responsive Filter Card --- */
     .filter-card {
         background: white;
         border-radius: 1.15rem;
@@ -80,19 +77,37 @@
         align-items: center;
     }
 
-    /* Fix for the Overflowing Select Menu */
     .form-select {
         border-radius: 0.6rem;
         border: 1px solid #e2e8f0;
         padding: 0.75rem;
         font-size: 0.9rem;
         width: 100%; 
-        max-width: 100%; /* Prevents horizontal overflow seen in your screenshot */
+        max-width: 100%;
         background-color: #fff;
         cursor: pointer;
     }
 
-    /* --- Idea Items --- */
+    .btn-reset {
+        background: #f1f5f9;
+        color: var(--secondary-color);
+        font-weight: 700;
+        border-radius: 0.6rem;
+        padding: 0.75rem;
+        text-align: center;
+        display: block;
+        text-decoration: none;
+        border: none;
+        width: 100%;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-reset:hover {
+        background: #e2e8f0;
+        color: var(--primary-color);
+    }
+
     .idea-item {
         background: white;
         border-radius: 1.25rem;
@@ -101,6 +116,7 @@
         overflow: hidden;
         transition: all 0.3s ease;
         box-shadow: 0 5px 20px rgba(0,0,0,0.02);
+        cursor: pointer;
     }
 
     .idea-item:hover {
@@ -115,6 +131,10 @@
         text-decoration: none;
         font-weight: 800;
         font-size: 1.2rem;
+    }
+
+    .idea-title a:hover {
+        color: var(--accent-color);
     }
 
     .idea-meta {
@@ -137,7 +157,15 @@
         text-decoration: none;
     }
 
-    /* --- Author Panel (Responsive Stacking) --- */
+    .badge-anon {
+        background: rgba(214, 158, 46, 0.1);
+        color: var(--accent-color);
+        padding: 0.25rem 0.6rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
     .author-panel {
         background: #fcfdfe;
         border-top: 1px solid #f1f5f9;
@@ -177,9 +205,9 @@
         padding: 0.15rem 0.5rem; 
         border-radius: 4px; 
         font-weight: 700;
+        display: inline-block;
     }
 
-    /* --- Stats & Scores --- */
     .stat-chip {
         background: white;
         border: 1px solid #f1f5f9;
@@ -205,7 +233,6 @@
         font-size: 0.85rem;
     }
 
-    /* --- Buttons --- */
     .btn-gold {
         background: var(--accent-color);
         color: white;
@@ -213,22 +240,21 @@
         border-radius: 50px;
         padding: 0.6rem 1.5rem;
         border: none;
-        width: 100%; 
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-gold:hover {
+        background: #b8891d;
+        color: white;
+        transform: translateY(-2px);
     }
 
     @media (min-width: 768px) {
         .btn-gold { width: auto; }
-    }
-
-    .btn-reset {
-        background: #f1f5f9;
-        color: var(--secondary-color);
-        font-weight: 700;
-        border-radius: 0.6rem;
-        padding: 0.75rem;
-        text-align: center;
-        display: block;
-        text-decoration: none;
     }
 </style>
 
@@ -262,7 +288,7 @@
                         </div>
                         @auth
                             @if(auth()->user()->canSubmitIdea())
-                                <a href="{{ route('ideas.create') }}" class="btn btn-gold shadow-sm">
+                                <a href="{{ route('ideas.create') }}" class="btn-gold shadow-sm">
                                     <i class="bi bi-plus-circle me-1"></i> Submit Idea
                                 </a>
                             @endif
@@ -272,11 +298,12 @@
             </div>
         </div>
 
+        <!-- FILTER CARD - FIXED VERSION -->
         <div class="filter-card fade-in-up">
-            <form method="GET" action="{{ route('ideas.index') }}" class="row g-3">
+            <form method="GET" action="{{ route('ideas.index') }}" class="row g-3" id="filterForm">
                 <div class="col-12 col-md-4">
                     <label><i class="bi bi-tag-fill me-2 text-warning"></i> Category</label>
-                    <select name="category" class="form-select" onchange="this.form.submit()">
+                    <select name="category" class="form-select" id="categorySelect">
                         <option value="">All Categories</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
@@ -287,7 +314,7 @@
                 </div>
                 <div class="col-12 col-md-4">
                     <label><i class="bi bi-sort-up me-2 text-warning"></i> Sort By</label>
-                    <select name="sort" class="form-select" onchange="this.form.submit()">
+                    <select name="sort" class="form-select" id="sortSelect">
                         <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Most Recent</option>
                         <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Trending Now</option>
                         <option value="views" {{ request('sort') == 'views' ? 'selected' : '' }}>Most Viewed</option>
@@ -295,19 +322,21 @@
                 </div>
                 <div class="col-12 col-md-4">
                     <label class="d-none d-md-block" style="visibility: hidden;">Reset</label>
-                    <a href="{{ route('ideas.index') }}" class="btn-reset">
+                    <a href="{{ route('ideas.index') }}" class="btn-reset w-100" id="resetFiltersBtn">
                         <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filters
                     </a>
                 </div>
             </form>
         </div>
 
+        <!-- IDEAS LIST -->
         <div class="idea-list-container">
             @forelse($ideas as $idea)
                 @php
                     $authorName = $idea->is_anonymous ? 'Anonymous Contributor' : ($idea->user?->name ?? 'Unknown User');
                     $roleLabel = $idea->is_anonymous ? 'Member' : str_replace('_', ' ', ($idea->user?->role ?? 'staff'));
                     $initials = collect(explode(' ', trim($authorName)))->filter()->map(fn ($part) => strtoupper(substr($part, 0, 1)))->take(2)->implode('');
+                    $initials = $initials ?: 'AN';
                 @endphp
 
                 <article class="idea-item fade-in-up" data-href="{{ route('ideas.show', $idea) }}">
@@ -319,7 +348,7 @@
                                         <a href="{{ route('ideas.show', $idea) }}">{{ $idea->title }}</a>
                                     </h5>
                                     @if($idea->is_anonymous)
-                                        <span class="badge-anon"><i class="bi bi-incognito"></i></span>
+                                        <span class="badge-anon"><i class="bi bi-incognito"></i> Anonymous</span>
                                     @endif
                                 </div>
 
@@ -366,6 +395,7 @@
                 <div class="text-center py-5 bg-white rounded-4 shadow-sm fade-in-up">
                     <i class="bi bi-inbox fs-1 text-muted"></i>
                     <h5 class="mt-3">No ideas found.</h5>
+                    <p class="text-muted">Try changing filters or submit a new idea!</p>
                 </div>
             @endforelse
         </div>
@@ -378,6 +408,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Animation Observer
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -388,6 +419,7 @@
 
         document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
+        // Clickable cards
         document.querySelectorAll('.idea-item[data-href]').forEach(card => {
             card.addEventListener('click', function (e) {
                 if (!e.target.closest('a, button, select')) {
@@ -395,6 +427,35 @@
                 }
             });
         });
+
+        // ===== FIX: RESET FILTERS - Just use the link directly =====
+        // The reset button is already an <a> tag that goes to route('ideas.index')
+        // No extra JavaScript needed!
+        
+        // Auto-submit when dropdowns change
+        const categorySelect = document.getElementById('categorySelect');
+        const sortSelect = document.getElementById('sortSelect');
+        const filterForm = document.getElementById('filterForm');
+
+        if (categorySelect) {
+            categorySelect.addEventListener('change', function() {
+                // When "All Categories" is selected (empty value), remove the parameter
+                if (this.value === '') {
+                    // Remove category from URL
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('category');
+                    window.location.href = url.toString();
+                } else {
+                    filterForm.submit();
+                }
+            });
+        }
+
+        if (sortSelect) {
+            sortSelect.addEventListener('change', function() {
+                filterForm.submit();
+            });
+        }
     });
 </script>
 @endsection
