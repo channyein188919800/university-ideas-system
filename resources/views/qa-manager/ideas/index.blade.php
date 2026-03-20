@@ -1,11 +1,7 @@
 @extends('layouts.qa-manager')
 
 @section('title')
-    @if($view == 'popular')
-        Popular Ideas - University Ideas System
-    @else
-        All Ideas - University Ideas System
-    @endif
+    All Ideas - University Ideas System
 @endsection
 
 @section('content')
@@ -15,26 +11,16 @@
         <!-- Header Section -->
         <div class="qa-header-section mb-4">
             <h1 class="qa-header-title">
-                @if($view == 'popular')
-                    <i class="bi bi-fire me-2"></i>Popular Ideas
-                @else
-                    <i class="bi bi-lightbulb me-2"></i>All Ideas
-                @endif
+                <i class="bi bi-lightbulb me-2"></i>All Ideas
             </h1>
             <p class="qa-header-subtitle">
-                @if($view == 'popular')
-                    Most viewed and voted ideas
-                @else
-                    Viewing all ideas across the university
-                @endif
+                Viewing all ideas across the university
             </p>
         </div>
 
         <!-- Filter Bar -->
         <div class="qa-filter-bar mb-4">
             <form method="GET" action="{{ route('qa-manager.ideas.index') }}" class="row g-3">
-                <input type="hidden" name="view" value="{{ $view }}">
-                
                 <div class="col-md-3">
                     <div class="qa-search-wrapper">
                         <i class="bi bi-search qa-search-icon"></i>
@@ -84,7 +70,7 @@
                     </button>
                     
                     @if($search || $departmentId || $categoryId || $status != 'all')
-                        <a href="{{ route('qa-manager.ideas.index', ['view' => $view]) }}" class="qa-btn-clear">
+                        <a href="{{ route('qa-manager.ideas.index') }}" class="qa-btn-clear">
                             <i class="bi bi-x-circle"></i>
                         </a>
                     @endif
@@ -101,9 +87,6 @@
                         <th class="author-col">Author</th>
                         <th class="dept-col">Department</th>
                         <th class="cat-col">Categories</th>
-                        @if($view == 'popular')
-                        <th class="votes-col">Votes</th>
-                        @endif
                         <th class="status-col">Status</th>
                         <th class="action-col">Actions</th>
                     </tr>
@@ -117,14 +100,12 @@
                                     <span class="badge bg-light text-dark">
                                         <i class="bi bi-eye"></i> {{ $idea->views_count }}
                                     </span>
-                                    @if($view != 'popular')
-                                        <span class="badge bg-light text-success">
-                                            <i class="bi bi-hand-thumbs-up"></i> {{ $idea->thumbs_up_count }}
-                                        </span>
-                                        <span class="badge bg-light text-danger">
-                                            <i class="bi bi-hand-thumbs-down"></i> {{ $idea->thumbs_down_count }}
-                                        </span>
-                                    @endif
+                                    <span class="badge bg-light text-success">
+                                        <i class="bi bi-hand-thumbs-up"></i> {{ $idea->thumbs_up_count }}
+                                    </span>
+                                    <span class="badge bg-light text-danger">
+                                        <i class="bi bi-hand-thumbs-down"></i> {{ $idea->thumbs_down_count }}
+                                    </span>
                                     <span class="badge bg-light text-muted">
                                         <i class="bi bi-calendar3"></i> {{ $idea->created_at->format('M d, Y') }}
                                     </span>
@@ -146,12 +127,6 @@
                                             @endif
                                         </span>
                                     </div>
-                                    @if($view == 'popular')
-                                    <div class="mobile-votes">
-                                        <span class="vote-badge up"><i class="bi bi-hand-thumbs-up"></i> {{ $idea->thumbs_up_count }}</span>
-                                        <span class="vote-badge down"><i class="bi bi-hand-thumbs-down"></i> {{ $idea->thumbs_down_count }}</span>
-                                    </div>
-                                    @endif
                                 </div>
                             </td>
                             <td class="author-cell" data-label="Author">
@@ -172,18 +147,6 @@
                                     <span class="badge bg-light text-dark">+{{ $idea->categories->count() - 2 }}</span>
                                 @endif
                             </td>
-                            @if($view == 'popular')
-                            <td class="votes-cell" data-label="Votes">
-                                <div class="votes-stacked">
-                                    <span class="vote-badge up">
-                                        <i class="bi bi-hand-thumbs-up"></i> {{ $idea->thumbs_up_count }}
-                                    </span>
-                                    <span class="vote-badge down">
-                                        <i class="bi bi-hand-thumbs-down"></i> {{ $idea->thumbs_down_count }}
-                                    </span>
-                                </div>
-                            </td>
-                            @endif
                             <td class="status-cell" data-label="Status">
                                 <span class="qa-status-badge status-{{ $idea->status }}">
                                     {{ ucfirst(str_replace('_', ' ', $idea->status)) }}
@@ -224,7 +187,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ $view == 'popular' ? '7' : '6' }}" class="qa-empty-state">
+                            <td colspan="6" class="qa-empty-state">
                                 <div class="qa-empty-icon"><i class="bi bi-lightbulb"></i></div>
                                 <h3>No ideas found</h3>
                                 <p>There are no ideas matching your criteria.</p>
@@ -523,35 +486,6 @@
     border: 1px solid rgba(49, 130, 206, 0.2);
 }
 
-/* Votes for popular tab */
-.votes-stacked {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-}
-
-.vote-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.2rem 0.6rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    width: fit-content;
-}
-
-.vote-badge.up {
-    background: rgba(56, 161, 105, 0.1);
-    color: var(--success-color);
-    border: 1px solid rgba(56, 161, 105, 0.2);
-}
-
-.vote-badge.down {
-    background: rgba(229, 62, 62, 0.1);
-    color: var(--danger-color);
-    border: 1px solid rgba(229, 62, 62, 0.2);
-}
-
 /* Action Dropdown */
 .action-dropdown {
     position: relative;
@@ -803,7 +737,6 @@
     .author-cell,
     .dept-cell,
     .cat-cell,
-    .votes-cell,
     .status-cell {
         display: none !important;
     }
@@ -868,17 +801,6 @@
     .mobile-cats {
         color: var(--text-muted);
         font-size: 0.8rem;
-    }
-    
-    .mobile-votes {
-        display: flex;
-        gap: 0.75rem;
-        margin-top: 0.5rem;
-    }
-    
-    .mobile-votes .vote-badge {
-        font-size: 0.75rem;
-        padding: 0.15rem 0.5rem;
     }
     
     /* Show mobile action buttons */

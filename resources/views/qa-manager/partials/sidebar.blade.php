@@ -93,14 +93,9 @@
             <span>Dashboard</span>
         </a>
 
-        <a href="{{ route('qa-manager.ideas.index') }}" class="qa-nav-link {{ request()->routeIs('qa-manager.ideas.index') && request('view') != 'popular' ? 'active' : '' }}">
+        <a href="{{ route('qa-manager.ideas.index') }}" class="qa-nav-link {{ request()->routeIs('qa-manager.ideas.index') ? 'active' : '' }}">
             <i class="bi bi-lightbulb"></i>
             <span>All Ideas</span>
-        </a>
-        
-        <a href="{{ route('qa-manager.ideas.index', ['view' => 'popular']) }}" class="qa-nav-link {{ request('view') == 'popular' ? 'active' : '' }}">
-            <i class="bi bi-fire"></i>
-            <span>Popular Ideas</span>
         </a>
         
         <!-- Hidden Content Tab - New -->

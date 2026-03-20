@@ -11,20 +11,19 @@ class BacklogController extends Controller
 {
     public function index(Request $request)
     {
+        $allowedTabs = ['pending', 'approved', 'rejected'];
         $tab = $request->input('tab', 'pending');
+        if (!in_array($tab, $allowedTabs, true)) {
+            $tab = 'pending';
+        }
         $search = trim((string) $request->input('search', ''));
         $categoryId = $request->integer('category_id');
 
         $query = Idea::query()->with(['user', 'department', 'categories']);
 
         $query->when($tab === 'pending', fn ($q) => $q->where('status', 'pending'));
-        $query->when($tab === 'fixing', fn ($q) => $q->where('status', 'under_review'));
-        $query->when($tab === 'resolved', fn ($q) => $q->where('status', 'approved')->where('is_closed', false));
-        $query->when($tab === 'closed', function ($q) {
-            $q->where(function ($inner) {
-                $inner->where('status', 'rejected')->orWhere('is_closed', true);
-            });
-        });
+        $query->when($tab === 'approved', fn ($q) => $q->where('status', 'approved'));
+        $query->when($tab === 'rejected', fn ($q) => $q->where('status', 'rejected'));
 
         if ($search !== '') {
             $query->where(function ($inner) use ($search) {
@@ -48,11 +47,8 @@ class BacklogController extends Controller
 
         $statusCounts = [
             'pending' => Idea::where('status', 'pending')->count(),
-            'fixing' => Idea::where('status', 'under_review')->count(),
-            'resolved' => Idea::where('status', 'approved')->where('is_closed', false)->count(),
-            'closed' => Idea::where(function ($q) {
-                $q->where('status', 'rejected')->orWhere('is_closed', true);
-            })->count(),
+            'approved' => Idea::where('status', 'approved')->count(),
+            'rejected' => Idea::where('status', 'rejected')->count(),
         ];
 
         return view('qa-manager.backlog.university-backlog', compact(
