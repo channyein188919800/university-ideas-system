@@ -17,7 +17,7 @@ class LoginController extends Controller
     /**
      * Maximum number of login attempts allowed
      */
-    protected $maxAttempts = 3;
+    protected $maxAttempts = 2;
 
     /**
      * Lockout time in minutes
