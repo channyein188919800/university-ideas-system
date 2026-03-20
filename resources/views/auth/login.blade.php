@@ -958,22 +958,34 @@
     `;
     document.head.appendChild(style);
 
-    // Countdown Timer for Lockout
-    @if($errors->has('email') && str_contains($errors->first('email'), 'Too many login attempts'))
-        let countdownElement = document.getElementById('countdown');
-        let timeLeft = 60;
+    // Countdown Timer for Lockout - 
+@if($errors->has('email') && str_contains($errors->first('email'), 'Too many login attempts'))
+    let countdownElement = document.getElementById('countdown');
+   
+    let errorMessage = "{{ $errors->first('email') }}";
+    let timeLeft = 60; // default 60 seconds
+    
+    // Parse seconds from error message if available
+    let match = errorMessage.match(/(\d+)/);
+    if (match) {
+        timeLeft = parseInt(match[1]) * 60; // convert minutes to seconds
+    }
+    
+    const countdownInterval = setInterval(function() {
+        timeLeft--;
         
-        const countdownInterval = setInterval(function() {
-            timeLeft--;
-            countdownElement.textContent = timeLeft;
-            
-            if (timeLeft <= 0) {
-                clearInterval(countdownInterval);
-                window.location.reload();
-            }
-        }, 1000);
-    @endif
-
+        if (timeLeft >= 0) {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            countdownElement.textContent = seconds; // or show minutes:seconds if preferred
+        }
+        
+        if (timeLeft <= 0) {
+            clearInterval(countdownInterval);
+            window.location.reload();
+        }
+    }, 1000);
+@endif
     // Form submission loading state (only if not locked out)
     document.getElementById('loginForm').addEventListener('submit', function(e) {
         @if(!$errors->has('email') || !str_contains($errors->first('email'), 'Too many login attempts'))
