@@ -19,7 +19,12 @@ class IdeaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Idea::published()->with(['user', 'department', 'categories']);
+        $showMyIdeas = $request->has('my_ideas') && Auth::check();
+        $query = Idea::query()->with(['user', 'department', 'categories']);
+
+        if (!$showMyIdeas) {
+            $query->published();
+        }
 
         if (!Auth::check() || !Auth::user()->isQaManager()) {
             $query->visible();
@@ -33,7 +38,7 @@ class IdeaController extends Controller
             $query->byDepartment($request->department);
         }
 
-        if ($request->has('my_ideas') && Auth::check()) {
+        if ($showMyIdeas) {
             $query->where('user_id', Auth::id());
         }
         
@@ -90,7 +95,7 @@ class IdeaController extends Controller
         $idea->user_id = Auth::id();
         $idea->department_id = Auth::user()->department_id;
         $idea->is_anonymous = $request->boolean('is_anonymous');
-        $idea->status = 'approved';
+        $idea->status = Auth::user()->isStaff() ? 'pending' : 'approved';
         $idea->save();
 
         AuditLogger::log(

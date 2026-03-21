@@ -11,6 +11,22 @@
              style="width:210px;max-height:110px;object-fit:contain;filter:brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.4));">
     </div>
 
+    <div class="admin-profile">
+        <div class="admin-profile-avatar">
+            @if(auth()->user()->profile_image_url)
+                <img src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->name }} profile photo">
+            @else
+                <span>{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+            @endif
+        </div>
+        <div class="admin-profile-meta">
+            <div class="admin-profile-name">{{ auth()->user()->name }}</div>
+            <div class="admin-profile-role">
+                {{ \Illuminate\Support\Str::title(str_replace('_', ' ', auth()->user()->role)) }}
+            </div>
+        </div>
+    </div>
+
     <div class="admin-nav-group">
         <p class="admin-nav-title">Overview</p>
         <a href="{{ route('staff.dashboard') }}" class="admin-nav-link {{ request()->routeIs('staff.dashboard') ? 'active' : '' }}">
@@ -22,13 +38,7 @@
             <i class="bi bi-person-lines-fill"></i>
             <span>My Ideas</span>
         </a>
-        @if(auth()->user()->canSubmitIdea())
-            <a href="{{ route('ideas.create') }}" class="admin-nav-link {{ request()->routeIs('ideas.create') ? 'active' : '' }}">
-                <i class="bi bi-plus-circle"></i>
-                <span>Submit Idea</span>
-            </a>
-        @endif
-    </div>
+</div>
 
     <div class="admin-nav-group">
         <p class="admin-nav-title">Account</p>
@@ -49,3 +59,6 @@
         </form>
     </div>
 </aside>
+
+
+

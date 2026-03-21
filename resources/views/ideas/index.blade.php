@@ -355,6 +355,19 @@
                                 <div class="idea-meta">
                                     <span><i class="bi bi-building"></i> {{ $idea->department?->name ?? 'Unassigned' }}</span>
                                     <span><i class="bi bi-calendar3"></i> {{ $idea->created_at->format('M d, Y') }}</span>
+                                    @if(request('my_ideas'))
+                                        @php
+                                            $statusClasses = [
+                                                'pending' => 'bg-warning text-dark',
+                                                'approved' => 'bg-success',
+                                                'rejected' => 'bg-danger'
+                                            ];
+                                            $statusLabel = ucfirst($idea->status ?? 'pending');
+                                        @endphp
+                                        <span class="badge {{ $statusClasses[$idea->status] ?? 'bg-secondary' }}">
+                                            {{ $statusLabel }}
+                                        </span>
+                                    @endif
                                 </div>
 
                                 <p class="text-secondary small mb-3">

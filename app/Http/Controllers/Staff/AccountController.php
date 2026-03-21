@@ -35,6 +35,13 @@ class AccountController extends Controller
             unset($validated['password']);
         }
 
+        if ($request->boolean('remove_profile_image') && !$request->hasFile('profile_image')) {
+            if ($user->profile_image) {
+                Storage::disk('public')->delete($user->profile_image);
+            }
+            $validated['profile_image'] = null;
+        }
+
         if ($request->hasFile('profile_image')) {
             if ($user->profile_image) {
                 Storage::disk('public')->delete($user->profile_image);

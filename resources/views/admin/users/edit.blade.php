@@ -80,6 +80,11 @@
                         <div class="invalid-feedback d-block text-center">{{ $message }}</div>
                     @enderror
                     <small class="text-muted d-block text-center mt-1">JPG, PNG or GIF · Max 2MB</small>
+                    @if($user->profile_image_url)
+                        <button type="submit" name="remove_profile_image" value="1" class="btn btn-outline-danger w-100 mt-2">
+                            <i class="bi bi-trash3 me-1"></i> Remove Photo
+                        </button>
+                    @endif
 
                     <button type="submit" class="btn btn-primary w-100 mt-4">
                         <i class="bi bi-check-circle me-1"></i> Save Changes

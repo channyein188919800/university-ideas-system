@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\DepartmentController as AdminDepartmentController
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\UsageReportController as AdminUsageReportController;
+use App\Http\Controllers\Admin\IdeaApprovalController as AdminIdeaApprovalController;
 use App\Http\Controllers\QaManager\DashboardController as QaManagerDashboardController;
 use App\Http\Controllers\QaManager\CategoryController;
 use App\Http\Controllers\QaManager\DepartmentController as QaManagerDepartmentController;
@@ -111,6 +112,9 @@ Route::middleware(['auth', 'terms', 'role:admin'])
 
         // Idea Moderation
         Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])->name('ideas.destroy');
+        Route::get('/idea-approvals', [AdminIdeaApprovalController::class, 'index'])->name('idea-approvals.index');
+        Route::patch('/idea-approvals/{idea}/approve', [AdminIdeaApprovalController::class, 'approve'])->name('idea-approvals.approve');
+        Route::patch('/idea-approvals/{idea}/reject', [AdminIdeaApprovalController::class, 'reject'])->name('idea-approvals.reject');
 
         // Audit Logs
         Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])->name('audit-logs.index');

@@ -35,9 +35,9 @@
             <i class="bi bi-grid-1x2"></i>
             <span>Dashboard</span>
         </a>
-        <a href="{{ route('ideas.index') }}" class="admin-nav-link {{ request()->routeIs('ideas.*') ? 'active' : '' }}">
-            <i class="bi bi-lightbulb"></i>
-            <span>All Ideas</span>
+        <a href="{{ route('admin.idea-approvals.index') }}" class="admin-nav-link {{ request()->routeIs('admin.idea-approvals.*') ? 'active' : '' }}">
+            <i class="bi bi-check2-square"></i>
+            <span>Idea Approval</span>
         </a>
     </div>
 
