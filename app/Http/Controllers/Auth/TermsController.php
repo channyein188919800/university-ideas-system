@@ -24,6 +24,20 @@ class TermsController extends Controller
         $user->terms_accepted_at = now();
         $user->save();
 
-        return redirect()->route('staff.dashboard')->with('success', 'Terms and Conditions accepted successfully.');
+        switch ($user->role) {
+            case 'admin':
+                $redirect = route('admin.dashboard');
+                break;
+            case 'qa_manager':
+                $redirect = route('qa-manager.dashboard');
+                break;
+            case 'qa_coordinator':
+                $redirect = route('qa-coordinator.dashboard');
+                break;
+            default:
+                $redirect = route('staff.dashboard');
+        }
+
+        return redirect($redirect)->with('success', 'Terms and Conditions accepted successfully.');
     }
 }
