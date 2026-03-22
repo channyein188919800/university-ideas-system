@@ -108,6 +108,20 @@ class IdeaController extends Controller
     }
 
     /**
+     * Show a simple idea details page for QA Coordinator.
+     */
+    public function show(Idea $idea)
+    {
+        $user = Auth::user();
+
+        if ($idea->department_id !== $user->department_id) {
+            abort(403, 'You can only view ideas from your department.');
+        }
+
+        return view('qa-coordinator.idea-details', compact('idea'));
+    }
+
+    /**
      * Toggle idea visibility (hide/unhide)
      */
     public function toggleHidden(Request $request, Idea $idea)

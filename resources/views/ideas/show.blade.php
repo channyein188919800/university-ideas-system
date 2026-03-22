@@ -28,6 +28,10 @@
         color: var(--primary-navy);
     }
 
+    footer {
+        display: none !important;
+    }
+
     .page-container {
         max-width: 1200px;
         margin: 0 auto;
@@ -1228,3 +1232,6 @@
     });
 </script>
 @endsection
+
+
+

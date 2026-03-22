@@ -143,7 +143,7 @@
                                         <i class="bi bi-three-dots-vertical"></i>
                                     </button>
                                     <div class="action-dropdown-menu" id="dropdown-{{ $idea->id }}">
-                                        <a class="action-dropdown-item" href="{{ route('ideas.show', $idea) }}">
+                                        <a class="action-dropdown-item" href="{{ route('qa-coordinator.ideas.show', $idea) }}">
                                             <i class="bi bi-eye me-2"></i>View Details
                                         </a>
                                         <form method="POST" action="{{ route('qa-coordinator.ideas.toggle-hidden', $idea) }}" class="d-inline">
@@ -157,7 +157,7 @@
                                 </div>
                                 <!-- Mobile action buttons -->
                                 <div class="mobile-actions">
-                                    <a href="{{ route('ideas.show', $idea) }}" class="qa-btn-view-mobile">
+                                    <a href="{{ route('qa-coordinator.ideas.show', $idea) }}" class="qa-btn-view-mobile">
                                         <i class="bi bi-eye"></i>
                                     </a>
                                     <form method="POST" action="{{ route('qa-coordinator.ideas.toggle-hidden', $idea) }}" class="d-inline">

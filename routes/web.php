@@ -27,6 +27,7 @@ use App\Http\Controllers\QaCoordinator\DashboardController as QaCoordinatorDashb
 use App\Http\Controllers\QaCoordinator\IdeaController as QaCoordinatorIdeaController; // ADD THIS LINE
 use App\Http\Controllers\Staff\DashboardController as StaffDashboardController;
 use App\Http\Controllers\Staff\AccountController as StaffAccountController;
+use App\Http\Controllers\Staff\IdeaController as StaffIdeaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -140,6 +141,7 @@ Route::middleware(['auth', 'terms', 'role:qa_manager'])
 
         // Idea Visibility
         Route::patch('/ideas/{idea}/toggle-hidden', [IdeaController::class, 'toggleHidden'])->name('ideas.toggle-hidden');
+        Route::get('/ideas/{idea}', [\App\Http\Controllers\QaManager\IdeaController::class, 'show'])->name('ideas.show');
         Route::patch('/comments/{comment}/toggle-hidden', [CommentController::class, 'toggleHidden'])->name('comments.toggle-hidden');
         Route::patch('/users/{user}/toggle-status', [QaManagerDashboardController::class, 'toggleUserStatus'])->name('users.toggle-status');
 
@@ -199,14 +201,15 @@ Route::middleware(['auth', 'terms', 'role:qa_coordinator'])
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'terms', 'role:staff'])
-    ->prefix('staff')
-    ->name('staff.')
-    ->group(function () {
+    Route::middleware(['auth', 'terms', 'role:staff'])
+        ->prefix('staff')
+        ->name('staff.')
+        ->group(function () {
 
         Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('dashboard');
         Route::get('/account', [StaffAccountController::class, 'edit'])->name('account.edit');
         Route::put('/account', [StaffAccountController::class, 'update'])->name('account.update');
+        Route::get('/ideas/{idea}', [StaffIdeaController::class, 'show'])->name('ideas.show');
 
     });
 
@@ -253,6 +256,7 @@ Route::middleware(['auth', 'terms', 'role:qa_coordinator'])
         Route::get('/department-ideas', [QaCoordinatorIdeaController::class, 'departmentIdeas'])->name('department.ideas');
         Route::get('/popular-ideas', [QaCoordinatorIdeaController::class, 'popularIdeas'])->name('popular.ideas');
         Route::get('/latest-ideas', [QaCoordinatorIdeaController::class, 'latestIdeas'])->name('latest.ideas');
+        Route::get('/ideas/{idea}', [QaCoordinatorIdeaController::class, 'show'])->name('ideas.show');
 
         // Toggle idea visibility (Hide/Unhide)
         Route::patch('/ideas/{idea}/toggle-hidden', [App\Http\Controllers\QaCoordinator\IdeaController::class, 'toggleHidden'])->name('ideas.toggle-hidden');

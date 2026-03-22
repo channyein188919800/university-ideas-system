@@ -115,4 +115,16 @@ class IdeaController extends Controller
 
         return redirect()->back()->with('success', $message);
     }
+
+    /**
+     * Show a simple idea details page for QA Manager.
+     */
+    public function show(Idea $idea)
+    {
+        if (!Auth::check() || Auth::user()->role !== 'qa_manager') {
+            abort(403, 'Unauthorized access.');
+        }
+
+        return view('qa-manager.ideas.details', compact('idea'));
+    }
 }

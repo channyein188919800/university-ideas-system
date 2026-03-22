@@ -339,13 +339,19 @@
                     $initials = $initials ?: 'AN';
                 @endphp
 
-                <article class="idea-item fade-in-up" data-href="{{ route('ideas.show', $idea) }}">
+                @php
+                    $detailUrl = route('ideas.show', $idea);
+                    if (request('my_ideas') && auth()->user()?->isStaff() && $idea->status !== 'approved') {
+                        $detailUrl = route('staff.ideas.show', $idea);
+                    }
+                @endphp
+                <article class="idea-item fade-in-up" data-href="{{ $detailUrl }}">
                     <div class="row g-0">
                         <div class="col-lg-8">
                             <div class="idea-content-area">
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <h5 class="idea-title mb-0">
-                                        <a href="{{ route('ideas.show', $idea) }}">{{ $idea->title }}</a>
+                                        <a href="{{ $detailUrl }}">{{ $idea->title }}</a>
                                     </h5>
                                     @if($idea->is_anonymous)
                                         <span class="badge-anon"><i class="bi bi-incognito"></i> Anonymous</span>
