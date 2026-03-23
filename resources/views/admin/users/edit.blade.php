@@ -121,25 +121,29 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Department</label>
-                                    @if(in_array($user->role, ['admin', 'qa_manager']))
-                                        <input type="text" class="form-control" value="University Wide (All Departments)" disabled>
-                                    @else
-                                        <select class="form-select @error('department_id') is-invalid @enderror"
-                                                name="department_id">
-                                            <option value="">-- None --</option>
-                                            @foreach($departments as $department)
-                                                <option value="{{ $department->id }}" {{ old('department_id', $user->department_id) == $department->id ? 'selected' : '' }}>
-                                                    {{ $department->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('department_id')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    @endif
-                                </div>
+<div class="col-md-6">
+    <label class="form-label fw-semibold">Department</label>
+    @if(in_array($user->role, ['admin', 'qa_manager']))
+        <input type="text" class="form-control" value="University Wide (All Departments)" disabled>
+    @elseif($user->role === 'staff')
+        <select class="form-select @error('department_id') is-invalid @enderror"
+                name="department_id">
+            <option value="">-- None --</option>
+            @foreach($departments as $department)
+                <option value="{{ $department->id }}" {{ old('department_id', $user->department_id) == $department->id ? 'selected' : '' }}>
+                    {{ $department->name }}
+                </option>
+            @endforeach
+        </select>
+        @error('department_id')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    @else
+        <input type="hidden" name="department_id" value="{{ $user->department_id }}">
+        <input type="text" class="form-control" 
+               value="{{ $user->department->name ?? 'No Department Assigned' }}" disabled>
+    @endif
+</div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold">Role</label>
                                     <input type="hidden" name="role" value="{{ $user->role }}">

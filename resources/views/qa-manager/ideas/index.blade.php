@@ -136,6 +136,9 @@
                                     <div class="qa-user-info">
                                         <span>{{ $idea->user->name }}</span>
                                     </div>
+                                    <div class="qa-user-role">
+                                        {{ \Illuminate\Support\Str::title(str_replace('_', ' ', $idea->user?->role ?? 'staff')) }}
+                                    </div>
                                 @endif
                             </td>
                             <td class="dept-cell" data-label="Department">{{ $idea->department->name ?? 'N/A' }}</td>
@@ -452,6 +455,11 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+}
+.qa-user-role {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
 }
 
 .qa-status-badge {

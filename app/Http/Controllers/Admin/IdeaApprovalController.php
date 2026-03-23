@@ -17,6 +17,8 @@ class IdeaApprovalController extends Controller
         $search = $request->input('search', '');
         $departmentId = $request->input('department_id', '');
         $categoryId = $request->input('category_id', '');
+        $status = $request->input('status', 'all');
+
 
         $query = Idea::with(['user', 'department', 'categories']);
 
@@ -36,6 +38,9 @@ class IdeaApprovalController extends Controller
                 $q->where('categories.id', $categoryId);
             });
         }
+        if ($status !== 'all') {
+            $query->where('status', $status);
+        }
 
         $ideas = $query->latest()->paginate(15)->withQueryString();
         $departments = Department::orderBy('name')->get();
@@ -47,7 +52,8 @@ class IdeaApprovalController extends Controller
             'categories',
             'search',
             'departmentId',
-            'categoryId'
+            'categoryId',
+            'status'
         ));
     }
 
@@ -65,7 +71,7 @@ class IdeaApprovalController extends Controller
             $idea
         );
 
-        return redirect()->back()->with('success', 'Idea approved successfully.');
+        return redirect()->back()->with('success');
     }
 
     public function reject(Request $request, Idea $idea)
@@ -82,7 +88,7 @@ class IdeaApprovalController extends Controller
             $idea
         );
 
-        return redirect()->back()->with('success', 'Idea rejected successfully.');
+        return redirect()->back()->with('success');
     }
 
     public function show(Idea $idea)

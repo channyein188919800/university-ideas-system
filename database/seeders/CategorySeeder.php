@@ -50,6 +50,10 @@ class CategorySeeder extends Seeder
                 'name' => 'International',
                 'description' => 'Ideas related to international partnerships and global engagement',
             ],
+                        [
+                'name' => 'Education',
+                'description' => 'Ideas related to curriculum development, teaching methods, and student learning experiences',
+            ],
         ];
 
         foreach ($categories as $category) {

@@ -687,24 +687,6 @@
         @yield('content')
     </main>
 
-    @unless(!empty($hideNavFooter))
-        <!-- Footer -->
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5><i class="fas fa-lightbulb"></i> University Ideas System</h5>
-                        <p class="mb-0">Empowering staff to contribute ideas for university improvement.</p>
-                    </div>
-                    <div class="col-md-6 text-md-end">
-                        <p class="mb-0">&copy; {{ date('Y') }} University. All rights reserved.</p>
-                        <small>Quality Assurance Division</small>
-                    </div>
-                </div>
-            </div>
-        </footer>
-    @endunless
-
     <!-- Confirm Action Modal -->
     <div class="modal fade" id="confirmActionModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

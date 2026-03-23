@@ -33,7 +33,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <select name="department_id" class="qa-filter-select">
                                 <option value="">All Departments</option>
                                 @foreach($departments as $department)
@@ -44,7 +44,7 @@
                             </select>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <select name="category_id" class="qa-filter-select">
                                 <option value="">All Categories</option>
                                 @foreach($categories as $category)
@@ -54,7 +54,15 @@
                                 @endforeach
                             </select>
                         </div>
-
+                        <div class="col-md-2">
+                            <select name="status" class="qa-filter-select">
+                                <option value="all" {{ $status == 'all' ? 'selected' : '' }}>All Status</option>
+                                <option value="pending" {{ $status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="approved" {{ $status == 'approved' ? 'selected' : '' }}>Approved</option>
+                                <option value="rejected" {{ $status == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                <option value="under_review" {{ $status == 'under_review' ? 'selected' : '' }}>Under Review</option>
+                            </select>
+                        </div>
                         <div class="col-md-3 d-flex gap-2">
                             <button type="submit" class="qa-btn-filter flex-grow-1">
                                 <i class="bi bi-funnel me-2"></i>Apply Filters
@@ -88,6 +96,15 @@
                                     <td class="qa-title-cell" data-label="Idea Title">
                                         <strong>{{ $idea->title }}</strong>
                                         <div class="qa-meta-info desktop-only">
+                                            <span class="badge bg-light text-dark">
+                                                    <i class="bi bi-eye"></i> {{ $idea->views_count }}
+                                            </span>
+                                            <span class="badge bg-light text-success">
+                                                <i class="bi bi-hand-thumbs-up"></i> {{ $idea->thumbs_up_count }}
+                                            </span>
+                                            <span class="badge bg-light text-danger">
+                                                <i class="bi bi-hand-thumbs-down"></i> {{ $idea->thumbs_down_count }}
+                                            </span>
                                             <span class="badge bg-light text-muted">
                                                 <i class="bi bi-calendar3"></i> {{ $idea->created_at->format('M d, Y') }}
                                             </span>
@@ -457,7 +474,16 @@
     color: var(--warning-color);
     border: 1px solid rgba(221, 107, 32, 0.2);
 }
-
+.status-approved {
+    background: rgba(56, 161, 105, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(56, 161, 105, 0.2);
+}
+.status-rejected {
+    background: rgba(229, 62, 62, 0.1);
+    color: var(--danger-color);
+    border: 1px solid rgba(229, 62, 62, 0.2);
+}
 .action-dropdown {
     position: relative;
     display: inline-block;
