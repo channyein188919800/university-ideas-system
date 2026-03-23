@@ -91,6 +91,9 @@
                     <h2><i class="bi bi-eye me-2"></i> Idea Details</h2>
                     <p class="text-muted mb-0">Pending or rejected ideas do not show the public detail page.</p>
                 </div>
+                <a href="{{ route('ideas.index', ['my_ideas' => 1]) }}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left me-2"></i> Back to My Ideas
+                </a>
             </div>
 
             <div class="qa-idea-card">

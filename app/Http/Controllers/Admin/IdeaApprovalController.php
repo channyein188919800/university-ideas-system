@@ -18,10 +18,7 @@ class IdeaApprovalController extends Controller
         $departmentId = $request->input('department_id', '');
         $categoryId = $request->input('category_id', '');
 
-        $query = Idea::with(['user', 'department', 'categories'])
-            ->whereHas('user', function ($q) {
-                $q->where('role', 'staff');
-            });
+        $query = Idea::with(['user', 'department', 'categories']);
 
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
