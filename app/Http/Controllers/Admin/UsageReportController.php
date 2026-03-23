@@ -14,14 +14,22 @@ class UsageReportController extends Controller
     {
         $since = now()->subDays(30);
 
-        $topPages = AuditLog::query()
+        $pageViewLogs = AuditLog::query()
             ->where('action', 'PAGE_VIEW')
             ->where('created_at', '>=', $since)
-            ->select('details', DB::raw('count(*) as total'))
+            ->get(['details', 'metadata', 'user_agent', 'actor_id']);
+
+        $topPages = $pageViewLogs
             ->groupBy('details')
-            ->orderByDesc('total')
-            ->limit(10)
-            ->get();
+            ->map(function ($group, $details) {
+                return (object) [
+                    'details' => $details,
+                    'total' => $group->sum(fn ($log) => (int) ($log->metadata['view_count'] ?? 1)),
+                ];
+            })
+            ->sortByDesc('total')
+            ->take(10)
+            ->values();
 
         $activeUsersRaw = AuditLog::query()
             ->whereNotNull('actor_id')
@@ -44,16 +52,18 @@ class UsageReportController extends Controller
             ];
         });
 
-        $browserLogs = AuditLog::query()
-            ->where('action', 'PAGE_VIEW')
-            ->where('created_at', '>=', $since)
+        $browserCounts = $pageViewLogs
             ->whereNotNull('user_agent')
-            ->limit(2000)
-            ->get();
-
-        $browserCounts = $browserLogs
             ->groupBy(fn ($log) => $this->detectBrowser($log->user_agent))
-            ->map->count()
+            ->map(function ($group) {
+                return $group
+                    ->map(function ($log) {
+                        return $log->metadata['viewer_key']
+                            ?? ($log->actor_id ? 'user:' . $log->actor_id : 'legacy:' . sha1(($log->user_agent ?? 'unknown')));
+                    })
+                    ->unique()
+                    ->count();
+            })
             ->sortDesc()
             ->take(10);
 

@@ -496,6 +496,14 @@
                 });
             }
 
+            // Auto-dismiss inline alerts after 3 seconds across QA Manager pages.
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alertEl => {
+                    const alertInstance = bootstrap.Alert.getOrCreateInstance(alertEl);
+                    alertInstance.close();
+                });
+            }, 3000);
+
         });
     </script>
 

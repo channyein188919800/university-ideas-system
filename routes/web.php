@@ -144,7 +144,7 @@ Route::middleware(['auth', 'terms', 'role:qa_manager'])
         Route::patch('/ideas/{idea}/toggle-hidden', [IdeaController::class, 'toggleHidden'])->name('ideas.toggle-hidden');
         Route::get('/ideas/{idea}', [\App\Http\Controllers\QaManager\IdeaController::class, 'show'])->name('ideas.show');
         Route::patch('/comments/{comment}/toggle-hidden', [CommentController::class, 'toggleHidden'])->name('comments.toggle-hidden');
-        Route::patch('/users/{user}/toggle-status', [QaManagerDashboardController::class, 'toggleUserStatus'])->name('users.toggle-status');
+        Route::patch('/users/{user}/toggle-status', [QaManagerStaffController::class, 'toggleStatus'])->name('users.toggle-status');
 
          // Ideas view routes (new)
         Route::get('/ideas', [App\Http\Controllers\QaManager\IdeaController::class, 'index'])->name('ideas.index');

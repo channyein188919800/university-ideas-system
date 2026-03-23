@@ -6,7 +6,7 @@
     <div class="qa-topbar">
         <div>
             <h3><i class="bi bi-kanban"></i> University Backlog</h3>
-            <p>Institutional QA backlog inspired by your legacy `qa_m_all_ideas.php` workflow</p>
+            <p>Check Activities by authorized users</p>
         </div>
     </div>
 

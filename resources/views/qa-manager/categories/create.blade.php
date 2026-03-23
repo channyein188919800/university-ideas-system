@@ -13,7 +13,7 @@
         </a>
     </div>
 
-    <div class="row">
+    <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="qa-card">
                 <div class="qa-card-header">

@@ -87,7 +87,7 @@
                             <thead>
                                 <tr>
                                     <th>Browser</th>
-                                    <th class="text-end">Hits</th>
+                                    <th class="text-end">Users</th>
                                 </tr>
                             </thead>
                             <tbody>
