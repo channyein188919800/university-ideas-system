@@ -124,6 +124,10 @@ class IdeaController extends Controller
         
         $this->notifyQaCoordinator($idea);
         
+        if (Auth::user()->isStaff()) {
+            return redirect()->route('staff.ideas.show', $idea)->with('success', 'Idea submitted successfully!');
+        }
+
         return redirect()->route('ideas.show', $idea)->with('success', 'Idea submitted successfully!');
     }
 

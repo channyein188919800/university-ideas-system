@@ -39,6 +39,10 @@
             <i class="bi bi-check2-square"></i>
             <span>Idea Approval</span>
         </a>
+        <a href="{{ route('ideas.index') }}" class="admin-nav-link {{ request()->routeIs('ideas.*') ? 'active' : '' }}">
+            <i class="bi bi-lightbulb"></i>
+            <span>All Ideas</span>
+        </a>
     </div>
 
     <div class="admin-nav-group">

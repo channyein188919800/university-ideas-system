@@ -8,7 +8,7 @@
 
     <section class="admin-main">
         <div class="container-fluid py-2">
-            <div class="d-flex justify-content-between align-items-center mb-4 admin-users-header">
+            <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h2><i class="fas fa-users"></i> Manage Users</h2>
                     <p class="text-muted mb-0">View and manage system users</p>
@@ -21,18 +21,21 @@
                         <i class="fas fa-plus"></i> Add User
                     </a>
                 </div>
-                <div class="toast-container admin-users-toast">
-                    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
-                        <div class="d-flex">
-                            <div class="toast-body">
-                                <i class="fas fa-check-circle me-2"></i>
-                                <span id="toastMessage">User deleted successfully!</span>
-                            </div>
-                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                    </div>
-                </div>
             </div>
+
+            {{-- Inline flash message above table --}}
+            @if(session('success'))
+                <div class="alert alert-success alert-autohide d-flex align-items-center gap-2 mb-3 py-2 px-3" role="alert" style="border-radius:0.75rem; font-weight:600;">
+                    <i class="fas fa-check-circle"></i>
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger alert-autohide d-flex align-items-center gap-2 mb-3 py-2 px-3" role="alert" style="border-radius:0.75rem; font-weight:600;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
 
             <div class="card">
                 <div class="card-body p-0">
@@ -131,64 +134,24 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
- 
-        @if(session('success'))
-            showToast('{{ session('success') }}');
-        @endif
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.alert-autohide').forEach(function (el) {
+            setTimeout(function () {
+                el.style.transition = 'opacity 0.5s ease';
+                el.style.opacity = '0';
+                setTimeout(function () { el.remove(); }, 500);
+            }, 2000);
+        });
     });
-
-    function showToast(message) {
-        const toast = document.getElementById('successToast');
-        const messageSpan = document.getElementById('toastMessage');
-        
-        if (toast && messageSpan) {
-            messageSpan.textContent = message;
-            toast.style.display = 'block';
-            
-            const bsToast = new bootstrap.Toast(toast, {
-                animation: true,
-                autohide: true,
-                delay: 5000
-            });
-            bsToast.show();
-            
-            toast.addEventListener('hidden.bs.toast', function () {
-                toast.style.display = 'none';
-            });
-        }
-    }
 </script>
 @endpush
 
+
 @push('styles')
 <style>
-    .admin-users-header {
-        position: relative;
-    }
-    .admin-users-toast {
-        position: absolute;
-        top: -6px;
-        left: auto;
-        right: 140px;
-        transform: none;
-        z-index: 30;
-        pointer-events: none;
-        display: block;
-    }
-    .admin-users-toast .toast {
-        pointer-events: auto;
-        max-width: 460px;
-    }
-    @media (max-width: 992px) {
-        .admin-users-toast {
-            position: static;
-            transform: none;
-            margin-top: 0.75rem;
-            display: block;
-        }
-    }
-    .alert-success {
+    /* Hide the global layout flash alert AND its wrapper container on this page
+       — we show our own inline one above the table instead */
+    main > .container {
         display: none !important;
     }
 </style>

@@ -114,6 +114,7 @@ Route::middleware(['auth', 'terms', 'role:admin'])
         // Idea Moderation
         Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])->name('ideas.destroy');
         Route::get('/idea-approvals', [AdminIdeaApprovalController::class, 'index'])->name('idea-approvals.index');
+        Route::get('/idea-approvals/{idea}', [AdminIdeaApprovalController::class, 'show'])->name('idea-approvals.show');
         Route::patch('/idea-approvals/{idea}/approve', [AdminIdeaApprovalController::class, 'approve'])->name('idea-approvals.approve');
         Route::patch('/idea-approvals/{idea}/reject', [AdminIdeaApprovalController::class, 'reject'])->name('idea-approvals.reject');
 
