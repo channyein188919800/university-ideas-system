@@ -140,6 +140,10 @@ Route::middleware(['auth', 'terms', 'role:qa_manager'])
 
         Route::get('/dashboard', [QaManagerDashboardController::class, 'index'])->name('dashboard');
 
+        // Idea Moderation (Approve/Reject) - ADD THESE LINES
+        Route::patch('/ideas/{idea}/approve', [App\Http\Controllers\QaManager\IdeaController::class, 'approve'])->name('ideas.approve');
+        Route::patch('/ideas/{idea}/reject', [App\Http\Controllers\QaManager\IdeaController::class, 'reject'])->name('ideas.reject');
+
         // Idea Visibility
         Route::patch('/ideas/{idea}/toggle-hidden', [IdeaController::class, 'toggleHidden'])->name('ideas.toggle-hidden');
         Route::get('/ideas/{idea}', [\App\Http\Controllers\QaManager\IdeaController::class, 'show'])->name('ideas.show');
@@ -156,10 +160,13 @@ Route::middleware(['auth', 'terms', 'role:qa_manager'])
         Route::patch('/hidden/comments/{comment}/unhide', [App\Http\Controllers\QaManager\HiddenContentController::class, 'unhideComment'])->name('hidden.unhide-comment');
         Route::post('/hidden/ideas/bulk-unhide', [App\Http\Controllers\QaManager\HiddenContentController::class, 'bulkUnhideIdeas'])->name('hidden.bulk-unhide-ideas');
         Route::post('/hidden/comments/bulk-unhide', [App\Http\Controllers\QaManager\HiddenContentController::class, 'bulkUnhideComments'])->name('hidden.bulk-unhide-comments');
+    
         
         // Category Management
         Route::resource('categories', CategoryController::class)->except(['show']);
 
+
+        
         // QA Manager Admin Panel
         Route::resource('departments', QaManagerDepartmentController::class)->except(['show']);
         Route::resource('staff', QaManagerStaffController::class)->parameters(['staff' => 'staff'])->except(['show']);

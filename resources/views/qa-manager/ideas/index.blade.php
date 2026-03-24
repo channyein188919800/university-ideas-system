@@ -155,38 +155,61 @@
                                     {{ ucfirst(str_replace('_', ' ', $idea->status)) }}
                                 </span>
                             </td>
-                            <td class="action-cell" data-label="Actions">
-                                <div class="action-dropdown desktop-only">
-                                    <button class="action-dropdown-toggle" onclick="toggleDropdown({{ $idea->id }})">
-                                        <i class="bi bi-three-dots-vertical"></i>
-                                    </button>
-                                    <div class="action-dropdown-menu" id="dropdown-{{ $idea->id }}">
-                                        <a class="action-dropdown-item" href="{{ route('qa-manager.ideas.show', $idea) }}">
-                                            <i class="bi bi-eye me-2"></i>View Details
-                                        </a>
-                                        <form method="POST" action="{{ route('qa-manager.ideas.toggle-hidden', $idea) }}" class="d-inline">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="action-dropdown-item text-warning" onclick="return confirm('Hide this idea?')">
-                                                <i class="bi bi-eye-slash me-2"></i>Hide
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                                <!-- Mobile action buttons -->
-                                <div class="mobile-actions">
-                                    <a href="{{ route('qa-manager.ideas.show', $idea) }}" class="mobile-action-btn view-btn" title="View Details">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <form method="POST" action="{{ route('qa-manager.ideas.toggle-hidden', $idea) }}" class="d-inline mobile-action-form">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="mobile-action-btn hide-btn" title="Hide Idea" onclick="return confirm('Hide this idea?')">
-                                            <i class="bi bi-eye-slash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
+<td class="action-cell" data-label="Actions">
+    <div class="action-dropdown desktop-only">
+        <button class="action-dropdown-toggle" onclick="toggleDropdown({{ $idea->id }})">
+            <i class="bi bi-three-dots-vertical"></i>
+        </button>
+        <div class="action-dropdown-menu" id="dropdown-{{ $idea->id }}">
+            @php
+                $detailUrl = ($idea->status === 'approved')
+                    ? route('ideas.show', $idea)
+                    : route('qa-manager.ideas.show', $idea);
+            @endphp
+            <a class="action-dropdown-item" href="{{ $detailUrl }}">
+                <i class="bi bi-eye me-2"></i>View Details
+            </a>
+            @if($idea->status === 'pending')
+                <form method="POST" action="{{ route('qa-manager.ideas.approve', $idea) }}" class="d-inline">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" class="action-dropdown-item text-success">
+                        <i class="bi bi-check-lg me-2"></i>Approve
+                    </button>
+                </form>
+                <form method="POST" action="{{ route('qa-manager.ideas.reject', $idea) }}" class="d-inline">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" class="action-dropdown-item text-danger">
+                        <i class="bi bi-x-lg me-2"></i>Reject
+                    </button>
+                </form>
+            @endif
+        </div>
+    </div>
+    <!-- Mobile action buttons -->
+    <div class="mobile-actions">
+        <a href="{{ $detailUrl }}" class="mobile-action-btn view-btn" title="View Details">
+            <i class="bi bi-eye"></i>
+        </a>
+        @if($idea->status === 'pending')
+            <form method="POST" action="{{ route('qa-manager.ideas.approve', $idea) }}" class="d-inline mobile-action-form">
+                @csrf
+                @method('PATCH')
+                <button type="submit" class="mobile-action-btn approve-btn" title="Approve Idea">
+                    <i class="bi bi-check-lg"></i>
+                </button>
+            </form>
+            <form method="POST" action="{{ route('qa-manager.ideas.reject', $idea) }}" class="d-inline mobile-action-form">
+                @csrf
+                @method('PATCH')
+                <button type="submit" class="mobile-action-btn reject-btn" title="Reject Idea">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </form>
+        @endif
+    </div>
+</td>
                         </tr>
                     @empty
                         <tr>

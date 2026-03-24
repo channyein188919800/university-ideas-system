@@ -89,6 +89,52 @@ class IdeaController extends Controller
     }
 
     /**
+     * Approve an idea
+     */
+    public function approve(Idea $idea)
+    {
+        if (!Auth::check() || Auth::user()->role !== 'qa_manager') {
+            abort(403, 'Unauthorized access.');
+        }
+
+        // Only allow approving pending ideas
+        if ($idea->status !== 'pending') {
+            return redirect()->back()->with('error', 'Only pending ideas can be approved.');
+        }
+
+        $idea->status = 'approved';
+        $idea->save();
+
+        AuditLogger::log(
+            'APPROVE_IDEA',
+            "QA Manager approved idea #{$idea->id}: {$idea->title}.",
+            $idea
+        );
+
+        return redirect()->back()->with('success', 'Idea approved successfully.');
+    }
+
+    /**
+     * Reject an idea
+     */
+    public function reject(Request $request, Idea $idea)
+    {
+        if (!$idea->user || !$idea->user->isStaff()) {
+            return redirect()->back()->with('error', 'Only staff ideas can be rejected here.');
+        }
+
+        $idea->update(['status' => 'rejected']);
+
+        AuditLogger::log(
+            'REJECT_IDEA',
+            "Rejected idea #{$idea->id}: {$idea->title}.",
+            $idea
+        );
+
+        return redirect()->back()->with('success');
+    }
+
+    /**
      * Toggle idea visibility (hide/unhide)
      */
     public function toggleHidden(Request $request, Idea $idea)
