@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class IdeaController extends Controller
 {
-    /**
-     * Display all ideas with table view (similar to QA Coordinator)
-     */
+
     public function index(Request $request)
     {
         if (!Auth::check() || Auth::user()->role !== 'qa_manager') {
@@ -70,6 +68,7 @@ class IdeaController extends Controller
         $totalIdeas = Idea::where('hidden', false)->count();
         $totalApproved = Idea::where('hidden', false)->where('status', 'approved')->count();
         $totalPending = Idea::where('hidden', false)->where('status', 'pending')->count();
+        $totalRejected = Idea::where('hidden', false)->where('status', 'rejected')->count();
         $totalComments = \App\Models\Comment::whereIn('idea_id', Idea::where('hidden', false)->pluck('id'))->count();
 
         return view('qa-manager.ideas.index', compact(
@@ -84,12 +83,13 @@ class IdeaController extends Controller
             'totalIdeas',
             'totalApproved',
             'totalPending',
+            'totalRejected',
             'totalComments'
         ));
     }
 
     /**
-     * Approve an idea
+     * Approve an idea (can approve pending or rejected ideas)
      */
     public function approve(Idea $idea)
     {
@@ -97,21 +97,30 @@ class IdeaController extends Controller
             abort(403, 'Unauthorized access.');
         }
 
-        // Only allow approving pending ideas
-        if ($idea->status !== 'pending') {
-            return redirect()->back()->with('error', 'Only pending ideas can be approved.');
+        // Allow approving pending or rejected ideas
+        if ($idea->status !== 'pending' && $idea->status !== 'rejected') {
+            return redirect()->back()->with('error', 'Only pending or rejected ideas can be approved.');
         }
 
+        $oldStatus = $idea->status;
         $idea->status = 'approved';
         $idea->save();
 
+        $actionMessage = $oldStatus === 'rejected' 
+            ? "QA Manager re-approved rejected idea #{$idea->id}: {$idea->title}."
+            : "QA Manager approved idea #{$idea->id}: {$idea->title}.";
+
         AuditLogger::log(
             'APPROVE_IDEA',
-            "QA Manager approved idea #{$idea->id}: {$idea->title}.",
+            $actionMessage,
             $idea
         );
 
-        return redirect()->back()->with('success', 'Idea approved successfully.');
+        $successMessage = $oldStatus === 'rejected' 
+            ? 'Idea re-approved successfully.' 
+            : 'Idea approved successfully.';
+
+        return redirect()->back()->with('success', $successMessage);
     }
 
     /**
@@ -119,19 +128,24 @@ class IdeaController extends Controller
      */
     public function reject(Request $request, Idea $idea)
     {
-        if (!$idea->user || !$idea->user->isStaff()) {
-            return redirect()->back()->with('error', 'Only staff ideas can be rejected here.');
+        if (!Auth::check() || Auth::user()->role !== 'qa_manager') {
+            abort(403, 'Unauthorized access.');
+        }
+
+        // Only allow rejecting pending ideas
+        if ($idea->status !== 'pending') {
+            return redirect()->back()->with('error', 'Only pending ideas can be rejected.');
         }
 
         $idea->update(['status' => 'rejected']);
 
         AuditLogger::log(
             'REJECT_IDEA',
-            "Rejected idea #{$idea->id}: {$idea->title}.",
+            "QA Manager rejected idea #{$idea->id}: {$idea->title}.",
             $idea
         );
 
-        return redirect()->back()->with('success');
+        return redirect()->back()->with('success', 'Idea rejected successfully.');
     }
 
     /**
@@ -141,6 +155,11 @@ class IdeaController extends Controller
     {
         if (!Auth::check() || Auth::user()->role !== 'qa_manager') {
             abort(403, 'Unauthorized access.');
+        }
+
+        // Only allow hiding/unhiding approved ideas
+        if ($idea->status !== 'approved') {
+            return redirect()->back()->with('error', 'Only approved ideas can be hidden or unhidden.');
         }
 
         $idea->hidden = !$idea->hidden;

@@ -23,8 +23,10 @@ use App\Http\Controllers\QaManager\SettingController as QaManagerSettingControll
 use App\Http\Controllers\QaManager\AuditLogController as QaManagerAuditLogController;
 use App\Http\Controllers\QaManager\BacklogController as QaManagerBacklogController;
 use App\Http\Controllers\QaManager\ReportController as QaManagerReportController;
+use App\Http\Controllers\QaManager\HiddenContentController as QaManagerHiddenContentController;
+use App\Http\Controllers\QaManager\IdeaController as QaManagerIdeaController;
 use App\Http\Controllers\QaCoordinator\DashboardController as QaCoordinatorDashboardController;
-use App\Http\Controllers\QaCoordinator\IdeaController as QaCoordinatorIdeaController; // ADD THIS LINE
+use App\Http\Controllers\QaCoordinator\IdeaController as QaCoordinatorIdeaController;
 use App\Http\Controllers\Staff\DashboardController as StaffDashboardController;
 use App\Http\Controllers\Staff\AccountController as StaffAccountController;
 use App\Http\Controllers\Staff\IdeaController as StaffIdeaController;
@@ -140,40 +142,46 @@ Route::middleware(['auth', 'terms', 'role:qa_manager'])
 
         Route::get('/dashboard', [QaManagerDashboardController::class, 'index'])->name('dashboard');
 
-        // Idea Moderation (Approve/Reject) - ADD THESE LINES
-        Route::patch('/ideas/{idea}/approve', [App\Http\Controllers\QaManager\IdeaController::class, 'approve'])->name('ideas.approve');
-        Route::patch('/ideas/{idea}/reject', [App\Http\Controllers\QaManager\IdeaController::class, 'reject'])->name('ideas.reject');
+        // Ideas view routes
+        Route::get('/ideas', [QaManagerIdeaController::class, 'index'])->name('ideas.index');
+        Route::get('/ideas/{idea}', [QaManagerIdeaController::class, 'show'])->name('ideas.show');
+        
+        // Idea Moderation (Approve/Reject)
+        Route::patch('/ideas/{idea}/approve', [QaManagerIdeaController::class, 'approve'])->name('ideas.approve');
+        Route::patch('/ideas/{idea}/reject', [QaManagerIdeaController::class, 'reject'])->name('ideas.reject');
+        
+        // Idea Visibility (Hide/Unhide)
+        Route::patch('/ideas/{idea}/toggle-hidden', [QaManagerIdeaController::class, 'toggleHidden'])->name('ideas.toggle-hidden');
 
-        // Idea Visibility
-        Route::patch('/ideas/{idea}/toggle-hidden', [IdeaController::class, 'toggleHidden'])->name('ideas.toggle-hidden');
-        Route::get('/ideas/{idea}', [\App\Http\Controllers\QaManager\IdeaController::class, 'show'])->name('ideas.show');
+        // Comment Visibility
         Route::patch('/comments/{comment}/toggle-hidden', [CommentController::class, 'toggleHidden'])->name('comments.toggle-hidden');
+        
+        // User Management
         Route::patch('/users/{user}/toggle-status', [QaManagerStaffController::class, 'toggleStatus'])->name('users.toggle-status');
 
-         // Ideas view routes (new)
-        Route::get('/ideas', [App\Http\Controllers\QaManager\IdeaController::class, 'index'])->name('ideas.index');
-        Route::patch('/ideas/{idea}/toggle-hidden', [App\Http\Controllers\QaManager\IdeaController::class, 'toggleHidden'])->name('ideas.toggle-hidden');
-
-        // Hidden content routes (new)
-        Route::get('/hidden', [App\Http\Controllers\QaManager\HiddenContentController::class, 'index'])->name('hidden.index');
-        Route::patch('/hidden/ideas/{idea}/unhide', [App\Http\Controllers\QaManager\HiddenContentController::class, 'unhideIdea'])->name('hidden.unhide-idea');
-        Route::patch('/hidden/comments/{comment}/unhide', [App\Http\Controllers\QaManager\HiddenContentController::class, 'unhideComment'])->name('hidden.unhide-comment');
-        Route::post('/hidden/ideas/bulk-unhide', [App\Http\Controllers\QaManager\HiddenContentController::class, 'bulkUnhideIdeas'])->name('hidden.bulk-unhide-ideas');
-        Route::post('/hidden/comments/bulk-unhide', [App\Http\Controllers\QaManager\HiddenContentController::class, 'bulkUnhideComments'])->name('hidden.bulk-unhide-comments');
+        // Hidden content routes
+        Route::get('/hidden', [QaManagerHiddenContentController::class, 'index'])->name('hidden.index');
+        Route::patch('/hidden/ideas/{idea}/unhide', [QaManagerHiddenContentController::class, 'unhideIdea'])->name('hidden.unhide-idea');
+        Route::patch('/hidden/comments/{comment}/unhide', [QaManagerHiddenContentController::class, 'unhideComment'])->name('hidden.unhide-comment');
+        Route::post('/hidden/ideas/bulk-unhide', [QaManagerHiddenContentController::class, 'bulkUnhideIdeas'])->name('hidden.bulk-unhide-ideas');
+        Route::post('/hidden/comments/bulk-unhide', [QaManagerHiddenContentController::class, 'bulkUnhideComments'])->name('hidden.bulk-unhide-comments');
     
-        
         // Category Management
         Route::resource('categories', CategoryController::class)->except(['show']);
 
-
-        
         // QA Manager Admin Panel
         Route::resource('departments', QaManagerDepartmentController::class)->except(['show']);
         Route::resource('staff', QaManagerStaffController::class)->parameters(['staff' => 'staff'])->except(['show']);
+        
+        // Settings
         Route::get('/settings', [QaManagerSettingController::class, 'index'])->name('settings.index');
         Route::post('/settings', [QaManagerSettingController::class, 'update'])->name('settings.update');
+        
+        // Audit Logs
         Route::get('/audit-logs', [QaManagerAuditLogController::class, 'index'])->name('audit-logs.index');
         Route::get('/audit-logs/export', [QaManagerAuditLogController::class, 'export'])->name('audit-logs.export');
+        
+        // Backlog
         Route::get('/university-backlog', [QaManagerBacklogController::class, 'index'])->name('backlog.index');
 
         // Profile
@@ -209,10 +217,10 @@ Route::middleware(['auth', 'terms', 'role:qa_coordinator'])
 |--------------------------------------------------------------------------
 */
 
-    Route::middleware(['auth', 'terms', 'role:staff'])
-        ->prefix('staff')
-        ->name('staff.')
-        ->group(function () {
+Route::middleware(['auth', 'terms', 'role:staff'])
+    ->prefix('staff')
+    ->name('staff.')
+    ->group(function () {
 
         Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('dashboard');
         Route::get('/account', [StaffAccountController::class, 'edit'])->name('account.edit');
@@ -260,7 +268,7 @@ Route::middleware(['auth', 'terms', 'role:qa_coordinator'])
         // Staff management
         Route::get('/staff', [QaCoordinatorDashboardController::class, 'staffList'])->name('staff.index');
 
-        // NEW: Idea view routes for QA Coordinator (ADD THESE ROUTES)
+        // Idea view routes for QA Coordinator
         Route::get('/department-ideas', [QaCoordinatorIdeaController::class, 'departmentIdeas'])->name('department.ideas');
         Route::get('/popular-ideas', [QaCoordinatorIdeaController::class, 'popularIdeas'])->name('popular.ideas');
         Route::get('/latest-ideas', [QaCoordinatorIdeaController::class, 'latestIdeas'])->name('latest.ideas');

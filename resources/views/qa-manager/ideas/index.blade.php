@@ -155,61 +155,127 @@
                                     {{ ucfirst(str_replace('_', ' ', $idea->status)) }}
                                 </span>
                             </td>
-<td class="action-cell" data-label="Actions">
-    <div class="action-dropdown desktop-only">
-        <button class="action-dropdown-toggle" onclick="toggleDropdown({{ $idea->id }})">
-            <i class="bi bi-three-dots-vertical"></i>
-        </button>
-        <div class="action-dropdown-menu" id="dropdown-{{ $idea->id }}">
-            @php
-                $detailUrl = ($idea->status === 'approved')
-                    ? route('ideas.show', $idea)
-                    : route('qa-manager.ideas.show', $idea);
-            @endphp
-            <a class="action-dropdown-item" href="{{ $detailUrl }}">
-                <i class="bi bi-eye me-2"></i>View Details
-            </a>
-            @if($idea->status === 'pending')
-                <form method="POST" action="{{ route('qa-manager.ideas.approve', $idea) }}" class="d-inline">
-                    @csrf
-                    @method('PATCH')
-                    <button type="submit" class="action-dropdown-item text-success">
-                        <i class="bi bi-check-lg me-2"></i>Approve
-                    </button>
-                </form>
-                <form method="POST" action="{{ route('qa-manager.ideas.reject', $idea) }}" class="d-inline">
-                    @csrf
-                    @method('PATCH')
-                    <button type="submit" class="action-dropdown-item text-danger">
-                        <i class="bi bi-x-lg me-2"></i>Reject
-                    </button>
-                </form>
-            @endif
-        </div>
-    </div>
-    <!-- Mobile action buttons -->
-    <div class="mobile-actions">
-        <a href="{{ $detailUrl }}" class="mobile-action-btn view-btn" title="View Details">
-            <i class="bi bi-eye"></i>
-        </a>
-        @if($idea->status === 'pending')
-            <form method="POST" action="{{ route('qa-manager.ideas.approve', $idea) }}" class="d-inline mobile-action-form">
-                @csrf
-                @method('PATCH')
-                <button type="submit" class="mobile-action-btn approve-btn" title="Approve Idea">
-                    <i class="bi bi-check-lg"></i>
-                </button>
-            </form>
-            <form method="POST" action="{{ route('qa-manager.ideas.reject', $idea) }}" class="d-inline mobile-action-form">
-                @csrf
-                @method('PATCH')
-                <button type="submit" class="mobile-action-btn reject-btn" title="Reject Idea">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </form>
-        @endif
-    </div>
-</td>
+                            <td class="action-cell" data-label="Actions">
+                                <div class="action-dropdown desktop-only">
+                                    <button class="action-dropdown-toggle" onclick="toggleDropdown({{ $idea->id }})">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <div class="action-dropdown-menu" id="dropdown-{{ $idea->id }}">
+                                        @php
+                                            $detailUrl = ($idea->status === 'approved')
+                                                ? route('ideas.show', $idea)
+                                                : route('qa-manager.ideas.show', $idea);
+                                        @endphp
+                                        <a class="action-dropdown-item" href="{{ $detailUrl }}">
+                                            <i class="bi bi-eye me-2"></i>View Details
+                                        </a>
+                                        
+                                        {{-- Approve action for pending or rejected ideas --}}
+                                        @if($idea->status === 'pending' || $idea->status === 'rejected')
+                                            <form method="POST" action="{{ route('qa-manager.ideas.approve', $idea) }}" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                @if($idea->status === 'rejected')
+                                                    <button type="submit" class="action-dropdown-item text-success" onclick="return confirm('Are you sure you want to re-approve this rejected idea?')">
+                                                        <i class="bi bi-arrow-repeat me-2"></i>Re-approve
+                                                    </button>
+                                                @else
+                                                    <button type="submit" class="action-dropdown-item text-success">
+                                                        <i class="bi bi-check-lg me-2"></i>Approve
+                                                    </button>
+                                                @endif
+                                            </form>
+                                        @endif
+                                        
+                                        {{-- Reject action only for pending ideas --}}
+                                        @if($idea->status === 'pending')
+                                            <form method="POST" action="{{ route('qa-manager.ideas.reject', $idea) }}" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="action-dropdown-item text-danger" onclick="return confirm('Are you sure you want to reject this idea?')">
+                                                    <i class="bi bi-x-lg me-2"></i>Reject
+                                                </button>
+                                            </form>
+                                        @endif
+                                        
+                                        {{-- Hide/Unhide action for approved ideas --}}
+                                        @if($idea->status === 'approved')
+                                            @if(!$idea->hidden)
+                                                <form method="POST" action="{{ route('qa-manager.ideas.toggle-hidden', $idea) }}" class="d-inline">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="action-dropdown-item text-warning" onclick="return confirm('Are you sure you want to hide this idea? It will no longer be visible to staff and coordinators.')">
+                                                        <i class="bi bi-eye-slash me-2"></i>Hide Idea
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form method="POST" action="{{ route('qa-manager.ideas.toggle-hidden', $idea) }}" class="d-inline">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="action-dropdown-item text-success" onclick="return confirm('Are you sure you want to unhide this idea? It will become visible again to staff and coordinators.')">
+                                                        <i class="bi bi-eye me-2"></i>Unhide Idea
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
+                                <!-- Mobile action buttons -->
+                                <div class="mobile-actions">
+                                    <a href="{{ $detailUrl }}" class="mobile-action-btn view-btn" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    
+                                    {{-- Approve action for pending or rejected ideas --}}
+                                    @if($idea->status === 'pending' || $idea->status === 'rejected')
+                                        <form method="POST" action="{{ route('qa-manager.ideas.approve', $idea) }}" class="d-inline mobile-action-form">
+                                            @csrf
+                                            @method('PATCH')
+                                            @if($idea->status === 'rejected')
+                                                <button type="submit" class="mobile-action-btn reapprove-btn" title="Re-approve Idea" onclick="return confirm('Re-approve this rejected idea?')">
+                                                    <i class="bi bi-arrow-repeat"></i>
+                                                </button>
+                                            @else
+                                                <button type="submit" class="mobile-action-btn approve-btn" title="Approve Idea">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </button>
+                                            @endif
+                                        </form>
+                                    @endif
+                                    
+                                    {{-- Reject action only for pending ideas --}}
+                                    @if($idea->status === 'pending')
+                                        <form method="POST" action="{{ route('qa-manager.ideas.reject', $idea) }}" class="d-inline mobile-action-form">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="mobile-action-btn reject-btn" title="Reject Idea" onclick="return confirm('Reject this idea?')">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                    
+                                    {{-- Hide/Unhide action for approved ideas --}}
+                                    @if($idea->status === 'approved')
+                                        @if(!$idea->hidden)
+                                            <form method="POST" action="{{ route('qa-manager.ideas.toggle-hidden', $idea) }}" class="d-inline mobile-action-form">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="mobile-action-btn hide-btn" title="Hide Idea" onclick="return confirm('Hide this idea?')">
+                                                    <i class="bi bi-eye-slash"></i>
+                                                </button>
+                                            </form>
+                                        @else
+                                            <form method="POST" action="{{ route('qa-manager.ideas.toggle-hidden', $idea) }}" class="d-inline mobile-action-form">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="mobile-action-btn unhide-btn" title="Unhide Idea" onclick="return confirm('Unhide this idea?')">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                            </form>
+                                        @endif
+                                    @endif
+                                </div>
+                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -264,6 +330,7 @@
     flex: 1;
     transition: margin-left 0.3s ease;
 }
+
 
 /* Header Section */
 .qa-header-section {
@@ -511,7 +578,7 @@
     border: 1px solid rgba(229, 62, 62, 0.2);
 }
 
-.status-review {
+.status-under_review {
     background: rgba(49, 130, 206, 0.1);
     color: var(--info-color);
     border: 1px solid rgba(49, 130, 206, 0.2);
@@ -545,7 +612,7 @@
     right: 0;
     z-index: 1000;
     display: none;
-    min-width: 140px;
+    min-width: 150px;
     padding: 0.5rem 0;
     margin: 0.25rem 0 0;
     background: white;
@@ -586,6 +653,22 @@
 
 .action-dropdown-item.text-warning:hover {
     background: rgba(221, 107, 32, 0.1);
+}
+
+.action-dropdown-item.text-success {
+    color: var(--success-color) !important;
+}
+
+.action-dropdown-item.text-success:hover {
+    background: rgba(56, 161, 105, 0.1);
+}
+
+.action-dropdown-item.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.action-dropdown-item.text-danger:hover {
+    background: rgba(229, 62, 62, 0.1);
 }
 
 /* Table Footer */
@@ -674,6 +757,37 @@
     display: none;
 }
 
+/* Mobile action buttons styles */
+.mobile-action-btn.hide-btn {
+    background: rgba(221, 107, 32, 0.1);
+    color: var(--warning-color);
+    border: 1px solid rgba(221, 107, 32, 0.2);
+}
+
+.mobile-action-btn.hide-btn:hover {
+    background: rgba(221, 107, 32, 0.2);
+}
+
+.mobile-action-btn.unhide-btn {
+    background: rgba(56, 161, 105, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(56, 161, 105, 0.2);
+}
+
+.mobile-action-btn.unhide-btn:hover {
+    background: rgba(56, 161, 105, 0.2);
+}
+
+.mobile-action-btn.reapprove-btn {
+    background: rgba(56, 161, 105, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(56, 161, 105, 0.2);
+}
+
+.mobile-action-btn.reapprove-btn:hover {
+    background: rgba(56, 161, 105, 0.2);
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
     .qa-main-content {
@@ -684,7 +798,8 @@
 @media (max-width: 992px) {
     .qa-header-section,
     .qa-filter-bar,
-    .qa-table-container {
+    .qa-table-container,
+    .qa-stats-row {
         margin-left: 1rem;
         margin-right: 1rem;
     }
@@ -692,6 +807,10 @@
     .qa-ideas-table {
         display: block;
         overflow-x: auto;
+    }
+    
+    .qa-stats-row {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
 }
 
@@ -820,7 +939,7 @@
         color: var(--danger-color);
     }
     
-    .mobile-status.status-review {
+    .mobile-status.status-under_review {
         background: rgba(49, 130, 206, 0.1);
         color: var(--info-color);
     }
@@ -864,14 +983,24 @@
         background: var(--secondary-color);
     }
     
-    .mobile-action-btn.hide-btn {
-        background: rgba(221, 107, 32, 0.1);
-        color: var(--warning-color);
-        border: 1px solid rgba(221, 107, 32, 0.2);
+    .mobile-action-btn.approve-btn {
+        background: rgba(56, 161, 105, 0.1);
+        color: var(--success-color);
+        border: 1px solid rgba(56, 161, 105, 0.2);
     }
     
-    .mobile-action-btn.hide-btn:hover {
-        background: rgba(221, 107, 32, 0.2);
+    .mobile-action-btn.approve-btn:hover {
+        background: rgba(56, 161, 105, 0.2);
+    }
+    
+    .mobile-action-btn.reject-btn {
+        background: rgba(229, 62, 62, 0.1);
+        color: var(--danger-color);
+        border: 1px solid rgba(229, 62, 62, 0.2);
+    }
+    
+    .mobile-action-btn.reject-btn:hover {
+        background: rgba(229, 62, 62, 0.2);
     }
     
     .mobile-action-form {
@@ -901,6 +1030,11 @@
 
 /* Small Mobile View */
 @media (max-width: 480px) {
+    
+    .qa-stat-info h3 {
+        font-size: 1rem;
+    }
+    
     .qa-header-section {
         padding: 1rem;
     }
