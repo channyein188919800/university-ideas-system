@@ -47,6 +47,24 @@
             flex-direction: column;
         }
         
+        /* Toast Notification Container - Fixed position at top center */
+        .toast-notification-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: auto;
+            min-width: 300px;
+            max-width: 500px;
+            pointer-events: none;
+        }
+        
+        .toast-notification {
+            pointer-events: auto;
+            margin-bottom: 0.75rem;
+        }
+        
         /* Navbar Styles */
         .navbar {
             background: linear-gradient(180deg, #0f1f3a 0%, #15294a 100%);
@@ -368,7 +386,6 @@
             background-color: #bee3f8;
             color: #2a4365;
         }
-
         
         /* Form Styles */
         .form-control, .form-select {
@@ -523,6 +540,15 @@
                 flex-wrap: wrap;
                 gap: 0.75rem;
             }
+            
+            .toast-notification-container {
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                transform: none;
+                width: auto;
+                max-width: none;
+            }
         }
 
         /* Accessibility */
@@ -638,52 +664,11 @@
         </nav>
     @endunless
 
+    <!-- Toast Notification Container - Fixed position at top center -->
+    <div class="toast-notification-container" id="toastContainer"></div>
+
     <!-- Main Content -->
     <main class="flex-grow-1" id="main-content" role="main">
-        @unless(!empty($hideNavFooter))
-        @if(session('success'))
-            <div class="container mt-3">
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-        @endif
-        @endunless
-
-        @unless(!empty($hideNavFooter))
-        @if(session('error'))
-            <div class="container mt-3">
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-        @endif
-        @endunless
-
-        @unless(!empty($hideNavFooter))
-        @if(session('warning'))
-            <div class="container mt-3">
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-triangle"></i> {{ session('warning') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-        @endif
-        @endunless
-
-        @unless(!empty($hideNavFooter))
-        @if(session('info'))
-            <div class="container mt-3">
-                <div class="alert alert-info alert-dismissible fade show" role="alert">
-                    <i class="fas fa-info-circle"></i> {{ session('info') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-        @endif
-        @endunless
-
         @yield('content')
     </main>
 
@@ -714,8 +699,89 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // Toast notification system
+        class ToastNotification {
+            constructor() {
+                this.container = document.getElementById('toastContainer');
+                this.timeout = 5000; // 5 seconds default
+            }
+            
+            show(message, type = 'success') {
+                if (!this.container) return;
+                
+                const alertClass = type === 'success' ? 'alert-success' : 
+                                  type === 'error' ? 'alert-danger' :
+                                  type === 'warning' ? 'alert-warning' : 'alert-info';
+                
+                const icon = type === 'success' ? 'fa-check-circle' :
+                            type === 'error' ? 'fa-exclamation-circle' :
+                            type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+                
+                const toast = document.createElement('div');
+                toast.className = `toast-notification alert ${alertClass} alert-dismissible fade show`;
+                toast.setAttribute('role', 'alert');
+                toast.innerHTML = `
+                    <i class="fas ${icon} me-2"></i> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                
+                this.container.appendChild(toast);
+                
+                // Auto remove after timeout
+                setTimeout(() => {
+                    if (toast && toast.parentNode) {
+                        const bsAlert = new bootstrap.Alert(toast);
+                        bsAlert.close();
+                        setTimeout(() => {
+                            if (toast && toast.parentNode) {
+                                toast.remove();
+                            }
+                        }, 150);
+                    }
+                }, this.timeout);
+            }
+            
+            success(message) {
+                this.show(message, 'success');
+            }
+            
+            error(message) {
+                this.show(message, 'error');
+            }
+            
+            warning(message) {
+                this.show(message, 'warning');
+            }
+            
+            info(message) {
+                this.show(message, 'info');
+            }
+        }
+        
+        // Initialize toast notification system
+        const toast = new ToastNotification();
+        
+        // Handle session flash messages from Laravel
         document.addEventListener('DOMContentLoaded', function() {
-            // Confirm modal functionality
+            @if(session('success'))
+                toast.success('{{ addslashes(session('success')) }}');
+            @endif
+            
+            @if(session('error'))
+                toast.error('{{ addslashes(session('error')) }}');
+            @endif
+            
+            @if(session('warning'))
+                toast.warning('{{ addslashes(session('warning')) }}');
+            @endif
+            
+            @if(session('info'))
+                toast.info('{{ addslashes(session('info')) }}');
+            @endif
+        });
+        
+        // Confirm modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
             const confirmModalEl = document.getElementById('confirmActionModal');
             const confirmMessageEl = document.getElementById('confirmActionMessage');
             const confirmButton = document.getElementById('confirmActionButton');
@@ -741,14 +807,6 @@
                     }
                 });
             }
-
-            // Auto-dismiss alerts after 5 seconds
-            setTimeout(function() {
-                document.querySelectorAll('.alert-dismissible').forEach(alert => {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                });
-            }, 5000);
         });
     </script>
     

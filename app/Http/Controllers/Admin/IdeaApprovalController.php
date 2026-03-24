@@ -19,7 +19,6 @@ class IdeaApprovalController extends Controller
         $categoryId = $request->input('category_id', '');
         $status = $request->input('status', 'all');
 
-
         $query = Idea::with(['user', 'department', 'categories']);
 
         if (!empty($search)) {
@@ -59,19 +58,34 @@ class IdeaApprovalController extends Controller
 
     public function approve(Request $request, Idea $idea)
     {
+        // Check if user is staff
         if (!$idea->user || !$idea->user->isStaff()) {
             return redirect()->back()->with('error', 'Only staff ideas can be approved here.');
         }
 
+        // Allow approving pending or rejected ideas
+        if ($idea->status !== 'pending' && $idea->status !== 'rejected') {
+            return redirect()->back()->with('error', 'Only pending or rejected ideas can be approved.');
+        }
+
+        $oldStatus = $idea->status;
         $idea->update(['status' => 'approved']);
+
+        $actionMessage = $oldStatus === 'rejected' 
+            ? "Admin re-approved rejected idea #{$idea->id}: {$idea->title}."
+            : "Admin approved idea #{$idea->id}: {$idea->title}.";
 
         AuditLogger::log(
             'APPROVE_IDEA',
-            "Approved idea #{$idea->id}: {$idea->title}.",
+            $actionMessage,
             $idea
         );
 
-        return redirect()->back()->with('success');
+        $successMessage = $oldStatus === 'rejected' 
+            ? 'Idea re-approved successfully.' 
+            : 'Idea approved successfully.';
+
+        return redirect()->back()->with('success', $successMessage);
     }
 
     public function reject(Request $request, Idea $idea)
@@ -80,15 +94,20 @@ class IdeaApprovalController extends Controller
             return redirect()->back()->with('error', 'Only staff ideas can be rejected here.');
         }
 
+        // Only allow rejecting pending ideas
+        if ($idea->status !== 'pending') {
+            return redirect()->back()->with('error', 'Only pending ideas can be rejected.');
+        }
+
         $idea->update(['status' => 'rejected']);
 
         AuditLogger::log(
             'REJECT_IDEA',
-            "Rejected idea #{$idea->id}: {$idea->title}.",
+            "Admin rejected idea #{$idea->id}: {$idea->title}.",
             $idea
         );
 
-        return redirect()->back()->with('success');
+        return redirect()->back()->with('success', 'Idea rejected successfully.');
     }
 
     public function show(Idea $idea)

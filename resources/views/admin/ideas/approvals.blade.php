@@ -81,7 +81,6 @@
                 <div class="qa-table-container">
                     <table class="qa-ideas-table">
                         <thead>
-                            <tr>
                                 <th class="title-col">Idea Title</th>
                                 <th class="author-col">Author</th>
                                 <th class="dept-col">Department</th>
@@ -150,18 +149,30 @@
                                                 <a class="action-dropdown-item" href="{{ $adminDetailUrl }}">
                                                     <i class="bi bi-eye me-2"></i>View Details
                                                 </a>
-                                                @if($idea->status === 'pending')
+                                                
+                                                {{-- Approve action for pending or rejected ideas --}}
+                                                @if($idea->status === 'pending' || $idea->status === 'rejected')
                                                     <form method="POST" action="{{ route('admin.idea-approvals.approve', $idea) }}" class="d-inline">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="submit" class="action-dropdown-item text-success">
-                                                            <i class="bi bi-check-lg me-2"></i>Approve
-                                                        </button>
+                                                        @if($idea->status === 'rejected')
+                                                            <button type="submit" class="action-dropdown-item text-success" onclick="return confirm('Are you sure you want to re-approve this rejected idea?')">
+                                                                <i class="bi bi-arrow-repeat me-2"></i>Re-approve
+                                                            </button>
+                                                        @else
+                                                            <button type="submit" class="action-dropdown-item text-success">
+                                                                <i class="bi bi-check-lg me-2"></i>Approve
+                                                            </button>
+                                                        @endif
                                                     </form>
+                                                @endif
+                                                
+                                                {{-- Reject action only for pending ideas --}}
+                                                @if($idea->status === 'pending')
                                                     <form method="POST" action="{{ route('admin.idea-approvals.reject', $idea) }}" class="d-inline">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="submit" class="action-dropdown-item text-danger">
+                                                        <button type="submit" class="action-dropdown-item text-danger" onclick="return confirm('Are you sure you want to reject this idea?')">
                                                             <i class="bi bi-x-lg me-2"></i>Reject
                                                         </button>
                                                     </form>
@@ -172,18 +183,30 @@
                                             <a href="{{ $adminDetailUrl }}" class="mobile-action-btn view-btn" title="View Details">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            @if($idea->status === 'pending')
+                                            
+                                            {{-- Approve action for pending or rejected ideas --}}
+                                            @if($idea->status === 'pending' || $idea->status === 'rejected')
                                                 <form method="POST" action="{{ route('admin.idea-approvals.approve', $idea) }}" class="d-inline mobile-action-form">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="submit" class="mobile-action-btn approve-btn" title="Approve Idea">
-                                                        <i class="bi bi-check-lg"></i>
-                                                    </button>
+                                                    @if($idea->status === 'rejected')
+                                                        <button type="submit" class="mobile-action-btn reapprove-btn" title="Re-approve Idea" onclick="return confirm('Re-approve this rejected idea?')">
+                                                            <i class="bi bi-arrow-repeat"></i>
+                                                        </button>
+                                                    @else
+                                                        <button type="submit" class="mobile-action-btn approve-btn" title="Approve Idea">
+                                                            <i class="bi bi-check-lg"></i>
+                                                        </button>
+                                                    @endif
                                                 </form>
+                                            @endif
+                                            
+                                            {{-- Reject action only for pending ideas --}}
+                                            @if($idea->status === 'pending')
                                                 <form method="POST" action="{{ route('admin.idea-approvals.reject', $idea) }}" class="d-inline mobile-action-form">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="submit" class="mobile-action-btn reject-btn" title="Reject Idea">
+                                                    <button type="submit" class="mobile-action-btn reject-btn" title="Reject Idea" onclick="return confirm('Reject this idea?')">
                                                         <i class="bi bi-x-lg"></i>
                                                     </button>
                                                 </form>
@@ -238,7 +261,7 @@
 .qa-manager-layout {
     display: flex;
     min-height: 100vh;
-    background: var(--light-bg);
+    /* background: var(--light-bg); */
 }
 
 .qa-main-content {
@@ -651,6 +674,16 @@
     background: rgba(229, 62, 62, 0.1);
     color: var(--danger-color);
     border: 1px solid rgba(229, 62, 62, 0.2);
+}
+
+.mobile-action-btn.reapprove-btn {
+    background: rgba(56, 161, 105, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(56, 161, 105, 0.2);
+}
+
+.mobile-action-btn.reapprove-btn:hover {
+    background: rgba(56, 161, 105, 0.2);
 }
 
 @media (max-width: 992px) {
