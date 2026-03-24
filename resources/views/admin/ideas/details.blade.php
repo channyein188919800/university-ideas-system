@@ -108,7 +108,7 @@
                         <span><i class="bi bi-building"></i>{{ $idea->department?->name ?? 'Unassigned' }}</span>
                         <span><i class="bi bi-person"></i>{{ $authorName }} • {{ $authorRole }}</span>
                         <span><i class="bi bi-calendar-event"></i>{{ $idea->created_at->format('M d, Y') }}</span>
-                        <span><i class="bi bi-flag"></i>{{ ucfirst($idea->status) }}</span>
+                        <span><i class="bi bi-flag"> {{ ucfirst($idea->status) }}</i></span>
                     </div>
                 </div>
                 <div class="qa-idea-body">

@@ -149,9 +149,7 @@
                                         <form method="POST" action="{{ route('qa-coordinator.ideas.toggle-hidden', $idea) }}" class="d-inline">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="action-dropdown-item text-warning" onclick="return confirm('Are you sure you want to hide this idea?')">
-                                                <i class="bi bi-eye-slash me-2"></i>Hide Idea
-                                            </button>
+
                                         </form>
                                     </div>
                                 </div>
