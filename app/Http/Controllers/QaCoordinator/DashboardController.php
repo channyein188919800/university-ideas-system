@@ -466,6 +466,11 @@ class DashboardController extends Controller
             ->where('role', 'staff')
             ->where('id', '!=', $user->id)
             ->get();
+
+        $ideaClosureDate = Setting::where('key', 'idea_closure_date')->first()?->value;
+        $finalClosureDate = Setting::where('key', 'final_closure_date')->first()?->value;
+        $ideaClosureDate = $ideaClosureDate ? \Carbon\Carbon::parse($ideaClosureDate) : null;
+        $finalClosureDate = $finalClosureDate ? \Carbon\Carbon::parse($finalClosureDate) : null;
         
         $count = 0;
         
@@ -474,10 +479,12 @@ class DashboardController extends Controller
                 Mail::send('emails.participation-reminder', [
                     'staff' => $member,
                     'coordinator' => $user,
-                    'department' => $department
+                    'department' => $department,
+                    'ideaClosureDate' => $ideaClosureDate,
+                    'finalClosureDate' => $finalClosureDate
                 ], function($message) use ($member) {
                     $message->to($member->email)
-                        ->subject('Reminder: Share Your Ideas');
+                        ->subject('Submission Deadline and Final Closure (Comments)');
                 });
                 $count++;
             } catch (\Exception $e) {
@@ -508,15 +515,22 @@ class DashboardController extends Controller
         if (!$staff) {
             return response()->json(['success' => false, 'message' => 'Staff not found'], 404);
         }
+
+        $ideaClosureDate = Setting::where('key', 'idea_closure_date')->first()?->value;
+        $finalClosureDate = Setting::where('key', 'final_closure_date')->first()?->value;
+        $ideaClosureDate = $ideaClosureDate ? \Carbon\Carbon::parse($ideaClosureDate) : null;
+        $finalClosureDate = $finalClosureDate ? \Carbon\Carbon::parse($finalClosureDate) : null;
         
         try {
             Mail::send('emails.participation-reminder', [
                 'staff' => $staff,
                 'coordinator' => $user,
-                'department' => $department
+                'department' => $department,
+                'ideaClosureDate' => $ideaClosureDate,
+                'finalClosureDate' => $finalClosureDate
             ], function($message) use ($staff) {
                 $message->to($staff->email)
-                    ->subject('Reminder: Share Your Ideas');
+                    ->subject('Submission Deadline and Final Closure (Comments)');
             });
             
             return response()->json([
