@@ -4,6 +4,7 @@
 @section('title', (auth()->id() == $user->id ? 'My Profile' : 'Edit User') . ' - University Ideas System')
 
 @section('content')
+@php($disableGlobalToast = true)
 <div class="admin-shell">
     @include('admin.partials.sidebar')
 
@@ -26,14 +27,14 @@
         </div>
 
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <div class="alert alert-success alert-dismissible fade show mb-4 js-auto-hide-alert" role="alert">
                 <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
         @if($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <div class="alert alert-danger alert-dismissible fade show mb-4 js-auto-hide-alert" role="alert">
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
                 <strong>Please fix the following errors:</strong>
                 <ul class="mb-0 mt-1">
@@ -344,6 +345,14 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 
+        document.querySelectorAll('.js-auto-hide-alert').forEach((el) => {
+            setTimeout(() => {
+                el.style.transition = 'opacity 0.4s ease';
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 400);
+            }, 3000);
+        });
+
         // Avatar live preview
         const fileInput = document.getElementById('profile_image');
         const avatarPreview = document.getElementById('avatarPreview');
@@ -405,3 +414,5 @@
     });
 </script>
 @endpush
+
+

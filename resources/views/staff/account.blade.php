@@ -4,6 +4,7 @@
 @section('title', 'My Profile - University Ideas System')
 
 @section('content')
+@php($disableGlobalToast = true)
 <div class="admin-shell">
     @include('staff.partials.sidebar')
 

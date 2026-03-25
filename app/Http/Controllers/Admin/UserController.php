@@ -111,6 +111,12 @@ class UserController extends Controller
             $user
         );
 
+        if (auth()->id() === $user->id) {
+            return redirect()
+                ->route('admin.users.edit', $user)
+                ->with('success', 'Account updated successfully.');
+        }
+
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully!');
     }
 
