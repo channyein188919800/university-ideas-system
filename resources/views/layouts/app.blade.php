@@ -664,8 +664,10 @@
         </nav>
     @endunless
 
-    <!-- Toast Notification Container - Fixed position at top center -->
-    <div class="toast-notification-container" id="toastContainer"></div>
+    @if(empty($disableGlobalToast))
+        <!-- Toast Notification Container - Fixed position at top center -->
+        <div class="toast-notification-container" id="toastContainer"></div>
+    @endif
 
     <!-- Main Content -->
     <main class="flex-grow-1" id="main-content" role="main">
@@ -758,27 +760,29 @@
             }
         }
         
-        // Initialize toast notification system
-        const toast = new ToastNotification();
-        
-        // Handle session flash messages from Laravel
-        document.addEventListener('DOMContentLoaded', function() {
-            @if(session('success'))
-                toast.success('{{ addslashes(session('success')) }}');
-            @endif
+        @if(empty($disableGlobalToast))
+            // Initialize toast notification system
+            const toast = new ToastNotification();
             
-            @if(session('error'))
-                toast.error('{{ addslashes(session('error')) }}');
-            @endif
-            
-            @if(session('warning'))
-                toast.warning('{{ addslashes(session('warning')) }}');
-            @endif
-            
-            @if(session('info'))
-                toast.info('{{ addslashes(session('info')) }}');
-            @endif
-        });
+            // Handle session flash messages from Laravel
+            document.addEventListener('DOMContentLoaded', function() {
+                @if(session('success'))
+                    toast.success('{{ addslashes(session('success')) }}');
+                @endif
+                
+                @if(session('error'))
+                    toast.error('{{ addslashes(session('error')) }}');
+                @endif
+                
+                @if(session('warning'))
+                    toast.warning('{{ addslashes(session('warning')) }}');
+                @endif
+                
+                @if(session('info'))
+                    toast.info('{{ addslashes(session('info')) }}');
+                @endif
+            });
+        @endif
         
         // Confirm modal functionality
         document.addEventListener('DOMContentLoaded', function() {
