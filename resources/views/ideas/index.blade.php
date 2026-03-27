@@ -349,12 +349,23 @@
                     <div class="row g-0">
                         <div class="col-lg-8">
                             <div class="idea-content-area">
-                                <div class="d-flex align-items-center gap-2 mb-2">
-                                    <h5 class="idea-title mb-0">
-                                        <a href="{{ $detailUrl }}">{{ $idea->title }}</a>
-                                    </h5>
-                                    @if($idea->is_anonymous)
-                                        <span class="badge-anon"><i class="bi bi-incognito"></i> Anonymous</span>
+                                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <h5 class="idea-title mb-0">
+                                            <a href="{{ $detailUrl }}">{{ $idea->title }}</a>
+                                        </h5>
+                                        @if($idea->is_anonymous)
+                                            <span class="badge-anon"><i class="bi bi-incognito"></i> Anonymous</span>
+                                        @endif
+                                    </div>
+                                    @if(request('my_ideas') && auth()->check() && $idea->user_id == auth()->id())
+                                        <form method="POST" action="{{ route('staff.ideas.destroy', $idea) }}" class="d-inline" data-confirm="Are you sure you want to delete this idea?">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-trash fa-fw"></i>
+                                            </button>
+                                        </form>
                                     @endif
                                 </div>
 

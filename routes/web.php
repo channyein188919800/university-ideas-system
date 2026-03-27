@@ -226,6 +226,7 @@ Route::middleware(['auth', 'terms', 'role:staff'])
         Route::get('/account', [StaffAccountController::class, 'edit'])->name('account.edit');
         Route::put('/account', [StaffAccountController::class, 'update'])->name('account.update');
         Route::get('/ideas/{idea}', [StaffIdeaController::class, 'show'])->name('ideas.show');
+        Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])->name('ideas.destroy');
 
     });
 

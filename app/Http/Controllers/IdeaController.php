@@ -198,7 +198,13 @@ class IdeaController extends Controller
 
     public function destroy(Request $request, Idea $idea)
     {
-        if (!Auth::user() || !Auth::user()->isAdmin()) {
+        $user = Auth::user();
+        if (!$user) {
+            abort(403);
+        }
+
+        // Allow admin to delete any idea, or staff to delete their own ideas
+        if (!$user->isAdmin() && !($user->isStaff() && $idea->user_id === $user->id)) {
             abort(403);
         }
 
