@@ -13,9 +13,7 @@
     </a>
 </div>
 
-<div class="row">
-    <div class="col-lg-8">
-        <div class="qa-card">
+<div class="qa-card">
             <div class="qa-card-header">
                 <h5><i class="bi bi-sliders"></i> Category Settings</h5>
             </div>
@@ -63,10 +61,7 @@
                         <br><small>Slug is generated automatically from the category name.</small>
                     </div>
 
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ route('qa-manager.categories.index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle me-1"></i> Cancel
-                        </a>
+                    <div class="text-end">
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-check-circle me-1"></i> Update Category
                         </button>
@@ -74,6 +69,4 @@
                 </form>
             </div>
         </div>
-    </div>
-</div>
 @endsection

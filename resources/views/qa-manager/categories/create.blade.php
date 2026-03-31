@@ -13,9 +13,7 @@
         </a>
     </div>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="qa-card">
+    <div class="qa-card">
                 <div class="qa-card-header">
                     <h5><i class="bi bi-tag"></i> Category Details</h5>
                 </div>
@@ -51,6 +49,4 @@
                     </form>
                 </div>
             </div>
-        </div>
-    </div>
 @endsection
