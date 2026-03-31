@@ -11,6 +11,10 @@
         --body-bg: #f0f4f8;
         --card-bg: #ffffff;
         --text-muted: #718096;
+        --border-color: #e2e8f0;
+        --danger-color: #e53e3e;
+        --success-color: #38a169;
+        --warning-color: #dd6b20;
     }
 
     body {
@@ -79,7 +83,7 @@
 
     .form-select {
         border-radius: 0.6rem;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--border-color);
         padding: 0.75rem;
         font-size: 0.9rem;
         width: 100%; 
@@ -104,7 +108,7 @@
     }
 
     .btn-reset:hover {
-        background: #e2e8f0;
+        background: var(--border-color);
         color: var(--primary-color);
     }
 
@@ -256,6 +260,87 @@
     @media (min-width: 768px) {
         .btn-gold { width: auto; }
     }
+
+    /* Action Dropdown Styles */
+    .action-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .action-dropdown-toggle {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        font-size: 1.2rem;
+        padding: 0.3rem 0.5rem;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .action-dropdown-toggle:hover {
+        background: #f0f4fa;
+        color: var(--primary-color);
+    }
+
+    .action-dropdown-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        z-index: 1000;
+        display: none;
+        min-width: 140px;
+        padding: 0.5rem 0;
+        margin: 0.25rem 0 0;
+        background-color: white;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .action-dropdown-menu.show {
+        display: block;
+    }
+
+    .action-dropdown-item {
+        display: block;
+        width: 100%;
+        padding: 0.6rem 1.2rem;
+        clear: both;
+        font-weight: 400;
+        color: var(--text-primary);
+        text-align: left;
+        text-decoration: none;
+        white-space: nowrap;
+        background-color: transparent;
+        border: 0;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+    }
+
+    .action-dropdown-item:hover {
+        background-color: #f8fafd;
+    }
+
+    .action-dropdown-item i {
+        font-size: 1rem;
+        width: 20px;
+    }
+
+    .action-dropdown-item.text-danger {
+        color: var(--danger-color);
+    }
+
+    .action-dropdown-item.text-danger:hover {
+        background-color: rgba(229, 62, 62, 0.1);
+    }
+
+    .action-dropdown-divider {
+        height: 1px;
+        margin: 0.5rem 0;
+        background-color: var(--border-color);
+    }
 </style>
 
 <div class="ideas-shell py-4">
@@ -298,7 +383,7 @@
             </div>
         </div>
 
-        <!-- FILTER CARD - FIXED VERSION -->
+        <!-- FILTER CARD -->
         <div class="filter-card fade-in-up">
             <form method="GET" action="{{ route('ideas.index') }}" class="row g-3" id="filterForm">
                 <div class="col-12 col-md-4">
@@ -322,7 +407,7 @@
                 </div>
                 <div class="col-12 col-md-4">
                     <label class="d-none d-md-block" style="visibility: hidden;">Reset</label>
-                    <a href="{{ route('ideas.index') }}" class="btn-reset w-100" id="resetFiltersBtn">
+                    <a href="{{ route('ideas.index') }}" class="btn-reset w-100">
                         <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filters
                     </a>
                 </div>
@@ -337,6 +422,7 @@
                     $roleLabel = $idea->is_anonymous ? 'Member' : str_replace('_', ' ', ($idea->user?->role ?? 'staff'));
                     $initials = collect(explode(' ', trim($authorName)))->filter()->map(fn ($part) => strtoupper(substr($part, 0, 1)))->take(2)->implode('');
                     $initials = $initials ?: 'AN';
+                    $isOwner = auth()->check() && $idea->user_id == auth()->id();
                 @endphp
 
                 @php
@@ -345,6 +431,7 @@
                         $detailUrl = route('staff.ideas.show', $idea);
                     }
                 @endphp
+
                 <article class="idea-item fade-in-up" data-href="{{ $detailUrl }}">
                     <div class="row g-0">
                         <div class="col-lg-8">
@@ -358,14 +445,29 @@
                                             <span class="badge-anon"><i class="bi bi-incognito"></i> Anonymous</span>
                                         @endif
                                     </div>
-                                    @if(request('my_ideas') && auth()->check() && $idea->user_id == auth()->id())
-                                        <form method="POST" action="{{ route('staff.ideas.destroy', $idea) }}" class="d-inline" data-confirm="Are you sure you want to delete this idea?">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-outline-danger btn-sm">
-                                                <i class="fas fa-trash fa-fw"></i>
+
+                                    <!-- Three-dot Dropdown Menu for Own Ideas -->
+                                    @if(request('my_ideas') && $isOwner)
+                                        <div class="action-dropdown">
+                                            <button class="action-dropdown-toggle" type="button" onclick="toggleDropdown({{ $idea->id }})">
+                                                <i class="bi bi-three-dots-vertical"></i>
                                             </button>
-                                        </form>
+                                            <div class="action-dropdown-menu" id="dropdown-{{ $idea->id }}">
+                                                <a class="action-dropdown-item" href="{{ route('staff.ideas.edit', $idea) }}">
+                                                    <i class="bi bi-pencil-square me-2"></i> Edit Idea
+                                                </a>
+                                                <div class="action-dropdown-divider"></div>
+                                                <form method="POST" action="{{ route('staff.ideas.destroy', $idea) }}" class="d-inline w-100" id="delete-form-{{ $idea->id }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <!-- Hidden input to track where delete came from -->
+                                                    <input type="hidden" name="from_my_ideas" value="1">
+                                                    <button type="button" class="action-dropdown-item text-danger" onclick="confirmDelete({{ $idea->id }}, '{{ addslashes($idea->title) }}')">
+                                                        <i class="bi bi-trash3 me-2"></i> Delete Idea
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     @endif
                                 </div>
 
@@ -452,16 +554,12 @@
         // Clickable cards
         document.querySelectorAll('.idea-item[data-href]').forEach(card => {
             card.addEventListener('click', function (e) {
-                if (!e.target.closest('a, button, select')) {
+                if (!e.target.closest('a, button, select, .action-dropdown')) {
                     window.location.href = card.dataset.href;
                 }
             });
         });
 
-        // ===== FIX: RESET FILTERS - Just use the link directly =====
-        // The reset button is already an <a> tag that goes to route('ideas.index')
-        // No extra JavaScript needed!
-        
         // Auto-submit when dropdowns change
         const categorySelect = document.getElementById('categorySelect');
         const sortSelect = document.getElementById('sortSelect');
@@ -469,9 +567,7 @@
 
         if (categorySelect) {
             categorySelect.addEventListener('change', function() {
-                // When "All Categories" is selected (empty value), remove the parameter
                 if (this.value === '') {
-                    // Remove category from URL
                     const url = new URL(window.location.href);
                     url.searchParams.delete('category');
                     window.location.href = url.toString();
@@ -487,5 +583,51 @@
             });
         }
     });
+
+    // Dropdown functionality
+    function toggleDropdown(id) {
+        // Close all other dropdowns
+        document.querySelectorAll('.action-dropdown-menu').forEach(menu => {
+            if (menu.id !== 'dropdown-' + id) {
+                menu.classList.remove('show');
+            }
+        });
+        
+        // Toggle current dropdown
+        const dropdown = document.getElementById('dropdown-' + id);
+        if (dropdown) {
+            dropdown.classList.toggle('show');
+        }
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.action-dropdown')) {
+            document.querySelectorAll('.action-dropdown-menu').forEach(menu => {
+                menu.classList.remove('show');
+            });
+        }
+    });
+
+    // Delete confirmation with loading state
+    function confirmDelete(ideaId, ideaTitle) {
+        if (confirm(`Are you sure you want to delete "${ideaTitle}"? This action cannot be undone.`)) {
+            const form = document.getElementById('delete-form-' + ideaId);
+            if (form) {
+                // Show loading state on the button
+                const btn = form.querySelector('.action-dropdown-item.text-danger');
+                if (btn) {
+                    btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i> Deleting...';
+                    btn.disabled = true;
+                    btn.style.opacity = '0.7';
+                    
+                    // Submit the form
+                    form.submit();
+                } else {
+                    form.submit();
+                }
+            }
+        }
+    }
 </script>
 @endsection

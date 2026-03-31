@@ -74,6 +74,21 @@ class LoginController extends Controller
             ]);
         }
 
+        if ($user->isDisabled()) {
+            $this->incrementLoginAttempts($request);
+
+            AuditLogger::log(
+                'LOGIN_DISABLED',
+                "Disabled user {$request->email} attempted login.",
+                $user,
+                'warning'
+            );
+
+            throw ValidationException::withMessages([
+                'email' => 'Your account is disabled. Please contact QA Manager.',
+            ]);
+        }
+
         if (!Hash::check($request->password, $user->password)) {
             $this->incrementLoginAttempts($request);
             

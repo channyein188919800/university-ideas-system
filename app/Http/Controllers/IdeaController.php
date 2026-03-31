@@ -130,7 +130,84 @@ class IdeaController extends Controller
 
         return redirect()->route('ideas.show', $idea)->with('success', 'Idea submitted successfully!');
     }
+/**
+ * Show the form for editing the specified idea (for staff)
+ */
+public function edit(Idea $idea)
+{
+    $user = Auth::user();
 
+    // Only staff can edit their own pending ideas
+    if (!$user || !$user->isStaff()) {
+        abort(403, 'Unauthorized access.');
+    }
+
+    // Check if user owns this idea
+    if ($idea->user_id !== $user->id) {
+        abort(403, 'You do not have permission to edit this idea.');
+    }
+
+    // Check if idea can be edited (only pending or under_review)
+    if (!in_array($idea->status, ['pending', 'under_review'])) {
+        return redirect()->route('staff.ideas.show', $idea)
+            ->with('error', 'This idea cannot be edited because it has already been ' . $idea->status . '.');
+    }
+
+    $categories = Category::active()->ordered()->get();
+    
+    return view('staff.ideas.edit', compact('idea', 'categories'));
+}
+
+/**
+ * Update the specified idea in storage (for staff)
+ */
+public function update(Request $request, Idea $idea)
+{
+    $user = Auth::user();
+
+    // Only staff can edit their own pending ideas
+    if (!$user || !$user->isStaff()) {
+        abort(403, 'Unauthorized access.');
+    }
+
+    // Check if user owns this idea
+    if ($idea->user_id !== $user->id) {
+        abort(403, 'You do not have permission to edit this idea.');
+    }
+
+    // Check if idea can be edited
+    if (!in_array($idea->status, ['pending', 'under_review'])) {
+        return redirect()->route('staff.ideas.show', $idea)
+            ->with('error', 'This idea cannot be edited because it has already been ' . $idea->status . '.');
+    }
+
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'categories' => 'required|array|min:1',
+        'categories.*' => 'exists:categories,id',
+        'is_anonymous' => 'boolean',
+    ]);
+
+    // Update idea
+    $idea->update([
+        'title' => $validated['title'],
+        'description' => $validated['description'],
+        'is_anonymous' => $request->boolean('is_anonymous'),
+    ]);
+
+    // Sync categories (remove old and add new)
+    $idea->categories()->sync($validated['categories']);
+
+    AuditLogger::log(
+        'UPDATE_IDEA',
+        "Updated idea #{$idea->id}: {$idea->title}.",
+        $idea
+    );
+
+    return redirect()->route('staff.ideas.show', $idea)
+        ->with('success', 'Idea updated successfully!');
+}
     public function show(Idea $idea)
     {
         if ($idea->hidden && (!Auth::check() || !Auth::user()->isQaManager())) {
@@ -196,36 +273,58 @@ class IdeaController extends Controller
         }
     }
 
-    public function destroy(Request $request, Idea $idea)
-    {
-        $user = Auth::user();
-        if (!$user) {
-            abort(403);
-        }
-
-        // Allow admin to delete any idea, or staff to delete their own ideas
-        if (!$user->isAdmin() && !($user->isStaff() && $idea->user_id === $user->id)) {
-            abort(403);
-        }
-
-        $validated = $request->validate([
-            'reason' => 'nullable|string|max:255',
-        ]);
-
-        $ideaId = $idea->id;
-        $title = $idea->title;
-        $reason = $validated['reason'] ?? 'No reason provided.';
-
-        $idea->delete();
-
-        AuditLogger::log(
-            'DELETE_IDEA',
-            "Removed Idea #{$ideaId} ({$title}). Reason: {$reason}",
-            $idea
-        );
-
-        return redirect()->route('ideas.index')->with('success', 'Idea deleted successfully.');
+   public function destroy(Request $request, Idea $idea)
+{
+    $user = Auth::user();
+    if (!$user) {
+        abort(403);
     }
+
+    // Allow admin to delete any idea, or staff to delete their own ideas
+    if (!$user->isAdmin() && !($user->isStaff() && $idea->user_id === $user->id)) {
+        abort(403);
+    }
+
+    // For staff: check if idea can be deleted (only pending or under_review)
+    if ($user->isStaff() && !in_array($idea->status, ['pending', 'under_review'])) {
+        return redirect()->back()->with('error', 'This idea cannot be deleted because it has already been ' . $idea->status . '.');
+    }
+
+    $validated = $request->validate([
+        'reason' => 'nullable|string|max:255',
+    ]);
+
+    $ideaId = $idea->id;
+    $title = $idea->title;
+    $reason = $validated['reason'] ?? 'No reason provided.';
+
+    // Delete associated documents from storage
+    foreach ($idea->documents as $document) {
+        if ($document->file_path && Storage::disk('public')->exists($document->file_path)) {
+            Storage::disk('public')->delete($document->file_path);
+        }
+        $document->delete();
+    }
+
+    $idea->delete();
+
+    AuditLogger::log(
+        'DELETE_IDEA',
+        "Removed Idea #{$ideaId} ({$title}). Reason: {$reason}",
+        $idea
+    );
+
+    // Check if the request came from "My Ideas" page
+    $fromMyIdeas = $request->has('from_my_ideas') || str_contains(url()->previous(), 'my_ideas=1');
+    
+    // If coming from My Ideas or staff is deleting their own idea, stay on My Ideas page
+    if ($fromMyIdeas || ($user->isStaff() && !$user->isAdmin())) {
+        return redirect()->route('ideas.index', ['my_ideas' => 1])
+            ->with('success', 'Idea deleted successfully!');
+    }
+
+    return redirect()->route('ideas.index')->with('success', 'Idea deleted successfully!');
+}
 
     public function toggleHidden(Idea $idea)
     {

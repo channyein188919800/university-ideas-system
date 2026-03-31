@@ -210,7 +210,6 @@ Route::middleware(['auth', 'terms', 'role:qa_coordinator'])
         Route::get('/dashboard', [QaCoordinatorDashboardController::class, 'index'])->name('dashboard');
 
     });
-
 /*
 |--------------------------------------------------------------------------
 | Staff Routes
@@ -225,11 +224,14 @@ Route::middleware(['auth', 'terms', 'role:staff'])
         Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('dashboard');
         Route::get('/account', [StaffAccountController::class, 'edit'])->name('account.edit');
         Route::put('/account', [StaffAccountController::class, 'update'])->name('account.update');
-        Route::get('/ideas/{idea}', [StaffIdeaController::class, 'show'])->name('ideas.show');
+        
+        // ===== USE IdeaController (NOT StaffIdeaController) =====
+        Route::get('/ideas/{idea}', [IdeaController::class, 'show'])->name('ideas.show');
+        Route::get('/ideas/{idea}/edit', [IdeaController::class, 'edit'])->name('ideas.edit');
+        Route::put('/ideas/{idea}', [IdeaController::class, 'update'])->name('ideas.update');
         Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])->name('ideas.destroy');
 
     });
-
 /*
 |--------------------------------------------------------------------------
 | QA Coordinator Routes (Extended)
