@@ -145,13 +145,20 @@ class ReportController extends Controller
         );
 
         $filename = $type . '_export_' . now()->format('Y-m-d_His') . '.csv';
+        
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
         ];
 
         $callback = function () use ($type) {
             $file = fopen('php://output', 'w');
+            
+            // Add UTF-8 BOM for Excel compatibility
+            fwrite($file, "\xEF\xBB\xBF");
 
             if ($type === 'ideas') {
                 fputcsv($file, [
@@ -239,7 +246,7 @@ class ReportController extends Controller
                             $user->name,
                             $user->email,
                             $user->role,
-                            $user->status,
+                            $user->status ?? 'active',
                             $user->department?->name,
                             $user->terms_accepted ? 'Yes' : 'No',
                             optional($user->created_at)->format('Y-m-d H:i:s'),
@@ -251,7 +258,7 @@ class ReportController extends Controller
             fclose($file);
         };
 
-        return new StreamedResponse($callback, 200, $headers);
+        return response()->stream($callback, 200, $headers);
     }
 
     public function downloadDocuments()
@@ -262,12 +269,14 @@ class ReportController extends Controller
             return redirect()->back()->with('error', 'Documents can only be downloaded after the final closure date.');
         }
 
-        $exportDirectory = 'exports';
-        Storage::disk('local')->makeDirectory($exportDirectory);
+        // Create exports directory using PHP's mkdir (more reliable on Windows)
+        $exportPath = storage_path('app/exports');
+        if (!file_exists($exportPath)) {
+            mkdir($exportPath, 0777, true);
+        }
 
         $zipFileName = 'documents_export_' . now()->format('Y-m-d_His') . '.zip';
-        $zipRelativePath = $exportDirectory . '/' . $zipFileName;
-        $zipPath = Storage::disk('local')->path($zipRelativePath);
+        $zipPath = $exportPath . '/' . $zipFileName;
 
         AuditLogger::log(
             'EXPORT_DATA',
@@ -281,25 +290,40 @@ class ReportController extends Controller
 
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
             $ideas = Idea::with('documents')->has('documents')->get();
+            $fileCount = 0;
 
             foreach ($ideas as $idea) {
-                $ideaFolder = 'idea_' . $idea->id . '_' . Str::slug($idea->title);
-
+                $ideaFolder = 'idea_' . $idea->id . '_' . Str::slug($idea->title, '_');
+                
                 foreach ($idea->documents as $document) {
                     $filePath = $document->file_path;
-
+                    
                     if (Storage::disk('public')->exists($filePath)) {
                         $absolutePath = Storage::disk('public')->path($filePath);
-                        $zip->addFile($absolutePath, $ideaFolder . '/' . $document->original_name);
+                        
+                        // Check if file actually exists
+                        if (file_exists($absolutePath)) {
+                            $zip->addFile($absolutePath, $ideaFolder . '/' . $document->original_name);
+                            $fileCount++;
+                        }
                     }
                 }
             }
 
             $zip->close();
 
-            return response()->download($zipPath)->deleteFileAfterSend();
+            // Check if ZIP was created and has files
+            if (file_exists($zipPath) && $fileCount > 0) {
+                return response()->download($zipPath, $zipFileName)->deleteFileAfterSend();
+            } else {
+                // Delete empty ZIP file
+                if (file_exists($zipPath)) {
+                    unlink($zipPath);
+                }
+                return redirect()->back()->with('error', 'No documents found to export.');
+            }
         }
 
-        return redirect()->back()->with('error', 'Failed to create ZIP file.');
+        return redirect()->back()->with('error', 'Failed to create ZIP file. Please check directory permissions.');
     }
 }
