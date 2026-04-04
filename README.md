@@ -78,7 +78,7 @@ Visit `http://localhost:8000` in your browser.
 |------|-------|----------|
 | Admin | admin@university.ac.uk | password |
 | QA Manager | qamanager@university.ac.uk | password |
-| QA Coordinator | qacoordinator1@university.ac.uk | password |
+| QA Coordinator | qacoordinator1@university.ac.uk | password |9 > *Password9
 | Staff | staff@university.ac.uk | password |
 
 ## Directory Structure

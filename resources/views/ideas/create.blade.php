@@ -767,6 +767,31 @@
         color: var(--primary-navy);
         animation: chipIn 0.3s ease;
     }
+    .idea-file-chip-name {
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .idea-file-remove {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(10, 64, 118, 0.12);
+        color: var(--primary-navy);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 0;
+    }
+    .idea-file-remove:hover {
+        background: var(--primary-navy);
+        color: #fff;
+        transform: scale(1.05);
+    }
 
     /* ── Alert ─────────────────────────────────────────────────────────── */
     .idea-alert {
@@ -1908,15 +1933,68 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('documents');
     const fileList = document.getElementById('fileList');
     const uploadArea = document.getElementById('uploadArea');
+    let selectedFiles = [];
 
-    fileInput.addEventListener('change', () => {
+    function syncFileInput() {
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach(file => dataTransfer.items.add(file));
+        fileInput.files = dataTransfer.files;
+    }
+
+    function renderSelectedFiles() {
         fileList.innerHTML = '';
-        Array.from(fileInput.files).forEach(file => {
+
+        selectedFiles.forEach((file, index) => {
             const chip = document.createElement('span');
             chip.className = 'idea-file-chip';
-            chip.innerHTML = `<i class="bi bi-file-earmark-check"></i> ${file.name}`;
+
+            const fileIcon = document.createElement('i');
+            fileIcon.className = 'bi bi-file-earmark-check';
+
+            const fileName = document.createElement('span');
+            fileName.className = 'idea-file-chip-name';
+            fileName.textContent = file.name;
+            fileName.title = file.name;
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'idea-file-remove';
+            removeButton.dataset.fileIndex = index;
+            removeButton.setAttribute('aria-label', `Remove ${file.name}`);
+
+            const removeIcon = document.createElement('i');
+            removeIcon.className = 'bi bi-x-lg';
+
+            removeButton.appendChild(removeIcon);
+            chip.appendChild(fileIcon);
+            chip.appendChild(fileName);
+            chip.appendChild(removeButton);
             fileList.appendChild(chip);
         });
+    }
+
+    function addFiles(files) {
+        selectedFiles = [...selectedFiles, ...Array.from(files)];
+        syncFileInput();
+        renderSelectedFiles();
+        fileInput.value = '';
+    }
+
+    fileInput.addEventListener('change', () => {
+        addFiles(fileInput.files);
+    });
+
+    fileList.addEventListener('click', (e) => {
+        const removeButton = e.target.closest('.idea-file-remove');
+
+        if (!removeButton) {
+            return;
+        }
+
+        const fileIndex = Number(removeButton.dataset.fileIndex);
+        selectedFiles.splice(fileIndex, 1);
+        syncFileInput();
+        renderSelectedFiles();
     });
 
     // Drag & Drop
@@ -1932,8 +2010,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             uploadArea.classList.remove('drag-over');
             if (event === 'drop' && e.dataTransfer.files) {
-                fileInput.files = e.dataTransfer.files;
-                fileInput.dispatchEvent(new Event('change'));
+                addFiles(e.dataTransfer.files);
             }
         });
     });
