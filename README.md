@@ -76,10 +76,10 @@ Visit `http://localhost:8000` in your browser.
 
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | admin@university.ac.uk | password |
-| QA Manager | qamanager@university.ac.uk | password |
-| QA Coordinator | qacoordinator1@university.ac.uk | password |9 > *Password9
-| Staff | staff@university.ac.uk | password |
+| Admin | admin.dmk.uni@gmail.com | Admin@123 |
+| QA Manager | qamanager.dmk.uni@gmail.com | Manager@123 |
+| QA Coordinator | qacoordinator.dmk.uni@gmail.com | Coordinator@123
+| Staff | staff.dmk.uni@gmail.com | Staff@123 |
 
 ## Directory Structure
 
