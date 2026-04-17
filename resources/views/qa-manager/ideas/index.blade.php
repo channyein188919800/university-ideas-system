@@ -9,13 +9,18 @@
     
     <main class="qa-main-content">
         <!-- Header Section -->
-        <div class="qa-header-section mb-4">
-            <h1 class="qa-header-title">
-                <i class="bi bi-lightbulb me-2"></i>All Ideas
-            </h1>
-            <p class="qa-header-subtitle">
-                Viewing all ideas across the university
-            </p>
+        <div class="qa-header-section mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1 class="qa-header-title">
+                    <i class="bi bi-lightbulb"></i>All Ideas
+                </h1>
+                <p class="qa-header-subtitle">
+                    Viewing all ideas across the university
+                </p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <!-- No actions for this page -->
+            </div>
         </div>
 
         <!-- Filter Bar -->
@@ -323,7 +328,7 @@
 .qa-manager-layout {
     display: flex;
     min-height: 100vh;
-    background: var(--light-bg);
+    /* background: var(--light-bg); */
 }
 
 .qa-main-content {
@@ -336,24 +341,25 @@
 .qa-header-section {
     background: white;
     border-radius: 20px;
-    padding: 1.5rem 2rem;
+    padding: 1rem 1.2rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     border: 1px solid var(--border-color);
-    margin: 2rem 2rem 1.5rem 2rem;
+    /* margin: 2rem 2rem 1.5rem 2rem; */
 }
 
 .qa-header-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: var(--primary-color);
+    color: #1e3a5f;
     margin: 0 0 0.5rem 0;
-    display: flex;
+    display: inline-flex;
     align-items: center;
 }
 
 .qa-header-title i {
-    color: var(--accent-color);
-    font-size: 2rem;
+    color: #d69e2e;
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
 }
 
 .qa-header-subtitle {
@@ -381,7 +387,7 @@
     padding: 1.25rem 1.5rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
     border: 1px solid var(--border-color);
-    margin: 0 2rem 1.5rem 2rem;
+    /* margin: 0 2rem 1.5rem 2rem; */
 }
 
 .qa-search-wrapper {
@@ -477,7 +483,7 @@
     overflow: hidden;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
     border: 1px solid var(--border-color);
-    margin: 0 2rem 2rem 2rem;
+    /* margin: 0 2rem 2rem 2rem; */
 }
 
 .qa-ideas-table {
@@ -823,10 +829,6 @@
     
     .qa-header-title {
         font-size: 1.5rem;
-    }
-    
-    .qa-header-title i {
-        font-size: 1.7rem;
     }
     
     .qa-filter-bar {

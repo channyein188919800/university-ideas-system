@@ -8,11 +8,13 @@
 
     <section class="admin-main">
         <div class="container-fluid py-2">
-            <div class="d-flex justify-content-between align-items-center mb-4 admin-users-header">
-                <div class="admin-header-left">
-                    <h2><i class="fas fa-building"></i> Manage Departments</h2>
-                    <p class="text-muted mb-0">View and manage university departments</p>
-                    <div class="toast-container admin-users-toast">
+            <div class="qa-header-section mb-4 d-flex justify-content-between align-items-start flex-wrap gap-3">
+                <div>
+                    <h1 class="qa-header-title">
+                        <i class="fas fa-building"></i> Manage Departments
+                    </h1>
+                    <p class="qa-header-subtitle">View and manage university departments</p>
+                    <div class="toast-container mt-3">
                         <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
                             <div class="d-flex">
                                 <div class="toast-body">
@@ -24,7 +26,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 flex-wrap">
                     <a href="{{ route('admin.departments.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Add Department
                     </a>
@@ -140,41 +142,49 @@
 
 @push('styles')
 <style>
-    .admin-users-header {
-        position: relative;
+    .qa-header-section {
+        background: white;
+        border-radius: 20px;
+        padding: 1rem 1.2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        border: 1px solid #e2e8f0;
     }
-    .admin-header-left {
-        position: relative;
-        padding-right: 420px;
+
+    .qa-header-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e3a5f;
+        margin: 0 0 0.5rem 0;
+        display: inline-flex;
+        align-items: center;
     }
-    .admin-users-toast {
-        position: absolute;
-        top: -2px;
-        left: 240px;
-        transform: none;
-        z-index: 30;
-        pointer-events: none;
-        display: block;
+
+    .qa-header-title i {
+        color: #d69e2e;
+        font-size: 1.5rem;
+        margin-right: 0.75rem;
     }
-    .admin-users-toast .toast {
-        pointer-events: auto;
-        max-width: 460px;
+
+    .qa-header-subtitle {
+        color: #4a5568;
+        font-size: 1rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
     }
-    @media (max-width: 992px) {
-        .admin-header-left {
-            padding-right: 0;
-        }
-        .admin-users-toast {
-            position: relative;
-            left: 0;
-            top: 6px;
-            transform: none;
-            margin-top: 0.75rem;
-            display: block;
-        }
+
+    .qa-header-subtitle:before {
+        content: '';
+        display: inline-block;
+        width: 4px;
+        height: 4px;
+        background: #d69e2e;
+        border-radius: 50%;
+        margin-right: 0.75rem;
     }
-    .alert-success {
-        display: none !important;
+
+    .toast-container {
+        margin-top: 0.75rem;
     }
 </style>
 @endpush

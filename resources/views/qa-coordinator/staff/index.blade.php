@@ -6,7 +6,7 @@
 <!-- Topbar -->
 <div class="qa-topbar reveal" style="--delay: 0s;">
     <div>
-        <h3>Manage Staff</h3>
+        <h3>Remind User</h3>
         <p>{{ auth()->user()->department->name }} · {{ $staff->total() }} members</p>
     </div>
     <button class="btn btn-primary" onclick="sendReminderToAll()">

@@ -172,6 +172,11 @@
             font-size: 1.5rem;
         }
 
+        .qa-topbar h3 i {
+            color: #d69e2e;
+            margin-right: 0.75rem;
+        }
+
         .qa-topbar p {
             color: #6b7891;
             margin-bottom: 0;

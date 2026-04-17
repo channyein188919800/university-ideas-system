@@ -5,14 +5,19 @@
 
 @section('content')
 <div class="staff-topbar">
-    <div>
-        <h3 class="mb-1"><i class="fas fa-user-edit"></i> Edit User: {{ $staff->name }}</h3>
-        <p class="text-muted mb-0">Update account details and role permissions.</p>
+    <div class="qa-header-section mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="qa-header-title">
+                <i class="fas fa-user-edit"></i> Edit User: {{ $staff->name }}
+            </h1>
+            <p class="qa-header-subtitle">Update account details and role permissions.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ route('qa-manager.staff.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Users
+            </a>
+        </div>
     </div>
-    <a href="{{ route('qa-manager.staff.index') }}" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left"></i> Back to Users
-    </a>
-</div>
 
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
@@ -203,17 +208,45 @@
 
 @push('styles')
 <style>
-    .staff-topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
+    .qa-header-section {
+        background: white;
+        border-radius: 20px;
+        padding: 1rem 1.2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        border: 1px solid #e2e8f0;
     }
 
-    .staff-topbar h3 {
+    .qa-header-title {
+        font-size: 1.5rem;
         font-weight: 700;
-        color: #1c2a45;
+        color: #1e3a5f;
+        margin: 0 0 0.5rem 0;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .qa-header-title i {
+        color: #d69e2e;
+        font-size: 1.5rem;
+        margin-right: 0.75rem;
+    }
+
+    .qa-header-subtitle {
+        color: #4a5568;
+        font-size: 1rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .qa-header-subtitle:before {
+        content: '';
+        display: inline-block;
+        width: 4px;
+        height: 4px;
+        background: #d69e2e;
+        border-radius: 50%;
+        margin-right: 0.75rem;
     }
 
     .profile-layout {

@@ -12,7 +12,7 @@
                 <!-- Header Section -->
                 <div class="qa-header-section mb-4">
                     <h1 class="qa-header-title">
-                        <i class="bi bi-check2-square me-2"></i>Idea Approval
+                        <i class="bi bi-check2-square"></i>Idea Approval
                     </h1>
                     <p class="qa-header-subtitle">
                         Review pending staff ideas and approve or reject them
@@ -272,14 +272,14 @@
 .qa-header-section {
     background: white;
     border-radius: 20px;
-    padding: 1.5rem 2rem;
+    padding: 1rem 1.2rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     border: 1px solid var(--border-color);
-    margin: 2rem 2rem 1.5rem 2rem;
+    /* margin: 2rem 2rem 1.5rem 2rem; */
 }
 
 .qa-header-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: var(--primary-color);
     margin: 0 0 0.5rem 0;
@@ -289,7 +289,7 @@
 
 .qa-header-title i {
     color: var(--accent-color);
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 
 .qa-header-subtitle {
@@ -316,7 +316,7 @@
     padding: 1.25rem 1.5rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
     border: 1px solid var(--border-color);
-    margin: 0 2rem 1.5rem 2rem;
+    /* margin: 0 2rem 1.5rem 2rem; */
 }
 
 .qa-search-wrapper {
@@ -411,7 +411,7 @@
     overflow: visible;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
     border: 1px solid var(--border-color);
-    margin: 0 2rem 2rem 2rem;
+    /* margin: 0 2rem 2rem 2rem; */
 }
 
 .qa-ideas-table {

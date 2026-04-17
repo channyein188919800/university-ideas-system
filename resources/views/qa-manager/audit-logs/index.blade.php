@@ -3,14 +3,18 @@
 @section('title', 'QA Manager Audit Logs - University Ideas System')
 
 @section('content')
-    <div class="qa-topbar">
+    <div class="qa-header-section mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
-            <h3><i class="bi bi-journal-text"></i> Audit Logs</h3>
-            <p>Track moderation and export actions by QA Manager</p>
+            <h1 class="qa-header-title">
+                <i class="bi bi-journal-text"></i> Audit Logs
+            </h1>
+            <p class="qa-header-subtitle">Track moderation and export actions by QA Manager</p>
         </div>
-        <a href="{{ route('qa-manager.audit-logs.export', request()->query()) }}" class="btn btn-primary">
-            <i class="bi bi-download me-1"></i> Export Logs CSV
-        </a>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ route('qa-manager.audit-logs.export', request()->query()) }}" class="btn btn-primary">
+                <i class="bi bi-download"></i> Export Logs CSV
+            </a>
+        </div>
     </div>
 
     <div class="qa-card mb-3">
@@ -92,31 +96,45 @@
 
 @push('styles')
 <style>
-    .qa-topbar {
-        background: rgba(255, 255, 255, 0.86);
-        border: 1px solid #e2e8f4;
-        border-radius: 1rem;
+    .qa-header-section {
+        background: white;
+        border-radius: 20px;
         padding: 1rem 1.2rem;
-        margin-bottom: 1.25rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        backdrop-filter: blur(8px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        border: 1px solid #e2e8f0;
     }
 
-    .qa-topbar h3 {
-        font-weight: 700;
-        color: #1c2a45;
-        margin-bottom: 0.25rem;
+    .qa-header-title {
         font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e3a5f;
+        margin: 0 0 0.5rem 0;
+        display: inline-flex;
+        align-items: center;
     }
 
-    .qa-topbar p {
-        color: #6b7891;
-        margin-bottom: 0;
-        font-size: 0.9rem;
+    .qa-header-title i {
+        color: #d69e2e;
+        font-size: 1.5rem;
+        margin-right: 0.75rem;
+    }
+
+    .qa-header-subtitle {
+        color: #4a5568;
+        font-size: 1rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .qa-header-subtitle:before {
+        content: '';
+        display: inline-block;
+        width: 4px;
+        height: 4px;
+        background: #d69e2e;
+        border-radius: 50%;
+        margin-right: 0.75rem;
     }
 
     .qa-card {
@@ -130,13 +148,6 @@
 
     .qa-card-body {
         padding: 1rem 1.1rem;
-    }
-
-    @media (max-width: 767.98px) {
-        .qa-topbar {
-            flex-direction: column;
-            align-items: flex-start;
-        }
     }
 </style>
 @endpush

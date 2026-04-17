@@ -93,7 +93,7 @@ class IdeaController extends Controller
         $idea->title = $validated['title'];
         $idea->description = $validated['description'];
         $idea->user_id = Auth::id();
-        $idea->department_id = Auth::user()->department_id;
+        $idea->department_id = Auth::user()->isQaManager() ? null : Auth::user()->department_id;
         $idea->is_anonymous = $request->boolean('is_anonymous');
         $idea->status = Auth::user()->isStaff() ? 'pending' : 'approved';
         $idea->save();

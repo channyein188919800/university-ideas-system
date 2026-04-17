@@ -7,14 +7,19 @@
     
     <main class="qa-main-content">
         <!-- Header Section -->
-        <div class="qa-header-section mb-4">
-            <h1 class="qa-header-title">
-                <i class="bi bi-eye-slash me-2"></i>Hidden Content
-            </h1>
-            <p class="qa-header-subtitle">
-                Manage hidden ideas and comments • 
-                {{ $totalHiddenIdeas }} hidden ideas, {{ $totalHiddenComments }} hidden comments
-            </p>
+        <div class="qa-header-section mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1 class="qa-header-title">
+                    <i class="bi bi-eye-slash"></i>Hidden Content
+                </h1>
+                <p class="qa-header-subtitle">
+                    Manage hidden ideas and comments • 
+                    {{ $totalHiddenIdeas }} hidden ideas, {{ $totalHiddenComments }} hidden comments
+                </p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <!-- No actions for this page -->
+            </div>
         </div>
 
         <!-- Filter Bar -->
@@ -353,12 +358,12 @@
 .qa-manager-layout {
     display: flex;
     min-height: 100vh;
-    background: var(--light-bg);
+    /* background: var(--light-bg); */
 }
 
 .qa-main-content {
     flex: 1;
-    padding: 2rem;
+    /* padding: 2rem; */
     transition: margin-left 0.3s ease;
 }
 
@@ -366,24 +371,25 @@
 .qa-header-section {
     background: white;
     border-radius: 20px;
-    padding: 1.5rem 2rem;
+    padding: 1rem 1.2rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     border: 1px solid var(--border-color);
     margin-bottom: 1.5rem;
 }
 
 .qa-header-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: var(--primary-color);
+    color: #1e3a5f;
     margin: 0 0 0.5rem 0;
-    display: flex;
+    display: inline-flex;
     align-items: center;
 }
 
 .qa-header-title i {
-    color: var(--accent-color);
-    font-size: 2rem;
+    color: #d69e2e;
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
 }
 
 .qa-header-subtitle {
@@ -865,10 +871,6 @@
         font-size: 1.5rem;
     }
     
-    .qa-header-title i {
-        font-size: 1.7rem;
-    }
-    
     .qa-filter-bar {
         padding: 1rem;
     }
@@ -1079,7 +1081,7 @@
 /* Small Mobile View */
 @media (max-width: 480px) {
     .qa-main-content {
-        padding: 0.75rem;
+        /* padding: 0.75rem; */
     }
     
     .qa-header-section {

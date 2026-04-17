@@ -6,10 +6,15 @@
 @section('content')
 <div class="staff-shell">
     <section class="staff-main d-flex flex-column">
-        <div class="staff-topbar">
+        <div class="qa-header-section mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
-                <h3 class="mb-1"><i class="bi bi-person-gear"></i> My Profile</h3>
-                <p class="text-muted mb-0">Manage your account details, password, and profile photo.</p>
+                <h1 class="qa-header-title">
+                    <i class="bi bi-person-gear"></i> My Profile
+                </h1>
+                <p class="qa-header-subtitle">Manage your account details, password, and profile photo.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <!-- No actions for this page -->
             </div>
         </div>
 
@@ -179,15 +184,36 @@
 
 @push('styles')
 <style>
-    .staff-main {
-        flex: 1; padding: 1.5rem; overflow-x: hidden;
+    .qa-header-section {
+        background: white;
+        border-radius: 20px;
+        padding: 1rem 1.2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        border: 1px solid #e2e8f0;
     }
 
-    .staff-topbar {
-        display: flex; justify-content: space-between; align-items: center;
-        gap: 1rem; margin-bottom: 1.5rem;
+    .qa-header-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e3a5f;
+        margin: 0 0 0.5rem 0;
+        display: inline-flex;
+        align-items: center;
     }
-    .staff-topbar h3 { font-weight: 700; color: #1c2a45; }
+
+    .qa-header-title i {
+        color: #d69e2e;
+        font-size: 1.5rem;
+        margin-right: 0.75rem;
+    }
+
+    .qa-header-subtitle {
+        color: #4a5568;
+        font-size: 1rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
 
     /* Profile Layout */
     .profile-layout {

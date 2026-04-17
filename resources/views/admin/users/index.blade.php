@@ -9,12 +9,14 @@
 
     <section class="admin-main">
         <div class="container-fluid py-2">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="qa-header-section mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <div>
-                    <h2><i class="fas fa-users"></i> Manage Users</h2>
-                    <p class="text-muted mb-0">View and manage system users</p>
+                    <h1 class="qa-header-title">
+                        <i class="fas fa-users"></i> Manage Users
+                    </h1>
+                    <p class="qa-header-subtitle">View and manage system users</p>
                 </div>
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 flex-wrap">
                     <a href="{{ route('admin.audit-logs.index') }}" class="btn btn-outline-primary">
                         <i class="bi bi-journal-text"></i> Audit Logs
                     </a>
@@ -150,6 +152,47 @@
 
 @push('styles')
 <style>
+    .qa-header-section {
+        background: white;
+        border-radius: 20px;
+        padding: 1rem 1.2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        border: 1px solid #e2e8f0;
+    }
+
+    .qa-header-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e3a5f;
+        margin: 0 0 0.5rem 0;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .qa-header-title i {
+        color: #d69e2e;
+        font-size: 1.5rem;
+        margin-right: 0.75rem;
+    }
+
+    .qa-header-subtitle {
+        color: #4a5568;
+        font-size: 1rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .qa-header-subtitle:before {
+        content: '';
+        display: inline-block;
+        width: 4px;
+        height: 4px;
+        background: #d69e2e;
+        border-radius: 50%;
+        margin-right: 0.75rem;
+    }
+
     /* Hide the global layout flash alert AND its wrapper container on this page
        — we show our own inline one above the table instead */
     main > .container {
