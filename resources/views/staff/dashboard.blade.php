@@ -72,7 +72,7 @@
 
         <section class="admin-main">
 
-            <div class="staff-topbar">
+            <div class="admin-topbar">
                 <div>
                     <h3 class="mb-1"><i class="bi bi-speedometer2"></i> My Dashboard - <span style="color: #3f05fc;">{{ auth()->user()?->name ?? 'User' }}</span></h3>
                     <p>{{ auth()->user()?->department?->name ?? 'Your' }} Department · Staff Member</p>
@@ -381,6 +381,33 @@
             align-items: center;
             gap: 1rem;
             margin-bottom: 1.2rem;
+        }
+
+        .admin-topbar {
+            background: rgba(255, 255, 255, 0.86);
+            border: 1px solid #e2e8f4;
+            border-radius: 1rem;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: blur(8px);
+        }
+
+        .admin-topbar h3 {
+            font-weight: 700;
+            color: #1c2a45;
+        }
+
+        .admin-topbar h3 i {
+            color: #d69e2e;
+        }
+
+        .admin-topbar-subtitle {
+            color: #64748b;
+            font-size: 1.05rem;
         }
 
         .admin-menu-toggle {

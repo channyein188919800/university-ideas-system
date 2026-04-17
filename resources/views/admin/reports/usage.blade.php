@@ -7,14 +7,18 @@
     @include('admin.partials.sidebar')
 
     <section class="admin-main">
-        <div class="admin-topbar">
+        <div class="qa-header-section mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
-                <h3 class="mb-1">Usage Reports</h3>
-                <p class="admin-topbar-subtitle mb-0">Last 30 days (since {{ $since->format('M d, Y') }})</p>
+                <h1 class="qa-header-title">
+                    <i class="bi bi-bar-chart-line"></i> Usage Reports
+                </h1>
+                <p class="qa-header-subtitle">Last 30 days (since {{ $since->format('M d, Y') }})</p>
             </div>
-            <a href="{{ route('admin.audit-logs.index') }}" class="btn btn-outline-primary">
-                <i class="bi bi-journal-text"></i> Audit Logs
-            </a>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{{ route('admin.audit-logs.index') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-journal-text"></i> Audit Logs
+                </a>
+            </div>
         </div>
 
         <div class="row g-4 mb-4">
@@ -150,21 +154,35 @@
 
 @push('styles')
 <style>
-    .admin-topbar {
-        background: rgba(255, 255, 255, 0.86);
-        border: 1px solid #e2e8f4;
-        border-radius: 16px;
-        padding: 1.2rem 1.5rem;
-        margin-bottom: 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
+    .qa-header-section {
+        background: white;
+        border-radius: 20px;
+        padding: 1rem 1.2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        border: 1px solid #e2e8f0;
     }
 
-    .admin-topbar-subtitle {
-        color: #64748b;
-        font-weight: 600;
+    .qa-header-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e3a5f;
+        margin: 0 0 0.5rem 0;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .qa-header-title i {
+        color: #d69e2e;
+        font-size: 1.5rem;
+        margin-right: 0.75rem;
+    }
+
+    .qa-header-subtitle {
+        color: #4a5568;
+        font-size: 1rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
     }
 
     .report-card {

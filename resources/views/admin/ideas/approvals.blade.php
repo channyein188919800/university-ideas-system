@@ -281,15 +281,16 @@
 .qa-header-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--primary-color);
+    color: #1e3a5f;
     margin: 0 0 0.5rem 0;
-    display: flex;
+    display: inline-flex;
     align-items: center;
 }
 
 .qa-header-title i {
-    color: var(--accent-color);
+    color: #d69e2e;
     font-size: 1.5rem;
+    margin-right: 0.75rem;
 }
 
 .qa-header-subtitle {
