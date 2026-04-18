@@ -383,6 +383,26 @@
             background: linear-gradient(90deg, #48bb78, #68d391);
         }
 
+        /* Table Styles */
+        .table thead th {
+            background-color: #ffffff !important;
+            color: #1a202c !important;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            color: #ffffff !important;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color) !important;
+            border-color: var(--secondary-color) !important;
+        }
+
     </style>
 </head>
 <body>
